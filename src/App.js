@@ -6,6 +6,7 @@ import Login from './components/Login';
 import GameDetails from './components/GameDetails';
 import Home from './components/Home'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import Profile from './components/Profile';
 
 function App() {
   return (
@@ -27,6 +28,9 @@ function App() {
           </Route>
           <Route exact path="/home">
             <Home />
+          </Route>
+          <Route exact path="/profile">
+            <Profile />
           </Route>
           <Route exact path="/game/:id">
             <GameDetails />
