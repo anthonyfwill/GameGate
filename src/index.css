@@ -298,3 +298,51 @@ a:visited {
   gap: 30px;
   margin-top: 50px;
 }
+
+#pfp {
+  border-radius: 50%;
+  width: 100px;
+  height: 100px;
+}
+
+.profile-container {
+  padding-left: 200px;
+  padding-right: 200px;
+  padding-top: 50px;
+}
+
+.stats-container {
+  display: flex;
+  gap: 30px;
+  flex-direction: row;
+  background-color: rgb(42, 42, 78);
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.game-stats, .follow-stats {
+  display: flex;
+  flex-direction: row;
+  line-height: 0;
+  padding-top: 20px;
+  gap: 30px;
+  text-align: center;
+  padding-left: 100px;
+}
+
+.individual-stat-container {
+  line-height: 5px;
+}
+
+.reviews-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.reviews {
+    display: flex;
+    background-color: rgb(42, 42, 78);
+    flex-direction: column;
+    padding: 20px;
+    border-radius: 10px;
+}
