@@ -1,0 +1,300 @@
+body {
+  background-color: #0B1622;
+}
+
+h1 {
+  font-size: 40px;
+  color: rgb(121, 118, 146);
+}
+
+.indexcaptions {
+  display: flex;
+  gap: 100px;
+  flex-direction: column;
+  padding-top: 20px;
+  padding-left: 100px;
+  width: 600px;
+  overflow-wrap: break-word;
+}
+
+.headfirst{
+    margin-bottom: 10%;
+    position:relative; left:100px;
+}
+.headsecond{
+  margin-bottom:10%;
+  position:relative; left:100px;
+}
+
+.headthird{
+  position:relative; left:100px;
+}
+
+
+
+@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro');
+body {
+	margin: 0;
+    font-family: 'Source Sans Pro', sans-serif;
+	font-weight: 800;
+}
+
+.container {
+	width: 80%;
+	margin: 0 auto;
+}
+
+header {
+  background: rgb(42, 42, 78);
+}
+
+header::after {
+  content: '';
+  display: table;
+  clear: both;
+}
+
+.logo {
+  float: left;
+  padding: 10px 0;
+}
+
+nav {
+  float: right;
+}
+
+nav ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+nav li {
+  display: inline-block;
+  margin-left: 70px;
+  padding-top: 23px;
+
+  position: relative;
+}
+
+nav a {
+  color: rgb(121, 118, 146);
+  text-decoration: none;
+  text-transform: uppercase;
+  font-size: 20px;
+}
+
+nav a:hover {
+  color: #000;
+}
+
+nav a::before {
+  content: '';
+  display: block;
+  height: 5px;
+  background-color: #444;
+
+  position: absolute;
+  top: 0;
+  width: 0%;
+
+  transition: all ease-in-out 250ms;
+}
+
+nav a:hover::before {
+  width: 100%;
+}
+
+.fordarklight{
+width: auto;
+height: auto;
+transition: .4s ease;
+}
+
+#checkbox{
+position: fixed;
+top: 20px;
+right: 1420px;
+appearance: none;
+width: 80px;
+height: 40px;
+background: black;
+border-radius: 22px;
+}
+
+#checkbox:checked{
+background: rgb(12, 177, 81);
+}
+
+#checkbox:checked + .fordarklight{
+background: #EDF1F5;
+color: white;
+}
+
+body {
+  background-color: #0B1622;
+  color: rgb(121, 118, 146);
+}
+
+.child_container h1 {
+  font-size: 40px;
+}
+
+.parent_container {
+  display: flex;
+  justify-content: center;
+}
+
+.child_container {
+  flex-direction: column;
+  text-align:center;
+  display:flex;
+  width:500px;
+  height:630px;
+  background-color: rgb(42, 42, 78);
+  border-radius: 10px;
+  gap: 30px;
+  margin-top: 50px;
+}
+
+.textbox {
+  border-radius: 10px;
+  padding: 15px;
+  font-size: 20px;
+  background-color: #0B1622;
+  color: white;
+}
+
+.button {
+  padding: 15px;
+  background-color: rgba(0, 17, 255, 0.637);
+  color: white;
+  font-size: 20px;
+  padding-left: 30px;
+  padding-right: 30px;
+  border-radius: 10px;
+}
+
+::placeholder {
+  color: white;
+}
+
+a:visited {
+  color: rgb(121, 118, 146);
+  text-decoration: none;
+}
+
+.search-result {
+  padding: 0;
+  margin: 15px 0;
+}
+
+.search-results a {
+  text-decoration: none;
+  color: rgb(121, 118, 146);
+}
+
+.search-results {
+  background-color: rgb(42, 42, 78);
+}
+
+.search-results img {
+  width: 30px;
+  margin-right: 5px;
+  margin-right: 5px;
+}
+
+.search-result-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.backdrop_container {
+  display: flex;
+  justify-content: center;
+}
+
+.textbox_container {
+  flex-direction: column;
+  text-align: center;
+  display: flex;
+  width: 500px;
+  height: 630px;
+  background-color: rgb(42, 42, 78);
+  border-radius: 10px;
+  gap: 30px;
+  margin-top: 50px;
+}
+
+.textbox {
+  border-radius: 10px;
+  padding: 15px;
+  font-size: 20px;
+  background-color: #0B1622;
+  color: white;
+}
+
+.button {
+  padding: 15px;
+  background-color: rgba(0, 17, 255, 0.637);
+  color: white;
+  font-size: 20px;
+  padding-left: 30px;
+  padding-right: 30px;
+  border-radius: 10px;
+}
+
+.coverArt {
+  object-fit: contain;
+  height: auto;
+  width: 300px;
+  border-radius: 10px;
+  border: 5px solid rgb(121, 118, 146);
+}
+
+.coverTitleContainer {
+  display: flex;
+  flex-direction: column;
+  margin: auto;
+  margin-left: 50px;
+  gap: 10px;
+}
+
+.new-parent {
+  display: flex;
+  justify-content: center;
+}
+
+.new-child {
+  flex-direction: row;
+  display: flex;
+  width: 1200px;
+  height: auto;
+  padding: 50px;
+  background-color: rgb(42, 42, 78);
+  border-radius: 10px;
+  gap: 30px;
+  margin-top: 50px;
+}
+
+.new-child p {
+  line-height: 25px;
+}
+
+.feed_container {
+  display: flex;
+  justify-content: center;
+}
+
+.posts_container {
+  flex-direction: column;
+  text-align: center;
+  display: flex;
+  width: 800px;
+  height: 630px;
+  background-color: rgb(42, 42, 78);
+  border-radius: 10px;
+  gap: 30px;
+  margin-top: 50px;
+}
