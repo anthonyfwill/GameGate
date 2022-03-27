@@ -6,8 +6,8 @@ import { Link } from "react-router-dom";
 function Search() {
     let searchTerm = '';
     let myHeaders = new Headers();
-    myHeaders.append("Client-ID", "CLIENT ID HERE");
-    myHeaders.append("Authorization", "BEARER TOKEN HERE");
+    myHeaders.append("Client-ID", `${process.env.REACT_APP_CLIENT_ID}`);
+    myHeaders.append("Authorization", `${process.env.REACT_APP_BEARER_TOKEN}`);
     myHeaders.append("Content-Type", "text/plain");
 
     let raw = `search \"${searchTerm}\";fields name,first_release_date,genres.name,cover.url,platforms.name,summary;`;
@@ -36,11 +36,9 @@ function Search() {
         fetch("https://rocky-hamlet-24680.herokuapp.com/https://api.igdb.com/v4/games", requestOptions)
         .then(response => response.json())
         .then(data => {
-            console.log(data);
             let oldResults = [];
             for(let i = 0; i < data.length; i++) {
                 if(data[i]['first_release_date'] != undefined) {
-                    // console.log(data[i].cover)
                     oldResults.push(data[i]);
                 }
             }
@@ -61,11 +59,9 @@ function Search() {
                 <div className="search-results">
                     {
                         results.map((val) => (
-                            // <div key={val.id}>
                                 <Link to={`/game/${val.id}`} key={val.id}>
                                     <SearchResult img={val.cover.url} name={val.name} year={val.first_release_date} key={val.id} />
                                 </Link>
-                            // </div>
                         ))
                     }
                 </div>

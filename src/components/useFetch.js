@@ -13,8 +13,8 @@ const useFetch = (id) => {
 
     useEffect(() => {
         var myHeaders = new Headers();
-        myHeaders.append("Client-ID", "CLIENT ID HERE");
-        myHeaders.append("Authorization", "BEARER TOKEN HERE");
+        myHeaders.append("Client-ID", `${process.env.REACT_APP_CLIENT_ID}`);
+        myHeaders.append("Authorization", `${process.env.REACT_APP_BEARER_TOKEN}`);
         myHeaders.append("Content-Type", "text/plain");
 
         var raw = `fields name,first_release_date,genres.name,platforms.name,cover.url,summary; where id=${id};`;
