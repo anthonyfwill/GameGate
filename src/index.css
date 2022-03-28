@@ -350,3 +350,7 @@ a:visited {
 .profile-topmost > p {
   text-align: center;
 }
+
+.log-out {
+  cursor: pointer;
+}

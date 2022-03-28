@@ -1,7 +1,7 @@
 const Home = () => {
     return (
-        <div class="feed_container">
-            <div class="posts_container">
+        <div className="feed_container">
+            <div className="posts_container">
                 <div>
                     <h1>GameGate Home</h1>
                 </div>

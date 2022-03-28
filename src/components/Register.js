@@ -1,5 +1,6 @@
 import * as AWS from 'aws-sdk';
 import { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 
 var myCredentials = new AWS.CognitoIdentityCredentials({IdentityPoolId:'us-east-1:1f1634e0-e85f-4ffe-a509-ecb75c777309'});
 var myConfig = new AWS.Config({
@@ -10,8 +11,9 @@ AWS.config.update(myConfig)
 
 const docClient = new AWS.DynamoDB.DocumentClient()
 
-const Register = () => {
+const Register = (props) => {
 
+    const history = useHistory();
     const [email, setEmail] = useState('');
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -96,6 +98,9 @@ const Register = () => {
                         docClient.put(params2, function(err, data2) {
                             if (!err) {
                                 console.log("Worked");
+                                props.setLoggedIn(true);
+                                props.setCurrUser(username);
+                                history.push(`/profile/${username}`);
                                 // window.location.href = "profilepage.html";
                             } else {
                                 console.log("Not Worked");
