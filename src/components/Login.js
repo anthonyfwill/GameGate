@@ -18,7 +18,6 @@ const Login = (props) => {
     const [error, setError] = useState('');
     const [password, setPassword] = useState('');
 
-
     const logIn = () => {
         var params = {
             TableName: "GameGateAccounts",
@@ -28,7 +27,7 @@ const Login = (props) => {
         }
         docClient.scan(params, function (err, data) {
             if (!err) {
-                console.log(data);
+                // console.log(data);
             }
         }) 
         docClient.get(params, function(err, data) {
