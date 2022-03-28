@@ -1,8 +1,16 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 
 function NavBar(props) {
-    return (
+
+  const history = useHistory();
+
+  function logout() {
+    props.logOut();
+    history.push('/login')
+  }
+
+  return (
     <header>
         <input type="checkbox" id="checkbox" />
         <div className="fordarklight"></div>
@@ -18,7 +26,7 @@ function NavBar(props) {
             {!props.loggedIn &&<li><Link to="/register">Signup</Link></li>}
             {props.loggedIn &&<li><Link to={`/profile/${props.currUser}`}>Profile</Link></li>}
             <li><Link to="/search">Search</Link></li>
-            {props.loggedIn && <li className='log-out' onClick={props.logOut}>Log Out</li>}
+            {props.loggedIn && <li className='log-out' onClick={logout}>Log Out</li>}
           </ul>
         </nav>
       </div>
