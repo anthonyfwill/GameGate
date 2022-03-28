@@ -37,7 +37,7 @@ function App() {
             <Register setLoggedIn={setLoggedIn} setCurrUser={setCurrUser}/>
           </Route>
           <Route exact path="/login">
-            <Login />
+            <Login  setLoggedIn={setLoggedIn} setCurrUser={setCurrUser}/>
           </Route>
           <Route exact path="/home">
             <Home />
