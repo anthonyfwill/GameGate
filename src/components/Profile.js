@@ -130,7 +130,7 @@ const decreaseFollowers = (user) => {
         Key:{
             "Username": user
         },
-        UpdateExpression: "set FollowerCount = FollowerCount - :val",
+        UpdateExpression: "set Follower = Follower - :val",
         ExpressionAttributeValues:{
             ":val":1
         },
@@ -140,7 +140,28 @@ const decreaseFollowers = (user) => {
     docClient.put(params, function(err, data) {
                 if (!err) {
                         console.log("Worked");
-console.log("FollowingCount =", FollowingCount);
+console.log("Following =", Following);
+                } else {
+                        console.log("Not Worked");
+                }
+    });
+
+    const updateRating = (rating, gameIDinfo) => { 
+    var params = {
+        TableName:"Games",
+        Key:{
+            "GameID": gameIDinfo
+        },
+        UpdateExpression: "set GameID =  ((x-1) * oldAverage + (1/x) * :rating)",
+        ExpressionAttributeValues:{
+            ":rating":rating
+        },
+        ReturnValues:"UPDATED_NEW"
+    };
+
+    docClient.put(params, function(err, data) {
+                if (!err) {
+                        console.log("Worked");
                 } else {
                         console.log("Not Worked");
                 }
