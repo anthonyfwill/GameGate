@@ -20,24 +20,82 @@ const Register = () => {
     const signUp = (email, pw, username) => {
         var params = {
             TableName: "GameGateAccounts",
-            Item: {
-                "Email": email,
-                    "Password": pw,
-                    "Username": username,
+            KeyConditionExpression: "#email = :email3",
+            ExpressionAttributeNames: {
+                "#email": "Email"
+            },
+            ExpressionAttributeValues: {
+                ":email3": email
             }
         }
-        
-        var em = email;
-        var user = username;
-        var pr = pw;
-        console.log(em, user, pr);
-        docClient.put(params, function(err, data) {
+        var canMake = 0;
+
+        docClient.query(params, function(err, data) {
             if (!err) {
-                console.log("Worked");
-                    // window.location.href = "profilepage.html";
+                //console.log("no error");
+                //console.log(data, "Email entered: " + email);
+                if (data.Count === 0) {
+                    console.log("Email available");
+                    canMake = canMake + 1;
+                } else {
+                    console.log("Email is not available");
+                }
             } else {
-                    console.log("Not Worked");
-                    console.log(err);
+                canMake += 1
+                console.log(err);
+            }
+        })
+
+        var params3 = {
+            TableName: "GameGateAccounts",
+            IndexName: "Username-index",
+            KeyConditionExpression: "#username = :User3",
+            ExpressionAttributeNames: {
+                "#username": "Username"
+            },
+            ExpressionAttributeValues: {
+                ":User3": username
+            }
+        }
+
+        docClient.query(params3, function(err, data) {
+            if (!err) {
+                //console.log("no error");
+                //console.log(data.Count, "Username entered: " + username);
+                if (data.Count === 0) {
+                    console.log("Username is available");
+                    canMake = canMake + 1;
+                } else {
+                    console.log("Username is not available");
+                }
+            } else {
+                //console.log(data.Username, "Username entered: " + username);
+                console.log(err);
+            }
+            console.log("canMake:", canMake);
+            if (canMake === 2) {
+                var params2 = {
+                            TableName: "GameGateAccounts",
+                            Item: {
+                                "Email": email,
+                                "Password": pw,
+                                "Username": username,
+                            }
+                        }
+        
+                        var em = email;
+                        var user = username;
+                        var pr = pw;
+                        //console.log(em, user, pr);
+                        docClient.put(params2, function(err, data2) {
+                            if (!err) {
+                                console.log("Worked");
+                                // window.location.href = "profilepage.html";
+                            } else {
+                                console.log("Not Worked");
+                                console.log(err);
+                            }
+                })
             }
         })
     }
