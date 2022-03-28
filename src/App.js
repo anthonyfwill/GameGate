@@ -5,14 +5,27 @@ import Search from './components/Search';
 import Login from './components/Login';
 import GameDetails from './components/GameDetails';
 import Home from './components/Home'
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch, useHistory } from 'react-router-dom';
 import Profile from './components/Profile';
+import { useState } from 'react';
 
 function App() {
+
+  const history = useHistory();
+
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [currUser, setCurrUser] = useState(null);
+
+  function logOut() {
+    setLoggedIn(false);
+    setCurrUser(null);
+    // history.push('/login');
+  }
+
   return (
     <Router>
       <div>
-        <NavBar />
+        <NavBar loggedIn={loggedIn} currUser={currUser} logOut={logOut}/>
         <Switch>
           <Route exact path="/">
             <LandingPage />
@@ -21,7 +34,7 @@ function App() {
             <Search />
           </Route>
           <Route exact path="/register">
-            <Register />
+            <Register setLoggedIn={setLoggedIn} setCurrUser={setCurrUser}/>
           </Route>
           <Route exact path="/login">
             <Login />
