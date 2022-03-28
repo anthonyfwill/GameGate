@@ -50,6 +50,123 @@ const Profile = () => {
         })
     }, [])
 
+  /* const increaseFollowing = (email) => { 
+        var params = {
+            TableName:"GameGateAccounts",
+            Key:{
+                "Email": em
+            },
+            UpdateExpression: "set Following = Following + :val",
+            ExpressionAttributeValues:{
+                ":val":1
+            },
+            ReturnValues:"UPDATED_NEW"
+        }
+
+        docClient.put(params, function(err, data) {
+            if (!err) {
+                console.log("Worked");
+                console.log("Following =", Following);
+            } else {
+                console.log("Not Worked");
+            }
+        })
+    }
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+const decreaseFollowing = (email) => { 
+    var params = {
+        TableName:"GameGateAccounts",
+        Key:{
+            "Email": em
+        },
+        UpdateExpression: "set Following = Following - :val",
+        ExpressionAttributeValues:{
+            ":val":1
+        },
+        ReturnValues:"UPDATED_NEW"
+    };
+
+    docClient.put(params, function(err, data) {
+                if (!err) {
+                        console.log("Worked");
+console.log("Following =", Following);
+                } else {
+                        console.log("Not Worked");
+                }
+    });
+}
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+const increaseFollowers = (user) => {  
+    var params = {
+        TableName:"GameGateAccounts",
+        Key:{
+            "Username": user
+        },
+        UpdateExpression: "set Followers = Followers + :val",
+        ExpressionAttributeValues:{
+            ":val":1
+        },
+        ReturnValues:"UPDATED_NEW"
+    };
+
+    docClient.put(params, function(err, data) {
+                if (!err) {
+                        console.log("Worked");
+console.log("Following =", Following);
+                } else {
+                        console.log("Not Worked");
+                }
+    });
+}
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+const decreaseFollowers = (user) => { 
+    var params = {
+        TableName:"GameGateAccounts",
+        Key:{
+            "Username": user
+        },
+        UpdateExpression: "set Follower = Follower - :val",
+        ExpressionAttributeValues:{
+            ":val":1
+        },
+        ReturnValues:"UPDATED_NEW"
+    };
+
+    docClient.put(params, function(err, data) {
+                if (!err) {
+                        console.log("Worked");
+console.log("Following =", Following);
+                } else {
+                        console.log("Not Worked");
+                }
+    });
+
+    const updateRating = (rating, gameIDinfo) => { 
+    var params = {
+        TableName:"Games",
+        Key:{
+            "GameID": gameIDinfo
+        },
+        UpdateExpression: "set GameID =  ((x-1) * oldAverage + (1/x) * :rating)",
+        ExpressionAttributeValues:{
+            ":rating":rating
+        },
+        ReturnValues:"UPDATED_NEW"
+    };
+
+    docClient.put(params, function(err, data) {
+                if (!err) {
+                        console.log("Worked");
+                } else {
+                        console.log("Not Worked");
+                }
+    });
+}*/
     return (
         <div className='profile-topmost'>
             {isPending && <p>Loading...</p>}
