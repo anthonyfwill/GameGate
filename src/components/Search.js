@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 
 function Search() {
-    let searchTerm = '';
+    const [searchTerm, setSearchTerm] = useState('');
     let myHeaders = new Headers();
     myHeaders.append("Client-ID", `${process.env.REACT_APP_CLIENT_ID}`);
     myHeaders.append("Authorization", `${process.env.REACT_APP_BEARER_TOKEN}`);
@@ -18,13 +18,10 @@ function Search() {
         body: raw,
         redirect: 'follow'
     };
-    const [results, setResults] = useState([]);
 
-    function newSearchTerm(newTerm) {
-        searchTerm = newTerm;
-        raw = `search \"${searchTerm}\";fields name,first_release_date,genres.name,cover.url,platforms.name,summary;`
-        requestOptions.body = raw;
-    }
+    const [results, setResults] = useState([]);
+    const [isPending, setPending] = useState(false);
+    const [error, setError] = useState(null);
 
     function timeConverter(UNIX_timestamp){
         var a = new Date(UNIX_timestamp * 1000);
@@ -33,9 +30,14 @@ function Search() {
     }
 
     const searchGames = () => {
+        setError(false);
+        setPending(true);
         fetch("https://rocky-hamlet-24680.herokuapp.com/https://api.igdb.com/v4/games", requestOptions)
         .then(response => response.json())
         .then(data => {
+            if(data.length === 0) {
+                throw Error('No games match that name');
+            }
             let oldResults = [];
             for(let i = 0; i < data.length; i++) {
                 if(data[i]['first_release_date'] != undefined) {
@@ -46,7 +48,12 @@ function Search() {
                 oldResults[i].first_release_date = timeConverter(oldResults[i].first_release_date);
                 oldResults[i].cover.url = 'https:' + oldResults[i].cover.url;
             }
+            setPending(false);
             setResults(oldResults);
+        })
+        .catch((err) => {
+            setPending(false);
+            setError(err.message);
         })
     }
 
@@ -54,8 +61,11 @@ function Search() {
         <div className="parent_container">
             <div className="child_container">
                 <div><h1>GameGate Search</h1></div>
-                <div><input className="textbox" type="text" placeholder="Search GameGate..." onChange={e => newSearchTerm(e.target.value)}/></div>
+                <div><input className="textbox" type="text" placeholder="Search GameGate..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)}/></div>
                 <div><button className="button" type="submit" onClick={searchGames}>Search</button></div>
+                {isPending && <div>Loading...</div>}
+                {error && <div>{error}</div>}
+                {results && !isPending && !error &&
                 <div className="search-results">
                     {
                         results.map((val) => (
@@ -64,23 +74,10 @@ function Search() {
                                 </Link>
                         ))
                     }
-                </div>
+                </div>}
             </div>
     </div>
     )
 }
-
-function timeConverter(UNIX_timestamp){
-    var a = new Date(UNIX_timestamp * 1000);
-    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    var year = a.getFullYear();
-    var month = months[a.getMonth()];
-    var date = a.getDate();
-    var hour = a.getHours();
-    var min = a.getMinutes();
-    var sec = a.getSeconds();
-    var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec ;
-    return year;
-  }
 
 export default Search;
