@@ -80,12 +80,18 @@ const Register = () => {
                                 "Email": email,
                                 "Password": pw,
                                 "Username": username,
+                                "Current": 0,
+                                "Completed": 0,
+                                "Dropped": 0,
+                                "Planning": 0,
+                                "Followers": 0,
+                                "Following": 0,
                             }
                         }
         
-                        var em = email;
-                        var user = username;
-                        var pr = pw;
+                        //var em = email;
+                        //var user = username;
+                        //var pr = pw;
                         //console.log(em, user, pr);
                         docClient.put(params2, function(err, data2) {
                             if (!err) {
