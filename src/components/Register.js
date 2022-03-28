@@ -86,6 +86,11 @@ const Register = () => {
                                 "Planning": 0,
                                 "Followers": 0,
                                 "Following": 0,
+                                "CurrentGames": [],
+                                "CompletedGames": [],
+                                "DroppedGames": [],
+                                "PlanningGames": [],
+
                             }
                         }
         
