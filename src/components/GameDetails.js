@@ -37,12 +37,34 @@ const GameDetails = (props) => {
         //             console.log(data);
         //         } else {
         //             console.log(data);
-
         //         }
         //     } else {
         //         console.log(err);
         //     }
         // })
+
+        /*var params3 = {
+            TableName: "Games",
+            Item: {
+                "GameID": id,
+                "Username": Username,
+                "Review": review,
+            },
+
+        }
+
+        props.docClient.query(params2, function(err, data) {
+            if (!err) {
+                if (data.Count === 0) {
+                    console.log(data);
+                } else {
+                    console.log(data);
+
+                }
+            } else {
+                console.log(err);
+            }
+        })*/
 
         /*var params2 = {
             TableName: "Games",
