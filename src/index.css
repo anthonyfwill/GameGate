@@ -396,3 +396,41 @@ color: white;
 ::-webkit-scrollbar-track {
   background: rgba(0, 0, 0, 0.2);
 }
+
+textarea {
+  width: 1200px;
+  height: 150px;
+  padding: 12px 20px;
+  box-sizing: border-box;
+  border-radius: 4px;
+  background-color: rgb(42, 42, 78);
+  font-size: 16px;
+  color: rgb(121, 118, 146);
+  resize: none;
+  padding-top: 20px;
+}
+
+.reviewBox {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  /* margin-left: 160px; */
+  /* padding-top: 50px; */
+
+}
+
+.reviewBtn {
+  background-color: rgba(0, 17, 255, 0.637);
+  color: rgb(255, 255, 255);
+  padding: 10px;
+  margin-bottom: 50px;
+  width: 1200px;
+  border-radius: 10px;
+  font-size: 16px;
+  justify-self: left;
+}
+
+#scorereview {
+  width: 170px;
+  height: 60px;
+}
