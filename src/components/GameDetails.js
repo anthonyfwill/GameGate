@@ -26,7 +26,7 @@ const GameDetails = (props) => {
                 "#gameID": "GameID",
             },
             ExpressionAttributeValues: {
-                ":gameID3": "id"
+                ":gameID3": id
             }
         }
 
@@ -40,19 +40,31 @@ const GameDetails = (props) => {
                 }
             } else {
                 console.log(err);
-                ?
-                /*TableName: "Games",
-            KeyConditionExpression: "#gameID = :gameID3 and #username = :username",
-            ExpressionAttributeNames: {
-                "#gameID": "GameID",
-                "#username": "Username"
-            },
-            ExpressionAttributeValues: {
-                ":gameID3": "1942",
-                ":username": "user12345"
-            }*/
             }
         })
+
+        /*var params3 = {
+            TableName: "Games",
+            Item: {
+                "GameID": id,
+                "Username": Username,
+                "Review": review,
+            },
+
+        }
+
+        props.docClient.query(params2, function(err, data) {
+            if (!err) {
+                if (data.Count === 0) {
+                    console.log(data);
+                } else {
+                    console.log(data);
+
+                }
+            } else {
+                console.log(err);
+            }
+        })*/
 
         /*var params2 = {
             TableName: "Games",
