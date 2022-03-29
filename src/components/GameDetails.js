@@ -15,13 +15,13 @@ const GameDetails = (props) => {
         return output.join(', ');
     }
 
-    // function addPlanning(e) {
-    //     if(e.target.textContent === 'Add to planning') {
-    //         e.target.textContent = 'Planning'
-    //     } else {
-    //         e.target.textContent = 'Add to planning'
-    //     }
-    // }
+    function addPlanning(e) {
+        if(e.target.textContent === 'Add to planning') {
+            e.target.textContent = 'Planning'
+        } else {
+            e.target.textContent = 'Add to planning'
+        }
+    }
 
     return (
             <div className="new-parent">
@@ -31,7 +31,7 @@ const GameDetails = (props) => {
                 <div className="new-child">
                     <div className="coverTitleContainer">
                         <img className="coverArt" src={`https:${results[0].cover.url}`} alt="Game cover art"/>
-                        {!props.loggedIn && <button type="button" className="list_entry" onClick={(e) => addPlanning(e)}>Add to planning</button>}
+                        {props.loggedIn && <button type="button" className="list_entry" onClick={(e) => addPlanning(e)}>Add to planning</button>}
                     </div>
                     <hr className="rounded"/>
                     <div className="gameDescrip">
