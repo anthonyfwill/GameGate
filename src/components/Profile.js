@@ -18,6 +18,7 @@ const Profile = (props) => {
     const [error, setError] = useState(null);
     const [pfpEdit, setPfpEdit] = useState(false);
     const [profileUrl, setProfileurl] = useState('');
+    const [reviewInfo, setReviewInfo] = useState([]);
 
     const {username} = useParams();
 
@@ -50,10 +51,9 @@ const Profile = (props) => {
                 setError(null);
             }
         })
-    }, [])
-    //Get all reviews by user
-    /*var params3 = {
-            TableName: "GameGateAccounts",
+
+        var params3 = {
+            TableName: "Games",
             IndexName: "Username-index",
             KeyConditionExpression: "#username = :User3",
             ExpressionAttributeNames: {
@@ -63,20 +63,49 @@ const Profile = (props) => {
                 ":User3": username
             }
         }
-
+    
         docClient.query(params3, function(err, data) {
             if (!err) {
+                let newReviewInfo = [];
                 if (data.Count === 0) {
                     console.log(data);
                 } else {
-                    data.Items.forEach(function(item) {
-                        console.log("Review:", item.Reviews)
-                    })
+                    console.log(data);
                 }
+                for(let i = 0; i < data.Count; i++) {
+                    newReviewInfo.push(data.Items[i]);
+                }
+                setReviewInfo(newReviewInfo);
             } else {
                 console.log(err);
             }
-        })*/
+        })
+    }, [])
+    //Get all reviews by user
+    // var params3 = {
+    //     TableName: "Games",
+    //     IndexName: "Username-index",
+    //     KeyConditionExpression: "#username = :User3",
+    //     ExpressionAttributeNames: {
+    //         "#username": "Username"
+    //     },
+    //     ExpressionAttributeValues: {
+    //         ":User3": username
+    //     }
+    // }
+
+    // docClient.query(params3, function(err, data) {
+    //     if (!err) {
+    //         if (data.Count === 0) {
+    //             console.log(data);
+    //         } else {
+    //             console.log(data);
+    //         }
+    //     } else {
+    //         console.log(err);
+    //     }
+    // })
+
 
 
     /*var params = {
@@ -352,7 +381,11 @@ console.log("Following =", Following);
                         <h1>Reviews</h1>
                     </div>
                     <div className="reviews">
-                        <Review />
+                        {
+                            reviewInfo.map(val => (
+                                <Review name={val.GameName} username={val.Username} content={val.Review} score={val.Rating} key={val.Username}/>
+                            ))
+                        }
                     </div>
                 </div>
             </div>
