@@ -1,9 +1,10 @@
-const Review = () => {
+const Review = (props) => {
     return (
         <div className="review-container">
-            <h2>Name</h2>
-            <h3 className="score-color">0</h3>
-            <p>Content</p>
+            <h3>Game: {props.name}</h3>
+            <h3>User: {props.username}</h3>
+            <p className="score-color">Score: {props.score}/10</p>
+            <p>{props.content}</p>
         </div>
     );
 }
