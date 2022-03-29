@@ -129,12 +129,34 @@ const GameDetails = (props) => {
         }
     }
 
-    function updateReviews() {
+    function updateReviews(gameName, username, reviewText, reviewScore) {
         setReviewOpened(false);
-        setReviewScore('');
-        setReviewText('');
+        var params = {
+            TableName: "Games",
+            Item: {
+                "GameID": id,
+                "GameName": gameName,
+                "Username": username,
+                "Review": reviewText,
+                "Rating": reviewScore
+            }
+        }
+        //console.log(results[0].name, props.currUser, reviewText, reviewScore)
+
+        props.docClient.put(params, function(err, data) {
+            if (!err) {
+                console.log(reviewText, reviewScore);
+                //console.log("no error");
+                setReviewScore('');
+                setReviewText('');
+                console.log(data);
+            } else {
+                console.log(err);
+            }
+        })
         //update the list of reviews for game and user tables
     }
+
 
     return (
             <div className="new-parent">
@@ -159,12 +181,12 @@ const GameDetails = (props) => {
                     {props.loggedIn && !reviewOpened && <button className="reviewBtn" onClick={() => setReviewOpened(true)}>Write a review</button>}
                     {reviewOpened &&
                     <div className="reviewBox">
-                    <textarea id="gamereview" placeholder="Write a review" name="review" rows="8" cols="90" value={reviewText} onChange={(e) => setReviewText(e.value)}></textarea>
+                    <textarea id="gamereview" placeholder="Write a review" name="review" rows="8" cols="90" value={reviewText} onChange={(e) => setReviewText(e.target.value)}></textarea>
                         <div className="scoreandtext"></div>
                         {/* <input type="number" id="scorereview" name="quantity" min="1" max="10"></input> */}
-                        <textarea id="scorereview" maxlength="2" placeholder="Score / 10" pattern="\d$" value={reviewScore} onChange={(e) => setReviewScore(e.value)}></textarea>
+                        <textarea id="scorereview" maxlength="2" placeholder="Score / 10" pattern="\d$" value={reviewScore} onChange={(e) => setReviewScore(e.target.value)}></textarea>
                         <div>
-                            <input className="reviewBtn" type="submit" value="Publish" onClick={updateReviews}/>
+                            <input className="reviewBtn" type="submit" value="Publish" onClick={() => updateReviews(results[0].name, props.currUser, reviewText, reviewScore)}/>
                         </div>
                     </div> }
                     {
