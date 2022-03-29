@@ -92,7 +92,14 @@ const Register = (props) => {
                                 "CompletedGames": [],
                                 "DroppedGames": [],
                                 "PlanningGames": [],
-
+                                "Reviews": [
+                                 {
+                                  "Review": "",
+                                  "Upvotes": 0,
+                                  "GameID": 0,
+                                  "Rating": 0
+                                 }
+                                ]
                             }
                         }
         
