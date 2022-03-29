@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import useFetch from "./useFetch";
 
-const GameDetails = () => {
+const GameDetails = (props) => {
     const { id } = useParams();
 
     const { results, isPending, error} = useFetch(id);
@@ -15,6 +15,14 @@ const GameDetails = () => {
         return output.join(', ');
     }
 
+    // function addPlanning(e) {
+    //     if(e.target.textContent === 'Add to planning') {
+    //         e.target.textContent = 'Planning'
+    //     } else {
+    //         e.target.textContent = 'Add to planning'
+    //     }
+    // }
+
     return (
             <div className="new-parent">
                 {isPending && <div>Loading...</div>}
@@ -23,6 +31,7 @@ const GameDetails = () => {
                 <div className="new-child">
                     <div className="coverTitleContainer">
                         <img className="coverArt" src={`https:${results[0].cover.url}`} alt="Game cover art"/>
+                        {!props.loggedIn && <button type="button" className="list_entry" onClick={(e) => addPlanning(e)}>Add to planning</button>}
                     </div>
                     <hr className="rounded"/>
                     <div className="gameDescrip">
@@ -32,6 +41,10 @@ const GameDetails = () => {
                         <p>Genres: {combineAll(results[0].genres)}</p>
                     </div>
                 </div> }
+                <div className="game-reviews">
+                    <h1>Reviews</h1>
+                    {props.loggedIn && <button>Add Review</button>}
+                </div>
             </div>
     );
 }

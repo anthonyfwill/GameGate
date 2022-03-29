@@ -263,7 +263,8 @@ a:visited {
 
 .new-parent {
   display: flex;
-  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
 
 .new-child {
@@ -281,6 +282,34 @@ a:visited {
 .new-child p {
   line-height: 25px;
 }
+
+.game-reviews {
+  flex-direction: column;
+  display: flex;
+  align-items: flex-start;
+  width: 1200px;
+  height: auto;
+  padding: 50px;
+  background-color: rgb(42, 42, 78);
+  border-radius: 10px;
+  gap: 30px;
+  margin-top: 50px;
+}
+
+.game-reviews > h1 {
+  margin-bottom: 0;
+}
+
+.list_entry {
+  background-color: rgb(121, 118, 146);
+  color: white;
+}
+
+.list_entry:hover {
+background-color: #3e8e41;
+color: white;
+}
+
 
 .feed_container {
   display: flex;

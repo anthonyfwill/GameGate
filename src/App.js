@@ -34,7 +34,7 @@ function App() {
             <Register setLoggedIn={setLoggedIn} setCurrUser={setCurrUser}/>
           </Route>
           <Route exact path="/login">
-            <Login  setLoggedIn={setLoggedIn} setCurrUser={setCurrUser}/>
+            <Login setLoggedIn={setLoggedIn} setCurrUser={setCurrUser}/>
           </Route>
           <Route exact path="/home">
             <Home />
@@ -43,7 +43,7 @@ function App() {
             <Profile />
           </Route>
           <Route exact path="/game/:id">
-            <GameDetails />
+            <GameDetails loggedIn={loggedIn}/>
           </Route>
         </Switch>
       </div>
