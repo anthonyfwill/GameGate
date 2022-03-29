@@ -10,6 +10,7 @@ const useFetch = (id ,docClient) => {
     const [results, setResults] = useState(null);
     const [isPending, setPending] = useState(true);
     const [error, setError] = useState(null);
+    const [reviewData, setReviewData] = useState(null);
 
     useEffect(() => {
         var myHeaders = new Headers();
@@ -44,6 +45,35 @@ const useFetch = (id ,docClient) => {
             setPending(false);
             setError(null);
         })
+        // .then((e) => {
+        //     var params2 = {
+        //         TableName: "GameGateAccounts",
+        //         IndexName: "GameID-Username-index",
+        //         KeyConditionExpression: "#gameID = :gameID3",
+        //         ExpressionAttributeNames: {
+        //             "#gameID": "GameID"
+        //         },
+        //         ExpressionAttributeValues: {
+        //             ":gameID3": id
+        //         }
+        //     }
+    
+        //     docClient.query(params2, function(err, data) {
+        //         if (!err) {
+        //             if (data.Count === 0) {
+        //                 console.log(data);
+        //             } else {
+        //                 setReviewData(data);
+        //                 // data.Items.forEach(function(item) {
+        //                 //     console.log("Review:", item.Reviews)
+        //                 // })
+        //                 // console.log(data);
+        //             }
+        //         } else {
+        //             console.log(err);
+        //         }
+        //     })
+        // })
         .catch(error => {
             console.log(error);
             setError(error.message);
