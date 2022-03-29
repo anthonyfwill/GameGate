@@ -50,10 +50,10 @@ function App() {
             <Home />
           </Route>
           <Route exact path="/profile/:username">
-            <Profile />
+            <Profile currUser={currUser}/>
           </Route>
           <Route exact path="/game/:id">
-            <GameDetails loggedIn={loggedIn} docClient={docClient}/>
+            <GameDetails loggedIn={loggedIn} docClient={docClient} currUser={currUser}/>
           </Route>
         </Switch>
       </div>

@@ -12,10 +12,13 @@ AWS.config.update(myConfig)
 
 const docClient = new AWS.DynamoDB.DocumentClient()
 
-const Profile = () => {
+const Profile = (props) => {
     const [results, setResults] = useState(null);
     const [isPending, setPending] = useState(true);
     const [error, setError] = useState(null);
+    const [pfpEdit, setPfpEdit] = useState(false);
+    const [profileUrl, setProfileurl] = useState('');
+    const [reviewInfo, setReviewInfo] = useState([]);
 
     const {username} = useParams();
 
@@ -48,10 +51,9 @@ const Profile = () => {
                 setError(null);
             }
         })
-    }, [])
-    //Get all reviews by user
-    /*var params3 = {
-            TableName: "GameGateAccounts",
+
+        var params3 = {
+            TableName: "Games",
             IndexName: "Username-index",
             KeyConditionExpression: "#username = :User3",
             ExpressionAttributeNames: {
@@ -61,20 +63,49 @@ const Profile = () => {
                 ":User3": username
             }
         }
-
+    
         docClient.query(params3, function(err, data) {
             if (!err) {
+                let newReviewInfo = [];
                 if (data.Count === 0) {
                     console.log(data);
                 } else {
-                    data.Items.forEach(function(item) {
-                        console.log("Review:", item.Reviews)
-                    })
+                    console.log(data);
                 }
+                for(let i = 0; i < data.Count; i++) {
+                    newReviewInfo.push(data.Items[i]);
+                }
+                setReviewInfo(newReviewInfo);
             } else {
                 console.log(err);
             }
-        })*/
+        })
+    }, [])
+    //Get all reviews by user
+    // var params3 = {
+    //     TableName: "Games",
+    //     IndexName: "Username-index",
+    //     KeyConditionExpression: "#username = :User3",
+    //     ExpressionAttributeNames: {
+    //         "#username": "Username"
+    //     },
+    //     ExpressionAttributeValues: {
+    //         ":User3": username
+    //     }
+    // }
+
+    // docClient.query(params3, function(err, data) {
+    //     if (!err) {
+    //         if (data.Count === 0) {
+    //             console.log(data);
+    //         } else {
+    //             console.log(data);
+    //         }
+    //     } else {
+    //         console.log(err);
+    //     }
+    // })
+
 
 
     /*var params = {
@@ -272,6 +303,34 @@ console.log("Following =", Following);
                 }
     });
 }*/
+
+    function updateProfilePic() {
+        var params = {
+            TableName:"GameGateAccounts",
+            Key:{
+                "Email": results.Email
+            },
+            UpdateExpression: "set ProfilePicture = :profile",
+            ExpressionAttributeValues:{
+                ":profile":profileUrl
+            },
+            ReturnValues:"UPDATED_NEW"
+        };
+    
+        docClient.update(params, function(err, data) {
+            if (err) {
+                console.log(err);
+            } else {
+                const newResults = {};
+                const someVal = Object.assign(newResults, results);
+                newResults.ProfilePicture = profileUrl;
+                setResults(newResults);
+            }
+        });
+        setPfpEdit(false);
+        setProfileurl('');
+}
+
     return (
         <div className='profile-topmost'>
             {isPending && <p>Loading...</p>}
@@ -279,8 +338,11 @@ console.log("Following =", Following);
             {results && 
             <div className="profile-container">
                 <div className="stats-container">
-                    <div>
-                        <img id="pfp" src="https://i.imgur.com/y0B5yj6.jpg"/>
+                    <div className='image-section'>
+                        <img id="pfp" src={results.ProfilePicture}/>
+                        {props.currUser===username && !pfpEdit && <button className="profileBtn" onClick={() => setPfpEdit(true)}>Change Profile Picture</button> }
+                        {pfpEdit && <input type="text" value={profileUrl} onChange={(e) => setProfileurl(e.target.value)} placeholder="new profile image url"/>}
+                        {pfpEdit && <button className="profileBtn" onClick={updateProfilePic}>Submit</button>}
                     </div>
                     <div>
                         <h2>{username}</h2>
@@ -319,7 +381,11 @@ console.log("Following =", Following);
                         <h1>Reviews</h1>
                     </div>
                     <div className="reviews">
-                        <Review />
+                        {
+                            reviewInfo.map(val => (
+                                <Review name={val.GameName} username={val.Username} content={val.Review} score={val.Rating} key={val.GameName}/>
+                            ))
+                        }
                     </div>
                 </div>
             </div>

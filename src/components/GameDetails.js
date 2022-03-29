@@ -1,11 +1,12 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import useFetch from "./useFetch";
+import Review from "./Review";
 
 const GameDetails = (props) => {
     const { id } = useParams();
 
-    const { results, isPending, error} = useFetch(id, props.docClient);
+    const { results, isPending, error, reviewInfo } = useFetch(id, props.docClient);
     const [reviewOpened, setReviewOpened] = useState(false);
     const [reviewText, setReviewText] = useState('');
     const [reviewScore, setReviewScore] = useState('');
@@ -18,13 +19,12 @@ const GameDetails = (props) => {
         return output.join(', ');
     }
     //All reviews for a game (Just have to loop through game api and with the parameter of the gameID which is "gameID" in this function)
-    function getReviews() {    
         // var params2 = {
-        //     TableName: "GameGateAccounts",
-        //     IndexName: "GameID-Username-index",
+        //     TableName: "Games",
+        //     //ProjectionExpression: "#gameID",
         //     KeyConditionExpression: "#gameID = :gameID3",
         //     ExpressionAttributeNames: {
-        //         "#gameID": "GameID"
+        //         "#gameID": "GameID",
         //     },
         //     ExpressionAttributeValues: {
         //         ":gameID3": id
@@ -36,16 +36,88 @@ const GameDetails = (props) => {
         //         if (data.Count === 0) {
         //             console.log(data);
         //         } else {
-        //             // data.Items.forEach(function(item) {
-        //             //     console.log("Review:", item.Reviews)
-        //             // })
         //             console.log(data);
         //         }
         //     } else {
         //         console.log(err);
         //     }
         // })
-    }
+
+        /*var params3 = {
+            TableName: "Games",
+            Item: {
+                "GameID": id,
+                "Username": Username,
+                "Review": review,
+            },
+
+        }
+
+        props.docClient.query(params2, function(err, data) {
+            if (!err) {
+                if (data.Count === 0) {
+                    console.log(data);
+                } else {
+                    console.log(data);
+
+                }
+            } else {
+                console.log(err);
+            }
+        })*/
+
+        /*var params2 = {
+            TableName: "Games",
+            KeyConditionExpression: "#gameID = :gameID3 and #username = :username",
+            ExpressionAttributeNames: {
+                "#gameID": "GameID",
+                "#username": "Username"
+            },
+            ExpressionAttributeValues: {
+                ":gameID3": id,
+                ":username": username
+            }
+        }
+
+        props.docClient.put(params2, function(err, data) {
+            if (!err) {
+                if (data.Count === 0) {
+                    console.log(data);
+                } else {
+                    console.log(data);
+
+                }
+            } else {
+                console.log(err);
+            }
+        })*/
+
+        //ADD ITEMS**********************88
+        /*var params = {
+            TableName: "Games",
+            Item: {
+                "GameID": gameID,
+                "Username": username,
+                "Review": review,
+                "Rating": rating
+            }
+        }
+
+        props.docClient.query(params, function(err, data) {
+            if (!err) {
+                //console.log("no error");
+                //console.log(data, "Email entered: " + email);
+                if (data.Count === 0) {
+                    console.log("Email available");
+                    canMake = canMake + 1;
+                } else {
+                    console.log("Email is not available");
+                }
+            } else {
+                canMake += 1
+                console.log(err);
+            }
+        })*/
 
     function addPlanning(e) {
         if(e.target.textContent === 'Add to planning') {
@@ -57,12 +129,34 @@ const GameDetails = (props) => {
         }
     }
 
-    function updateReviews() {
+    function updateReviews(gameName, username, reviewText, reviewScore) {
         setReviewOpened(false);
-        setReviewScore('');
-        setReviewText('');
+        var params = {
+            TableName: "Games",
+            Item: {
+                "GameID": id,
+                "GameName": gameName,
+                "Username": username,
+                "Review": reviewText,
+                "Rating": reviewScore
+            }
+        }
+        //console.log(results[0].name, props.currUser, reviewText, reviewScore)
+
+        props.docClient.put(params, function(err, data) {
+            if (!err) {
+                console.log(reviewText, reviewScore);
+                //console.log("no error");
+                setReviewScore('');
+                setReviewText('');
+                console.log(data);
+            } else {
+                console.log(err);
+            }
+        })
         //update the list of reviews for game and user tables
     }
+
 
     return (
             <div className="new-parent">
@@ -87,14 +181,19 @@ const GameDetails = (props) => {
                     {props.loggedIn && !reviewOpened && <button className="reviewBtn" onClick={() => setReviewOpened(true)}>Write a review</button>}
                     {reviewOpened &&
                     <div className="reviewBox">
-                    <textarea id="gamereview" placeholder="Write a review" name="review" rows="8" cols="90" value={reviewText} onChange={(e) => setReviewText(e.value)}></textarea>
+                    <textarea id="gamereview" placeholder="Write a review" name="review" rows="8" cols="90" value={reviewText} onChange={(e) => setReviewText(e.target.value)}></textarea>
                         <div className="scoreandtext"></div>
                         {/* <input type="number" id="scorereview" name="quantity" min="1" max="10"></input> */}
-                        <textarea id="scorereview" maxlength="2" placeholder="Score / 10" pattern="\d$" value={reviewScore} onChange={(e) => setReviewScore(e.value)}></textarea>
+                        <textarea id="scorereview" maxlength="2" placeholder="Score / 10" pattern="\d$" value={reviewScore} onChange={(e) => setReviewScore(e.target.value)}></textarea>
                         <div>
-                            <input className="reviewBtn" type="submit" value="Publish" onClick={updateReviews}/>
+                            <input className="reviewBtn" type="submit" value="Publish" onClick={() => updateReviews(results[0].name, props.currUser, reviewText, reviewScore)}/>
                         </div>
                     </div> }
+                    {
+                        reviewInfo.map(val => (
+                            <Review name={results[0].name} username={val.Username} content={val.Review} score={val.Rating} key={val.Username}/>
+                        ))
+                    }
                 </div>
             </div>
     );
