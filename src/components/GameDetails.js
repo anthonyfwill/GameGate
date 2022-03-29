@@ -147,13 +147,30 @@ const GameDetails = (props) => {
             if (!err) {
                 console.log(reviewText, reviewScore);
                 const moreReviewInfo = [...reviewInfo];
-                moreReviewInfo.push({
-                    GameID: id,
-                    GameName: gameName,
-                    Username: username,
-                    Review: reviewText,
-                    Rating: reviewScore
-                });
+                let found = false;
+                for(let i = 0; i < moreReviewInfo.length; i++) {
+                    console.log(moreReviewInfo[i]);
+                    if(moreReviewInfo[i].Username === username) {
+                        console.log("found one!");
+                        moreReviewInfo[i] = {
+                            GameID: id,
+                            GameName: gameName,
+                            Username: username,
+                            Review: reviewText,
+                            Rating: reviewScore
+                        }
+                        found = true;
+                    }
+                }
+                if(!found) {
+                    moreReviewInfo.push({
+                        GameID: id,
+                        GameName: gameName,
+                        Username: username,
+                        Review: reviewText,
+                        Rating: reviewScore
+                    });
+                }
                 setReviewInfo(moreReviewInfo);
                 setReviewScore('');
                 setReviewText('');
