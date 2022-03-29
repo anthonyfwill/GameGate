@@ -6,7 +6,7 @@ import Review from "./Review";
 const GameDetails = (props) => {
     const { id } = useParams();
 
-    const { results, isPending, error, reviewInfo } = useFetch(id, props.docClient);
+    const { results, isPending, error, reviewInfo, setReviewInfo } = useFetch(id, props.docClient);
     const [reviewOpened, setReviewOpened] = useState(false);
     const [reviewText, setReviewText] = useState('');
     const [reviewScore, setReviewScore] = useState('');
@@ -146,10 +146,17 @@ const GameDetails = (props) => {
         props.docClient.put(params, function(err, data) {
             if (!err) {
                 console.log(reviewText, reviewScore);
-                //console.log("no error");
+                const moreReviewInfo = [...reviewInfo];
+                moreReviewInfo.push({
+                    GameID: id,
+                    GameName: gameName,
+                    Username: username,
+                    Review: reviewText,
+                    Rating: reviewScore
+                });
+                setReviewInfo(moreReviewInfo);
                 setReviewScore('');
                 setReviewText('');
-                console.log(data);
             } else {
                 console.log(err);
             }
@@ -184,7 +191,7 @@ const GameDetails = (props) => {
                     <textarea id="gamereview" placeholder="Write a review" name="review" rows="8" cols="90" value={reviewText} onChange={(e) => setReviewText(e.target.value)}></textarea>
                         <div className="scoreandtext"></div>
                         {/* <input type="number" id="scorereview" name="quantity" min="1" max="10"></input> */}
-                        <textarea id="scorereview" maxlength="2" placeholder="Score / 10" pattern="\d$" value={reviewScore} onChange={(e) => setReviewScore(e.target.value)}></textarea>
+                        <textarea id="scorereview" maxLength="2" placeholder="Score / 10" pattern="\d$" value={reviewScore} onChange={(e) => setReviewScore(e.target.value)}></textarea>
                         <div>
                             <input className="reviewBtn" type="submit" value="Publish" onClick={() => updateReviews(results[0].name, props.currUser, reviewText, reviewScore)}/>
                         </div>

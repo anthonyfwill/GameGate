@@ -69,6 +69,7 @@ const useFetch = (id ,docClient) => {
                         newReviewInfo.push(data.Items[i]);
                     }
                     setReviewInfo(newReviewInfo);
+                    console.log(newReviewInfo);
                 } else {
                     console.log(err);
                 }
@@ -81,7 +82,7 @@ const useFetch = (id ,docClient) => {
         });
     }, []);
 
-    return { results, isPending, error, reviewInfo };
+    return { results, isPending, error, reviewInfo, setReviewInfo };
 }
 
 export default useFetch;
