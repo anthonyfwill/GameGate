@@ -76,32 +76,6 @@ const Profile = () => {
             }
         })*/
 
-    //All reviews for a game (Just have to loop through game api and with the parameter of the gameID which is "gameID" in this function)
-    /*var params2 = {
-            TableName: "GameGateAccounts",
-            IndexName: "GameID-Username-index",
-            KeyConditionExpression: "#gameID = :gameID3",
-            ExpressionAttributeNames: {
-                "#gameID": "GameID"
-            },
-            ExpressionAttributeValues: {
-                ":gameID3": gameID
-            }
-        }
-
-        docClient.query(params3, function(err, data) {
-            if (!err) {
-                if (data.Count === 0) {
-                    console.log(data);
-                } else {
-                    data.Items.forEach(function(item) {
-                        console.log("Review:", item.Reviews)
-                    })
-                }
-            } else {
-                console.log(err);
-            }
-        })*/
 
     /*var params = {
             TableName: "GameGateAccounts",
