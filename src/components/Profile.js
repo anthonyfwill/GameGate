@@ -106,6 +106,51 @@ const Profile = () => {
             }
         })*/
 
+        //Add Review
+        /*var params5 = {
+            TableName: "GameGateAccounts",
+            IndexName: "Username-index",
+            KeyConditionExpression: "#username = :User3",
+            ExpressionAttributeNames: {
+                "#username": "Username"
+            },
+            ExpressionAttributeValues: {
+                ":User3": username
+            }
+        }
+
+        docClient.query(params5, function(err, data) {
+            if (!err) {
+                //console.log("no error");
+                //console.log(data.Count, "Username entered: " + username);
+                if (data.Count === 0) {
+                    console.log("Username is available");
+                    canMake = canMake + 1;
+                } else {
+                    console.log("Username is not available");
+                    var params4 = {
+                        TableName: "GameGateAccounts",
+                        Key: {
+                            "Email": data.Items[0].Email
+                        },
+                        UpdateExpression: "set Reviews = list_append(:Reviews)"
+                        ExpressionAttributeValues: {
+                            ":Reviews": [{Review: review, GameID: gameID, Rating": rating}]
+                        },
+                        ReturnVaues:"UPDATED_NEW"
+                    }
+                    docClient.update(params4, function(err, data) {
+                        if (!err) {
+                            console.log("Worked");
+                        } else {
+                            console.log("Not Worked");
+                        }
+                    })
+                }
+            } else {
+                console.log(err);
+            }*/
+
   /* const increaseFollowing = (yourEmail, theirUsername) => { 
         var params = {
             TableName: "Username-index",
