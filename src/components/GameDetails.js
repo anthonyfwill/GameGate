@@ -6,6 +6,9 @@ const GameDetails = (props) => {
     const { id } = useParams();
 
     const { results, isPending, error} = useFetch(id);
+    const [reviewOpened, setReviewOpened] = useState(false);
+    const [reviewText, setReviewText] = useState('');
+    const [reviewScore, setReviewScore] = useState('');
 
     function combineAll(array) {
         const output = [];
@@ -44,9 +47,18 @@ const GameDetails = (props) => {
     function addPlanning(e) {
         if(e.target.textContent === 'Add to planning') {
             e.target.textContent = 'Planning'
+            //add code to update planning count for user and add game id to list of games user is planning on playing
         } else {
             e.target.textContent = 'Add to planning'
+            //decrement planning count for user and remove game id from list of games user is planning to play
         }
+    }
+
+    function updateReviews() {
+        setReviewOpened(false);
+        setReviewScore('');
+        setReviewText('');
+        //update the list of reviews for game and user tables
     }
 
     return (
@@ -69,7 +81,17 @@ const GameDetails = (props) => {
                 </div> }
                 <div className="game-reviews">
                     <h1>Reviews</h1>
-                    {props.loggedIn && <button>Add Review</button>}
+                    {props.loggedIn && !reviewOpened && <button className="reviewBtn" onClick={() => setReviewOpened(true)}>Write a review</button>}
+                    {reviewOpened &&
+                    <div className="reviewBox">
+                    <textarea id="gamereview" placeholder="Write a review" name="review" rows="8" cols="90" value={reviewText} onChange={(e) => setReviewText(e.value)}></textarea>
+                        <div className="scoreandtext"></div>
+                        {/* <input type="number" id="scorereview" name="quantity" min="1" max="10"></input> */}
+                        <textarea id="scorereview" maxlength="2" placeholder="Score / 10" pattern="\d$" value={reviewScore} onChange={(e) => setReviewScore(e.value)}></textarea>
+                        <div>
+                            <input className="reviewBtn" type="submit" value="Publish" onClick={updateReviews}/>
+                        </div>
+                    </div> }
                 </div>
             </div>
     );
