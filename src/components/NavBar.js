@@ -12,8 +12,8 @@ function NavBar(props) {
 
   return (
     <header>
-        <input type="checkbox" id="checkbox" />
-        <div className="fordarklight"></div>
+        {/* <input type="checkbox" id="checkbox" /> */}
+        {/* <div className="fordarklight"></div> */}
         <div className="container">
         <h1 className="logo"></h1>
         <Link to={props.loggedIn ? '/home' : '/'}>
