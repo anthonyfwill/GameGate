@@ -18,6 +18,7 @@ const Register = (props) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    const [error, setError] = useState(null);
 
     const signUp = (email, pw, username) => {
         var params = {
@@ -67,51 +68,47 @@ const Register = (props) => {
                 if (data.Count === 0) {
                     console.log("Username is available");
                     canMake = canMake + 1;
+                    console.log("canMake:", canMake);
+                    if (canMake === 2) {
+                        var params2 = {
+                                    TableName: "GameGateAccounts",
+                                    Item: {
+                                        "Email": email,
+                                        "Password": pw,
+                                        "Username": username,
+                                        "ProfilePicture": "https://i.imgur.com/y0B5yj6.jpg",
+                                        "Current": 0,
+                                        "Completed": 0,
+                                        "Dropped": 0,
+                                        "Planning": 0,
+                                        "Followers": 0,
+                                        "Following": 0,
+                                        "CurrentGames": [],
+                                        "CompletedGames": [],
+                                        "DroppedGames": [],
+                                        "PlanningGames": []
+                                    }
+                                }
+                                props.docClient.put(params2, function(err, data2) {
+                                    if (!err) {
+                                        console.log("Worked");
+                                        props.setLoggedIn(true);
+                                        props.setCurrUser(username);
+                                        history.push(`/profile/${username}`);
+                                        // window.location.href = "profilepage.html";
+                                    } else {
+                                        console.log("Not Worked");
+                                        console.log(err);
+                                    }
+                        })
+                    }
                 } else {
                     console.log("Username is not available");
+                    setError('Email or Username are already used');
                 }
             } else {
                 //console.log(data.Username, "Username entered: " + username);
                 console.log(err);
-            }
-            console.log("canMake:", canMake);
-            if (canMake === 2) {
-                var params2 = {
-                            TableName: "GameGateAccounts",
-                            Item: {
-                                "Email": email,
-                                "Password": pw,
-                                "Username": username,
-                                "ProfilePicture": "https://i.imgur.com/y0B5yj6.jpg",
-                                "Current": 0,
-                                "Completed": 0,
-                                "Dropped": 0,
-                                "Planning": 0,
-                                "Followers": 0,
-                                "Following": 0,
-                                "CurrentGames": [],
-                                "CompletedGames": [],
-                                "DroppedGames": [],
-                                "PlanningGames": []
-                            }
-                        }
-        
-                        //var em = email;
-                        //var user = username;
-                        //var pr = pw;
-                        //console.log(em, user, pr);
-                        props.docClient.put(params2, function(err, data2) {
-                            if (!err) {
-                                console.log("Worked");
-                                props.setLoggedIn(true);
-                                props.setCurrUser(username);
-                                history.push(`/profile/${username}`);
-                                // window.location.href = "profilepage.html";
-                            } else {
-                                console.log("Not Worked");
-                                console.log(err);
-                            }
-                })
             }
         })
     }
@@ -126,6 +123,7 @@ const Register = (props) => {
                 <div><input className="textbox" name="username" type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)}/></div>
                 <div><input className="textbox" name="pw" type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)}/></div>
                 <div><input className="textbox" name="confirm" type="password" placeholder="Confirm password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)}/></div>
+                {error && <div>{error}</div>}
                 <div><button className="button" type="submit" onClick={() => signUp(email, password, username)}>Sign
             up</button></div>
                 <div>
