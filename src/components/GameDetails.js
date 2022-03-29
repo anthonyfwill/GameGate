@@ -26,7 +26,44 @@ const GameDetails = (props) => {
                 "#gameID": "GameID",
             },
             ExpressionAttributeValues: {
-                ":gameID3": "1942"
+                ":gameID3": "id"
+            }
+        }
+
+        props.docClient.query(params2, function(err, data) {
+            if (!err) {
+                if (data.Count === 0) {
+                    console.log(data);
+                } else {
+                    console.log(data);
+
+                }
+            } else {
+                console.log(err);
+                ?
+                /*TableName: "Games",
+            KeyConditionExpression: "#gameID = :gameID3 and #username = :username",
+            ExpressionAttributeNames: {
+                "#gameID": "GameID",
+                "#username": "Username"
+            },
+            ExpressionAttributeValues: {
+                ":gameID3": "1942",
+                ":username": "user12345"
+            }*/
+            }
+        })
+
+        /*var params2 = {
+            TableName: "Games",
+            KeyConditionExpression: "#gameID = :gameID3 and #username = :username",
+            ExpressionAttributeNames: {
+                "#gameID": "GameID",
+                "#username": "Username"
+            },
+            ExpressionAttributeValues: {
+                ":gameID3": id,
+                ":username": username
             }
         }
 
@@ -41,7 +78,7 @@ const GameDetails = (props) => {
             } else {
                 console.log(err);
             }
-        })
+        })*/
 
     function addPlanning(e) {
         if(e.target.textContent === 'Add to planning') {
