@@ -5,7 +5,7 @@ import useFetch from "./useFetch";
 const GameDetails = (props) => {
     const { id } = useParams();
 
-    const { results, isPending, error} = useFetch(id);
+    const { results, isPending, error} = useFetch(id, props.docClient);
     const [reviewOpened, setReviewOpened] = useState(false);
     const [reviewText, setReviewText] = useState('');
     const [reviewScore, setReviewScore] = useState('');

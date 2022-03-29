@@ -2,14 +2,14 @@ import * as AWS from 'aws-sdk';
 import { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
-var myCredentials = new AWS.CognitoIdentityCredentials({IdentityPoolId:'us-east-1:1f1634e0-e85f-4ffe-a509-ecb75c777309'});
-var myConfig = new AWS.Config({
-  credentials: myCredentials, region: 'us-east-1'
-});
+// var myCredentials = new AWS.CognitoIdentityCredentials({IdentityPoolId:'us-east-1:1f1634e0-e85f-4ffe-a509-ecb75c777309'});
+// var myConfig = new AWS.Config({
+//   credentials: myCredentials, region: 'us-east-1'
+// });
 
-AWS.config.update(myConfig)
+// AWS.config.update(myConfig)
 
-const docClient = new AWS.DynamoDB.DocumentClient()
+// const docClient = new AWS.DynamoDB.DocumentClient()
 
 const Register = (props) => {
 
@@ -32,7 +32,7 @@ const Register = (props) => {
         }
         var canMake = 0;
 
-        docClient.query(params, function(err, data) {
+        props.docClient.query(params, function(err, data) {
             if (!err) {
                 //console.log("no error");
                 //console.log(data, "Email entered: " + email);
@@ -60,7 +60,7 @@ const Register = (props) => {
             }
         }
 
-        docClient.query(params3, function(err, data) {
+        props.docClient.query(params3, function(err, data) {
             if (!err) {
                 //console.log("no error");
                 //console.log(data.Count, "Username entered: " + username);
@@ -107,7 +107,7 @@ const Register = (props) => {
                         //var user = username;
                         //var pr = pw;
                         //console.log(em, user, pr);
-                        docClient.put(params2, function(err, data2) {
+                        props.docClient.put(params2, function(err, data2) {
                             if (!err) {
                                 console.log("Worked");
                                 props.setLoggedIn(true);

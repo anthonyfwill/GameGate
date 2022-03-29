@@ -6,7 +6,7 @@ function timeConverter(UNIX_timestamp){
     return year;
 }
 
-const useFetch = (id) => {
+const useFetch = (id ,docClient) => {
     const [results, setResults] = useState(null);
     const [isPending, setPending] = useState(true);
     const [error, setError] = useState(null);
