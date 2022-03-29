@@ -49,12 +49,98 @@ const Profile = () => {
             }
         })
     }, [])
+    //Get all reviews by user
+    /*var params3 = {
+            TableName: "GameGateAccounts",
+            IndexName: "Username-index",
+            KeyConditionExpression: "#username = :User3",
+            ExpressionAttributeNames: {
+                "#username": "Username"
+            },
+            ExpressionAttributeValues: {
+                ":User3": username
+            }
+        }
 
-  /* const increaseFollowing = (email) => { 
+        docClient.query(params3, function(err, data) {
+            if (!err) {
+                if (data.Count === 0) {
+                    console.log(data);
+                } else {
+                    data.Items.forEach(function(item) {
+                        console.log("Review:", item.Reviews)
+                    })
+                }
+            } else {
+                console.log(err);
+            }
+        })*/
+
+    //All reviews for a game (Just have to loop through game api and with the parameter of the gameID which is "gameID" in this function)
+    /*var params2 = {
+            TableName: "GameGateAccounts",
+            IndexName: "GameID-Username-index",
+            KeyConditionExpression: "#gameID = :gameID3",
+            ExpressionAttributeNames: {
+                "#gameID": "GameID"
+            },
+            ExpressionAttributeValues: {
+                ":gameID3": gameID
+            }
+        }
+
+        docClient.query(params3, function(err, data) {
+            if (!err) {
+                if (data.Count === 0) {
+                    console.log(data);
+                } else {
+                    data.Items.forEach(function(item) {
+                        console.log("Review:", item.Reviews)
+                    })
+                }
+            } else {
+                console.log(err);
+            }
+        })*/
+
+    /*var params = {
+            TableName: "GameGateAccounts",
+            ProjectionExpression: "#gameID, Username, Reviews, Reviews.Review, Reviews.s"
+            IndexName: "GameID-Username-index",
+            KeyConditionExpression: "#gameID = :User3 and ",
+            ExpressionAttributeNames: {
+                "#gameID": "GameID"
+            },
+            ExpressionAttributeValues: {
+                ":User3": username
+            }
+        }
+
+        docClient.query(params3, function(err, data) {
+            if (!err) {
+                //console.log("no error");
+                //console.log(data.Count, "Username entered: " + username);
+                if (data.Count === 0) {
+                    console.log("Username is available");
+                    canMake = canMake + 1;
+                } else {
+                    console.log("Username is not available");
+                }
+            } else {
+                //console.log(data.Username, "Username entered: " + username);
+                console.log(err);
+            }
+        })*/
+
+  /* const increaseFollowing = (yourEmail, theirUsername) => { 
         var params = {
-            TableName:"GameGateAccounts",
-            Key:{
-                "Email": em
+            TableName: "Username-index",
+            KeyConditionExpression: "#following = :email3",
+            ExpressionAttributeNames: {
+                "#email": "Email"
+            },
+            ExpressionAttributeValues: {
+                ":email3": email
             },
             UpdateExpression: "set Following = Following + :val",
             ExpressionAttributeValues:{
