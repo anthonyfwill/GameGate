@@ -18,7 +18,7 @@ const GameDetails = (props) => {
         return output.join(', ');
     }
     //All reviews for a game (Just have to loop through game api and with the parameter of the gameID which is "gameID" in this function)
-    /*var params2 = {
+    var params2 = {
             TableName: "GameGateAccounts",
             IndexName: "GameID-Username-index",
             KeyConditionExpression: "#gameID = :gameID3",
@@ -26,11 +26,11 @@ const GameDetails = (props) => {
                 "#gameID": "GameID"
             },
             ExpressionAttributeValues: {
-                ":gameID3": gameID
+                ":gameID3": id
             }
         }
 
-        docClient.query(params3, function(err, data) {
+        props.docClient.query(params2, function(err, data) {
             if (!err) {
                 if (data.Count === 0) {
                     console.log(data);
@@ -42,7 +42,7 @@ const GameDetails = (props) => {
             } else {
                 console.log(err);
             }
-        })*/
+        })
 
     function addPlanning(e) {
         if(e.target.textContent === 'Add to planning') {
