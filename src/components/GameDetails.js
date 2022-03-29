@@ -1,11 +1,12 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import useFetch from "./useFetch";
+import Review from "./Review";
 
 const GameDetails = (props) => {
     const { id } = useParams();
 
-    const { results, isPending, error} = useFetch(id, props.docClient);
+    const { results, isPending, error, reviewInfo } = useFetch(id, props.docClient);
     const [reviewOpened, setReviewOpened] = useState(false);
     const [reviewText, setReviewText] = useState('');
     const [reviewScore, setReviewScore] = useState('');
@@ -18,30 +19,29 @@ const GameDetails = (props) => {
         return output.join(', ');
     }
     //All reviews for a game (Just have to loop through game api and with the parameter of the gameID which is "gameID" in this function)
-    var params2 = {
-            TableName: "Games",
-            //ProjectionExpression: "#gameID",
-            KeyConditionExpression: "#gameID = :gameID3",
-            ExpressionAttributeNames: {
-                "#gameID": "GameID",
-            },
-            ExpressionAttributeValues: {
-                ":gameID3": id
-            }
-        }
+        // var params2 = {
+        //     TableName: "Games",
+        //     //ProjectionExpression: "#gameID",
+        //     KeyConditionExpression: "#gameID = :gameID3",
+        //     ExpressionAttributeNames: {
+        //         "#gameID": "GameID",
+        //     },
+        //     ExpressionAttributeValues: {
+        //         ":gameID3": id
+        //     }
+        // }
 
-        props.docClient.query(params2, function(err, data) {
-            if (!err) {
-                if (data.Count === 0) {
-                    console.log(data);
-                } else {
-                    console.log(data);
-
-                }
-            } else {
-                console.log(err);
-            }
-        })
+        // props.docClient.query(params2, function(err, data) {
+        //     if (!err) {
+        //         if (data.Count === 0) {
+        //             console.log(data);
+        //         } else {
+        //             console.log(data);
+        //         }
+        //     } else {
+        //         console.log(err);
+        //     }
+        // })
 
         /*var params3 = {
             TableName: "Games",
@@ -140,6 +140,11 @@ const GameDetails = (props) => {
                             <input className="reviewBtn" type="submit" value="Publish" onClick={updateReviews}/>
                         </div>
                     </div> }
+                    {
+                        reviewInfo.map(val => (
+                            <Review name={results[0].name} username={val.Username} content={val.Review} score={val.Rating} key={val.Username}/>
+                        ))
+                    }
                 </div>
             </div>
     );

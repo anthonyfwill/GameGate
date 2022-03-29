@@ -10,6 +10,7 @@ const useFetch = (id ,docClient) => {
     const [results, setResults] = useState(null);
     const [isPending, setPending] = useState(true);
     const [error, setError] = useState(null);
+    const [reviewInfo, setReviewInfo] = useState([]);
 
     useEffect(() => {
         var myHeaders = new Headers();
@@ -44,6 +45,35 @@ const useFetch = (id ,docClient) => {
             setPending(false);
             setError(null);
         })
+        .then(stuff => {
+            var params2 = {
+                TableName: "Games",
+                KeyConditionExpression: "#gameID = :gameID3",
+                ExpressionAttributeNames: {
+                    "#gameID": "GameID",
+                },
+                ExpressionAttributeValues: {
+                    ":gameID3": id
+                }
+            }
+    
+            docClient.query(params2, function(err, data) {
+                if (!err) {
+                    let newReviewInfo = [];
+                    if (data.Count === 0) {
+                        console.log(data);
+                    } else {
+                        console.log(data);
+                    }
+                    for(let i = 0; i < data.Count; i++) {
+                        newReviewInfo.push(data.Items[i]);
+                    }
+                    setReviewInfo(newReviewInfo);
+                } else {
+                    console.log(err);
+                }
+            })
+        })
         .catch(error => {
             console.log(error);
             setError(error.message);
@@ -51,7 +81,7 @@ const useFetch = (id ,docClient) => {
         });
     }, []);
 
-    return { results, isPending, error };
+    return { results, isPending, error, reviewInfo };
 }
 
 export default useFetch;
