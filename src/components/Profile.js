@@ -383,7 +383,7 @@ console.log("Following =", Following);
                     <div className="reviews">
                         {
                             reviewInfo.map(val => (
-                                <Review name={val.GameName} username={val.Username} content={val.Review} score={val.Rating} key={val.Username}/>
+                                <Review name={val.GameName} username={val.Username} content={val.Review} score={val.Rating} key={val.GameName}/>
                             ))
                         }
                     </div>
