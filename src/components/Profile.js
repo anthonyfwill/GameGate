@@ -12,10 +12,12 @@ AWS.config.update(myConfig)
 
 const docClient = new AWS.DynamoDB.DocumentClient()
 
-const Profile = () => {
+const Profile = (props) => {
     const [results, setResults] = useState(null);
     const [isPending, setPending] = useState(true);
     const [error, setError] = useState(null);
+    const [pfpEdit, setPfpEdit] = useState(false);
+    const [profileUrl, setProfileurl] = useState('');
 
     const {username} = useParams();
 
@@ -272,6 +274,34 @@ console.log("Following =", Following);
                 }
     });
 }*/
+
+    function updateProfilePic() {
+        var params = {
+            TableName:"GameGateAccounts",
+            Key:{
+                "Email": results.Email
+            },
+            UpdateExpression: "set ProfilePicture = :profile",
+            ExpressionAttributeValues:{
+                ":profile":profileUrl
+            },
+            ReturnValues:"UPDATED_NEW"
+        };
+    
+        docClient.update(params, function(err, data) {
+            if (err) {
+                console.log(err);
+            } else {
+                const newResults = {};
+                const someVal = Object.assign(newResults, results);
+                newResults.ProfilePicture = profileUrl;
+                setResults(newResults);
+            }
+        });
+        setPfpEdit(false);
+        setProfileurl('');
+}
+
     return (
         <div className='profile-topmost'>
             {isPending && <p>Loading...</p>}
@@ -279,8 +309,11 @@ console.log("Following =", Following);
             {results && 
             <div className="profile-container">
                 <div className="stats-container">
-                    <div>
-                        <img id="pfp" src="https://i.imgur.com/y0B5yj6.jpg"/>
+                    <div className='image-section'>
+                        <img id="pfp" src={results.ProfilePicture}/>
+                        {props.currUser===username && !pfpEdit && <button onClick={() => setPfpEdit(true)}>Change Profile Picture</button> }
+                        {pfpEdit && <input type="text" value={profileUrl} onChange={(e) => setProfileurl(e.target.value)} placeholder="new profile image url"/>}
+                        {pfpEdit && <button onClick={updateProfilePic}>Submit</button>}
                     </div>
                     <div>
                         <h2>{username}</h2>
