@@ -79,7 +79,7 @@ const GameDetails = (props) => {
             }
         }
 
-        props.docClient.query(params2, function(err, data) {
+        props.docClient.put(params2, function(err, data) {
             if (!err) {
                 if (data.Count === 0) {
                     console.log(data);
@@ -88,6 +88,33 @@ const GameDetails = (props) => {
 
                 }
             } else {
+                console.log(err);
+            }
+        })*/
+
+        //ADD ITEMS**********************88
+        /*var params = {
+            TableName: "Games",
+            Item: {
+                "GameID": gameID,
+                "Username": username,
+                "Review": review,
+                "Rating": rating
+            }
+        }
+
+        props.docClient.query(params, function(err, data) {
+            if (!err) {
+                //console.log("no error");
+                //console.log(data, "Email entered: " + email);
+                if (data.Count === 0) {
+                    console.log("Email available");
+                    canMake = canMake + 1;
+                } else {
+                    console.log("Email is not available");
+                }
+            } else {
+                canMake += 1
                 console.log(err);
             }
         })*/
