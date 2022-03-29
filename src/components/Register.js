@@ -91,15 +91,7 @@ const Register = (props) => {
                                 "CurrentGames": [],
                                 "CompletedGames": [],
                                 "DroppedGames": [],
-                                "PlanningGames": [],
-                                "Reviews": [
-                                 {
-                                  "Review": "",
-                                  "Upvotes": 0,
-                                  "GameID": 0,
-                                  "Rating": 0
-                                 }
-                                ]
+                                "PlanningGames": []
                             }
                         }
         

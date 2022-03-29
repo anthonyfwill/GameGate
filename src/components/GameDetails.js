@@ -19,14 +19,14 @@ const GameDetails = (props) => {
     }
     //All reviews for a game (Just have to loop through game api and with the parameter of the gameID which is "gameID" in this function)
     var params2 = {
-            TableName: "GameGateAccounts",
-            IndexName: "GameID-Username-index",
+            TableName: "Games",
+            //ProjectionExpression: "#gameID",
             KeyConditionExpression: "#gameID = :gameID3",
             ExpressionAttributeNames: {
-                "#gameID": "GameID"
+                "#gameID": "GameID",
             },
             ExpressionAttributeValues: {
-                ":gameID3": id
+                ":gameID3": "1942"
             }
         }
 
@@ -35,9 +35,8 @@ const GameDetails = (props) => {
                 if (data.Count === 0) {
                     console.log(data);
                 } else {
-                    data.Items.forEach(function(item) {
-                        console.log("Review:", item.Reviews)
-                    })
+                    console.log(data);
+
                 }
             } else {
                 console.log(err);
