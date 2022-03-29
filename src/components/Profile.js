@@ -340,9 +340,9 @@ console.log("Following =", Following);
                 <div className="stats-container">
                     <div className='image-section'>
                         <img id="pfp" src={results.ProfilePicture}/>
-                        {props.currUser===username && !pfpEdit && <button onClick={() => setPfpEdit(true)}>Change Profile Picture</button> }
+                        {props.currUser===username && !pfpEdit && <button className="profileBtn" onClick={() => setPfpEdit(true)}>Change Profile Picture</button> }
                         {pfpEdit && <input type="text" value={profileUrl} onChange={(e) => setProfileurl(e.target.value)} placeholder="new profile image url"/>}
-                        {pfpEdit && <button onClick={updateProfilePic}>Submit</button>}
+                        {pfpEdit && <button className="profileBtn" onClick={updateProfilePic}>Submit</button>}
                     </div>
                     <div>
                         <h2>{username}</h2>
