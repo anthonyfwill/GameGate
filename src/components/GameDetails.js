@@ -129,7 +129,7 @@ const GameDetails = (props) => {
         }
     }
 
-    function updateReviews(gameName, username, reviewText, reviewScore) {
+    function updateReviews(gameName, username, reviewText, reviewScore, gameImg, profPic) {
         setReviewOpened(false);
         var params = {
             TableName: "Games",
@@ -139,6 +139,8 @@ const GameDetails = (props) => {
                 "Username": username,
                 "Review": reviewText,
                 "Rating": reviewScore
+                //"GameImage": gameImg,
+                //"ProfilePic": profPic
             }
         }
         //console.log(results[0].name, props.currUser, reviewText, reviewScore)
