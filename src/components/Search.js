@@ -111,8 +111,10 @@ function Search(props) {
         <div className="parent_container">
             <div className="child_container">
                 <div><h1>GameGate Search</h1></div>
-                <div><input className="textbox" type="text" placeholder="Search GameGate..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)}/></div>
-                <div>Search for: <button className="button search-type" onClick={changeSearch}>{searchType}</button></div>
+                <div className="searchBarContainer">
+                    <div><input className="textbox" type="text" placeholder="Search GameGate..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)}/></div>
+                    <button className="toggleSearch" onClick={changeSearch}>{searchType}</button>
+                </div>
                 <div><button className="button" type="submit" onClick={searchType === 'Games' ? searchGames : searchUsers}>Search</button></div>
                 {isPending && <div>Loading...</div>}
                 {error && <div>{error}</div>}
