@@ -33,7 +33,7 @@ function App() {
   return (
     <Router>
       <div>
-        <NavBar loggedIn={loggedIn} currUser={currUser} logOut={logOut}/>
+        <NavBar loggedIn={loggedIn} currUser={currUser} logOut={logOut} currUserProfile={currUserProfile}/>
         <Switch>
           <Route exact path="/">
             <LandingPage />
