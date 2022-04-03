@@ -36,6 +36,8 @@ const Login = (props) => {
                         console.log("match");
                         props.setLoggedIn(true);
                         props.setCurrUser(data.Item.Username);
+                        // console.log(data);
+                        props.setCurrUserInfo(data.Item);
                         history.push(`/profile/${data.Item.Username}`);
                 } else {
                     console.log("Wrong password or email");

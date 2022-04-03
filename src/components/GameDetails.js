@@ -138,9 +138,9 @@ const GameDetails = (props) => {
                 "GameName": gameName,
                 "Username": username,
                 "Review": reviewText,
-                "Rating": reviewScore
-                //"GameImage": gameImg,
-                //"ProfilePic": profPic
+                "Rating": reviewScore,
+                "GameImage": gameImg,
+                "ProfilePic": profPic
             }
         }
         //console.log(results[0].name, props.currUser, reviewText, reviewScore)
@@ -159,7 +159,9 @@ const GameDetails = (props) => {
                             GameName: gameName,
                             Username: username,
                             Review: reviewText,
-                            Rating: reviewScore
+                            Rating: reviewScore,
+                            GameImage: gameImg,
+                            ProfilePic: profPic
                         }
                         found = true;
                     }
@@ -170,7 +172,9 @@ const GameDetails = (props) => {
                         GameName: gameName,
                         Username: username,
                         Review: reviewText,
-                        Rating: reviewScore
+                        Rating: reviewScore,
+                        GameImage: gameImg,
+                        ProfilePic: profPic
                     });
                 }
                 setReviewInfo(moreReviewInfo);
@@ -212,12 +216,12 @@ const GameDetails = (props) => {
                         {/* <input type="number" id="scorereview" name="quantity" min="1" max="10"></input> */}
                         <textarea id="scorereview" maxLength="2" placeholder="Score / 10" pattern="\d$" value={reviewScore} onChange={(e) => setReviewScore(e.target.value)}></textarea>
                         <div>
-                            <input className="reviewBtn" type="submit" value="Publish" onClick={() => updateReviews(results[0].name, props.currUser, reviewText, reviewScore)}/>
+                            <input className="reviewBtn" type="submit" value="Publish" onClick={() => updateReviews(results[0].name, props.currUser, reviewText, reviewScore, results[0].smallCover, props.currUserProfile.ProfilePicture)}/>
                         </div>
                     </div> }
                     {
                         reviewInfo.map(val => (
-                            <Review name={results[0].name} username={val.Username} content={val.Review} score={val.Rating} key={val.Username}/>
+                            <Review username={val.Username} content={val.Review} score={val.Rating} profPic={val.ProfilePic} key={val.Username}/>
                         ))
                     }
                 </div>
