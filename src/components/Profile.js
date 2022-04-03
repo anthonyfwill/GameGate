@@ -80,7 +80,7 @@ const Profile = (props) => {
                 console.log(err);
             }
         })
-    }, [])
+    }, [username])
     //Get all reviews by user
     // var params3 = {
     //     TableName: "Games",
