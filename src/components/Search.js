@@ -10,7 +10,7 @@ function Search() {
     myHeaders.append("Authorization", `${process.env.REACT_APP_BEARER_TOKEN}`);
     myHeaders.append("Content-Type", "text/plain");
 
-    let raw = `search \"${searchTerm}\";fields name,first_release_date,genres.name,cover.url,platforms.name,summary;`;
+    let raw = `search \"${searchTerm}\";fields name,first_release_date,cover.url;`;
 
     let requestOptions = {
         method: 'POST',
@@ -35,12 +35,13 @@ function Search() {
         fetch("https://rocky-hamlet-24680.herokuapp.com/https://api.igdb.com/v4/games", requestOptions)
         .then(response => response.json())
         .then(data => {
+            console.log(data);
             if(data.length === 0) {
                 throw Error('No games match that name');
             }
             let oldResults = [];
             for(let i = 0; i < data.length; i++) {
-                if(data[i]['first_release_date'] != undefined) {
+                if(data[i]['first_release_date'] != undefined && data[i].cover != undefined) {
                     oldResults.push(data[i]);
                 }
             }
