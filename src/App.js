@@ -39,7 +39,7 @@ function App() {
             <LandingPage />
           </Route>
           <Route exact path="/search">
-            <Search />
+            <Search docClient={docClient}/>
           </Route>
           <Route exact path="/register">
             <Register setLoggedIn={setLoggedIn} setCurrUser={setCurrUser} docClient={docClient}/>
