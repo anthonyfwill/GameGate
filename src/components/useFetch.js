@@ -39,6 +39,7 @@ const useFetch = (id ,docClient) => {
             let arr = (result[0].cover.url).split('/');
             arr[6] = 't_cover_big';
             const newUrl = arr.join('/');
+            result[0].smallCover = result[0].cover.url;
             result[0].cover.url = newUrl;
             result[0].first_release_date = timeConverter(result[0].first_release_date);
             setResults(result);

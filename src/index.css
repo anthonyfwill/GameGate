@@ -314,6 +314,17 @@ a:visited {
   padding: 10px;
 }
 
+.single-review img {
+  width: 50px;
+  border-radius: 50%;
+}
+
+.single-review div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 .list_entry {
   background-color: rgb(121, 118, 146);
   color: white;
