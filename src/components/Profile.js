@@ -324,6 +324,7 @@ console.log("Following =", Following);
                 const newResults = {};
                 const someVal = Object.assign(newResults, results);
                 newResults.ProfilePicture = profileUrl;
+                props.setCurrUserInfo(newResults);
                 setResults(newResults);
             }
         });
