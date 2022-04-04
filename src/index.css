@@ -67,13 +67,12 @@ nav ul {
   margin: 0;
   padding: 0;
   list-style: none;
+  display: flex;
 }
 
 nav li {
-  display: inline-block;
   margin-left: 70px;
   padding-top: 23px;
-
   position: relative;
 }
 
@@ -482,4 +481,32 @@ textarea {
   flex-direction: row-reverse;
   justify-content: center;
   gap: 10px;
+}
+
+.dropdown-content {
+  text-align: center;
+  display: none;
+  position: absolute;
+  background-color: rgb(42, 42, 78);
+}
+
+.dropdown-content a {
+  color: rgb(121, 118, 146);
+  padding: 10px;
+  padding-bottom: 10px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-content a:hover {
+  background-color: rgb(34, 34, 62);
+  color: white;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+#navBarpfp {
+    border-radius: 50%;
 }
