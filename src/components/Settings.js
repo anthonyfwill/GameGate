@@ -1,6 +1,10 @@
 const Settings = (props) => {
     return (
-        <p>Settings page for props.currUser</p>
+        <div class = 'feed_container'>
+        <div class = 'posts_container'>
+          placeholder
+        </div>
+      </div>
     );
 }
  
