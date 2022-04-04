@@ -27,7 +27,7 @@ function NavBar(props) {
             <li><Link to="/search">Search</Link></li>
             {props.loggedIn &&
             <li className="dropdown">
-              <img id="navBarpfp" src={props.currUserProfile.ProfilePicture} alt={props.currUser}/>
+              <img id="navBarpfp" src={props.currUserInfo.ProfilePicture} alt={props.currUser}/>
               <div className="dropdown-content">
                 <Link to={`/profile/${props.currUser}`}>Profile</Link>
                 <Link to="/settings">Settings</Link>

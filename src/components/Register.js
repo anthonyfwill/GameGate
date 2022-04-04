@@ -92,10 +92,10 @@ const Register = (props) => {
                                 props.docClient.put(params2, function(err, data2) {
                                     if (!err) {
                                         console.log("Worked");
-                                        props.setLoggedIn(true);
+                                        props.setCurrUserInfo(params2.Item);
                                         props.setCurrUser(username);
+                                        props.setLoggedIn(true);
                                         history.push(`/profile/${username}`);
-                                        // window.location.href = "profilepage.html";
                                     } else {
                                         console.log("Not Worked");
                                         console.log(err);

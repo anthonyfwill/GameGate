@@ -23,7 +23,7 @@ function App() {
 
   const [loggedIn, setLoggedIn] = useState(false);
   const [currUser, setCurrUser] = useState(null);
-  const [currUserProfile, setCurrUserInfo] = useState(null);
+  const [currUserInfo, setCurrUserInfo] = useState(null);
 
   function logOut() {
     setLoggedIn(false);
@@ -33,7 +33,7 @@ function App() {
   return (
     <Router>
       <div>
-        <NavBar loggedIn={loggedIn} currUser={currUser} logOut={logOut} currUserProfile={currUserProfile}/>
+        <NavBar loggedIn={loggedIn} currUser={currUser} logOut={logOut} currUserInfo={currUserInfo}/>
         <Switch>
           <Route exact path="/">
             <LandingPage />
@@ -42,7 +42,7 @@ function App() {
             <Search docClient={docClient}/>
           </Route>
           <Route exact path="/register">
-            <Register setLoggedIn={setLoggedIn} setCurrUser={setCurrUser} docClient={docClient}/>
+            <Register setLoggedIn={setLoggedIn} setCurrUser={setCurrUser} docClient={docClient} setCurrUserInfo={setCurrUserInfo}/>
           </Route>
           <Route exact path="/login">
             <Login setLoggedIn={setLoggedIn} setCurrUser={setCurrUser} docClient={docClient} setCurrUserInfo={setCurrUserInfo}/>
@@ -53,8 +53,11 @@ function App() {
           <Route exact path="/profile/:username">
             <Profile currUser={currUser}/>
           </Route>
+          <Route exact path="/settings">
+            <Profile currUser={currUser} setCurrUser={setCurrUser} docClient={docClient} setCurrUserInfo={setCurrUserInfo}/>
+          </Route>
           <Route exact path="/game/:id">
-            <GameDetails loggedIn={loggedIn} docClient={docClient} currUser={currUser} currUserProfile={currUserProfile}/>
+            <GameDetails loggedIn={loggedIn} docClient={docClient} currUser={currUser} currUserInfo={currUserInfo}/>
           </Route>
         </Switch>
       </div>
