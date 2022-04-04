@@ -1,6 +1,9 @@
 // import * as AWS from 'aws-sdk';
 import { useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import UserPool from './UserPool';
+import { CognitoUser, AuthenticationDetails } from "amazon-cognito-identity-js";
+
 
 // var myCredentials = new AWS.CognitoIdentityCredentials({IdentityPoolId:'us-east-1:1f1634e0-e85f-4ffe-a509-ecb75c777309'});
 // var myConfig = new AWS.Config({
@@ -34,11 +37,36 @@ const Login = (props) => {
             if (!err && Object.keys(data).length !== 0) {
                 if (password === data.Item.Password) {
                         console.log("match");
-                        props.setCurrUser(data.Item.Username);
-                        // console.log(data);
-                        props.setCurrUserInfo(data.Item);
-                        props.setLoggedIn(true);
-                        history.push(`/profile/${data.Item.Username}`);
+
+                        const user = new CognitoUser({
+                            Username: email,
+                            Pool: UserPool,
+                        })
+
+                        const authDetails = new AuthenticationDetails({
+                            Username: email,
+                            Password: password,
+                        })
+
+                        user.authenticateUser(authDetails, {
+                            onSuccess: (data2) => {
+                                props.setCurrUser(data.Item.Username);
+                                // console.log(data);
+                                props.setCurrUserInfo(data.Item);
+                                props.setLoggedIn(true);
+                                history.push(`/profile/${data.Item.Username}`);
+                            },
+                            onFailure: (err2) => {
+                                console.error(err2);
+                                setError('Email not verified');
+                                setEmail('');
+                                setPassword('');
+                            },
+                            newPasswordRequired: (data) => {
+                                console.log("newPasswordRequired: ", data);
+                            },
+                        })
+                
                 } else {
                     console.log("Wrong password or email");
                     setError('Incorrect Login Credentials');
