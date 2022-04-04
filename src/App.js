@@ -42,7 +42,7 @@ function App() {
             <Search docClient={docClient}/>
           </Route>
           <Route exact path="/register">
-            <Register setLoggedIn={setLoggedIn} setCurrUser={setCurrUser} docClient={docClient}/>
+            <Register setLoggedIn={setLoggedIn} setCurrUser={setCurrUser} docClient={docClient} setCurrUserInfo={setCurrUserInfo}/>
           </Route>
           <Route exact path="/login">
             <Login setLoggedIn={setLoggedIn} setCurrUser={setCurrUser} docClient={docClient} setCurrUserInfo={setCurrUserInfo}/>
