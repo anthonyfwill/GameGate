@@ -24,11 +24,16 @@ function NavBar(props) {
             <li><Link to="/home">Home</Link></li>
             {!props.loggedIn && <li><Link to="/login">Login</Link></li>}
             {!props.loggedIn &&<li><Link to="/register">Signup</Link></li>}
-            {props.loggedIn &&<li><Link to={`/profile/${props.currUser}`}>Profile</Link></li>}
             <li><Link to="/search">Search</Link></li>
-            {/* the line below will display the pfp if the user is logged in */}
-            {/* {props.loggedIn && <li><img src={props.currUserProfile.ProfilePicture} alt={props.currUser} /></li>} */}
-            {props.loggedIn && <li className='log-out' onClick={logout}>Log Out</li>}
+            {props.loggedIn &&
+            <li className="dropdown">
+              <img id="navBarpfp" src={props.currUserProfile.ProfilePicture} alt={props.currUser}/>
+              <div className="dropdown-content">
+                <a><Link to={`/profile/${props.currUser}`}>Profile</Link></a>
+                <a><Link to="/settings">Settings</Link></a>
+                <a className="log-out" onClick={logout}>Logout</a>
+              </div>
+            </li>}
           </ul>
         </nav>
       </div>
