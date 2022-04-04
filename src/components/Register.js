@@ -1,6 +1,8 @@
 import * as AWS from 'aws-sdk';
 import { useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import UserPool from './UserPool';
+
 
 // var myCredentials = new AWS.CognitoIdentityCredentials({IdentityPoolId:'us-east-1:1f1634e0-e85f-4ffe-a509-ecb75c777309'});
 // var myConfig = new AWS.Config({
@@ -70,7 +72,13 @@ const Register = (props) => {
                     canMake = canMake + 1;
                     console.log("canMake:", canMake);
                     if (canMake === 2) {
-                        var params2 = {
+                        UserPool.signUp(email, pw, [], null, (err, data) => {
+                            if (err) {
+                                console.error(err);
+                                setError("Password must be at least 6 characters");
+                            } else {
+                                console.log(data);
+                                var params2 = {
                                     TableName: "GameGateAccounts",
                                     Item: {
                                         "Email": email,
@@ -92,14 +100,18 @@ const Register = (props) => {
                                 props.docClient.put(params2, function(err, data2) {
                                     if (!err) {
                                         console.log("Worked");
-                                        props.setCurrUserInfo(params2.Item);
+                                        /*props.setCurrUserInfo(params2.Item);
                                         props.setCurrUser(username);
                                         props.setLoggedIn(true);
-                                        history.push(`/profile/${username}`);
+                                        history.push(`/profile/${username}`);*/
+                                        history.push(`/login`);
+
                                     } else {
                                         console.log("Not Worked");
                                         console.log(err);
                                     }
+                                })
+                            }
                         })
                     }
                 } else {
