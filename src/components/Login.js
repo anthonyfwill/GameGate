@@ -34,10 +34,10 @@ const Login = (props) => {
             if (!err && Object.keys(data).length !== 0) {
                 if (password === data.Item.Password) {
                         console.log("match");
-                        props.setLoggedIn(true);
                         props.setCurrUser(data.Item.Username);
                         // console.log(data);
                         props.setCurrUserInfo(data.Item);
+                        props.setLoggedIn(true);
                         history.push(`/profile/${data.Item.Username}`);
                 } else {
                     console.log("Wrong password or email");

@@ -29,8 +29,8 @@ function NavBar(props) {
             <li className="dropdown">
               <img id="navBarpfp" src={props.currUserProfile.ProfilePicture} alt={props.currUser}/>
               <div className="dropdown-content">
-                <a><Link to={`/profile/${props.currUser}`}>Profile</Link></a>
-                <a><Link to="/settings">Settings</Link></a>
+                <Link to={`/profile/${props.currUser}`}>Profile</Link>
+                <Link to="/settings">Settings</Link>
                 <a className="log-out" onClick={logout}>Logout</a>
               </div>
             </li>}
