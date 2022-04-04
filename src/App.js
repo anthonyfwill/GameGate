@@ -9,6 +9,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Profile from './components/Profile';
 import { useState } from 'react';
 import * as AWS from 'aws-sdk';
+import Settings from './components/Settings';
 
 var myCredentials = new AWS.CognitoIdentityCredentials({IdentityPoolId:'us-east-1:1f1634e0-e85f-4ffe-a509-ecb75c777309'});
 var myConfig = new AWS.Config({
@@ -54,7 +55,7 @@ function App() {
             <Profile currUser={currUser}/>
           </Route>
           <Route exact path="/settings">
-            <Profile currUser={currUser} setCurrUser={setCurrUser} docClient={docClient} setCurrUserInfo={setCurrUserInfo}/>
+            <Settings currUser={currUser} setCurrUser={setCurrUser} docClient={docClient} setCurrUserInfo={setCurrUserInfo}/>
           </Route>
           <Route exact path="/game/:id">
             <GameDetails loggedIn={loggedIn} docClient={docClient} currUser={currUser} currUserInfo={currUserInfo}/>
