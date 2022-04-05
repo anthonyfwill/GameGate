@@ -328,6 +328,56 @@ console.log("Following =", Following);
                 setResults(newResults);
             }
         });
+
+
+        var params2 = {
+            TableName: "Games",
+            IndexName: "Username-index",
+            KeyConditionExpression: "#username = :User3",
+            ExpressionAttributeNames: {
+                "#username": "Username"
+            },
+            ExpressionAttributeValues: {
+                ":User3": username
+            }
+        }
+    
+        docClient.query(params2, function(err, data) {
+            if (!err) {
+                if (data.Count === 0) {
+                    console.log(data);
+                } else {
+                    console.log(data);
+                    data.Items.forEach(item => {
+                        var params1 = {
+                            TableName:"Games",
+                                Key:{
+                                "GameID": item.GameID,
+                                "Username": username
+                            },
+                            UpdateExpression: "set ProfilePic = :profile",
+                            ExpressionAttributeValues:{
+                                ":profile":profileUrl
+                            },
+                            ReturnValues:"UPDATED_NEW"
+                        };
+                        console.log(item);
+                        docClient.update(params1, function(err, data) {
+                            if (err) {
+                                console.log(err);
+                            } else {
+                                console.log(data);
+                                console.log("Updated the profile pic of all reviews by", username);
+                            }
+                        });
+                    })
+                }
+
+            } else {
+                console.log(err);
+            }
+        })
+
         setPfpEdit(false);
         setProfileurl('');
 }
