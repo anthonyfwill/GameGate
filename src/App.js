@@ -55,7 +55,8 @@ function App() {
             <Profile currUser={currUser}/>
           </Route>
           <Route exact path="/settings">
-            <Settings currUser={currUser} setCurrUser={setCurrUser} docClient={docClient} setCurrUserInfo={setCurrUserInfo}/>
+          <Settings currUser={currUser} setCurrUser={setCurrUser} docClient={docClient} setCurrUserInfo={setCurrUserInfo} currUserInfo={currUserInfo}/>
+
           </Route>
           <Route exact path="/game/:id">
             <GameDetails loggedIn={loggedIn} docClient={docClient} currUser={currUser} currUserInfo={currUserInfo}/>
