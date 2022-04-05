@@ -323,6 +323,7 @@ console.log("Following =", Following);
             } else {
                 const newResults = {};
                 const someVal = Object.assign(newResults, results);
+                console.log(newResults);
                 newResults.ProfilePicture = profileUrl;
                 props.setCurrUserInfo(newResults);
                 setResults(newResults);
@@ -391,9 +392,9 @@ console.log("Following =", Following);
                 <div className="stats-container">
                     <div className='image-section'>
                         <img id="pfp" src={results.ProfilePicture}/>
-                        {props.currUser===username && !pfpEdit && <button className="profileBtn" onClick={() => setPfpEdit(true)}>Change Profile Picture</button> }
+                        {/* {props.currUser===username && !pfpEdit && <button className="profileBtn" onClick={() => setPfpEdit(true)}>Change Profile Picture</button> }
                         {pfpEdit && <input type="text" value={profileUrl} onChange={(e) => setProfileurl(e.target.value)} placeholder="new profile image url"/>}
-                        {pfpEdit && <button className="profileBtn" onClick={updateProfilePic}>Submit</button>}
+                        {pfpEdit && <button className="profileBtn" onClick={updateProfilePic}>Submit</button>} */}
                     </div>
                     <div>
                         <h2>{username}</h2>
