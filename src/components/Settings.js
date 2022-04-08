@@ -80,8 +80,9 @@ const Settings = (props) => {
         
         setPfpEdit(false);
         setProfileurl('');
-        /*//Update Username
-      function changeUsername(oldUsername, newUsername) {
+        
+      //Update Username
+    /*function changeUsername(oldUsername, newUsername) {
         var params2 = {
             TableName: "GameGateAccounts",
             IndexName: "Username-index",
@@ -123,6 +124,50 @@ const Settings = (props) => {
                         });
                     })
                 }
+    function changePassword(oldPassword, newPassword) {
+        var params2 = {
+            TableName: "GameGateAccounts",
+            IndexName: "Username-index",
+            KeyConditionExpression: "#username = :User3",
+            ExpressionAttributeNames: {
+                "#username": "Username"
+            },
+            ExpressionAttributeValues: {
+                ":User3": oldUsername
+            }
+        }
+    
+        docClient.query(params2, function(err, data) {
+            if (!err) {
+                if (data.Count === 0) {
+                    console.log(data);
+                } else {
+                    console.log(data);
+                    data.Items.forEach(item => {
+                        if (item.Password === oldPassword) {
+                            var params1 = {
+                                TableName:"GameGateAccounts",
+                                    Key:{
+                                    "Email": item.Email
+                                },
+                                UpdateExpression: "set Password = :password",
+                                ExpressionAttributeValues:{
+                                    ":password":newPassword
+                                },
+                                ReturnValues:"UPDATED_NEW"
+                            };
+                            console.log(item);
+                            docClient.update(params1, function(err, data) {
+                                if (err) {
+                                    console.log(err);
+                                } else {
+                                    console.log(data);
+                                    console.log("Updated the profile pic of all reviews by", username);
+                                }
+                            });
+                        }
+                    })
+                }*/
 
 //Update Username of all Reviews
 var params2 = {
