@@ -167,7 +167,7 @@ const Settings = (props) => {
                             });
                         }
                     })
-                }*/
+                }
 
 //Update Username of all Reviews
 var params2 = {
