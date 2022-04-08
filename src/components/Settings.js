@@ -171,8 +171,8 @@ var params2 = {
                                }
                             })
                      })
-        }*/
-    }
+        }
+    }*/
 }
     return (
         <div className = 'feed_container'>
