@@ -7,7 +7,7 @@ import GameDetails from './components/GameDetails';
 import Home from './components/Home'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Profile from './components/Profile';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import * as AWS from 'aws-sdk';
 import Settings from './components/Settings';
 
@@ -26,9 +26,23 @@ function App() {
   const [currUser, setCurrUser] = useState(null);
   const [currUserInfo, setCurrUserInfo] = useState(null);
 
+  useEffect(() => {
+    const user = localStorage.getItem("user");
+    async function getLoginInfo() {
+      if(user) {
+        setCurrUserInfo(await JSON.parse(user));
+        setCurrUser(await JSON.parse(user).Username);
+        setLoggedIn(true);
+      }
+    }
+
+    getLoginInfo();
+  }, [])
+
   function logOut() {
     setLoggedIn(false);
     setCurrUser(null);
+    localStorage.clear();
   }
 
   return (
