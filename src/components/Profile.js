@@ -370,6 +370,7 @@ const Profile = (props) => {
                     </div>
                     <div>
                         <h2>{username}</h2>
+                        <div><button className="list_entry" type="submit" onClick={'Following'}>Follow</button></div>
                     </div>
                     <div className="game-stats">
                         <div className="individual-stat-container">
