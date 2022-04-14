@@ -127,7 +127,7 @@ const Profile = (props) => {
                 }
             }
         })
-        increaseFollowers(theirUsername);
+        increaseFollowers(yourUsername, theirUsername);
     }
 
 
@@ -177,7 +177,7 @@ const Profile = (props) => {
                 }
             }
         })
-        decreaseFollowers(theirUsername);
+        decreaseFollowers(yourUsername, theirUsername);
     }
 
      const increaseFollowers = (yourUsername, viewedUsername) => {  
