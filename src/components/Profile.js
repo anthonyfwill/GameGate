@@ -81,64 +81,59 @@ const Profile = (props) => {
             }
         })
     }, [username])
-    //Get all reviews by user
-    // var params3 = {
-    //     TableName: "Games",
-    //     IndexName: "Username-index",
-    //     KeyConditionExpression: "#username = :User3",
-    //     ExpressionAttributeNames: {
-    //         "#username": "Username"
-    //     },
-    //     ExpressionAttributeValues: {
-    //         ":User3": username
+
+    // function increaseFollowing = (yourUsername, theirUsername) => { 
+    //     var params2 = {
+    //         TableName: "GameGateAccounts",
+    //         IndexName: "Username-index",
+    //         KeyConditionExpression: "#username = :User3",
+    //         ExpressionAttributeNames: {
+    //             "#username": "Username"
+    //         },
+    //         ExpressionAttributeValues: {
+    //             ":User3": yourUsername
+    //         }
     //     }
+    
+    //     docClient.query(params2, function(err, data) {
+    //         if (!err) {
+    //             if (data.Count === 0) {
+    //                 console.log(data);
+    //             } else {
+    //                 console.log(data);
+    //                 data.Items.forEach(item => {
+    //                     var params1 = {
+    //                         TableName:"GameGateAccounts",
+    //                             Key:{
+    //                             "Email": item.Email,
+    //                         },
+    //                         UpdateExpression: "ADD FollowingList :userViewedName SET Following = Following + :val",
+    //                         ExpressionAttributeValues:{
+    //                             ":userViewedName": props.docClient.createSet([theirUsername]),
+    //                             ":val": 1
+    //                         },
+    //                         ReturnValues:"UPDATED_NEW"
+    //                     };
+    //                     console.log(item);
+    //                     docClient.update(params1, function(err, data) {
+    //                         if (err) {
+    //                             console.log(err);
+    //                         } else {
+    //                             console.log(data);
+    //                             console.log("Updated the following count of", username);
+    //                         }
+    //                     });
+    //                 })
+    //             }
+    //         }
+    //     })
+    //     increaseFollowers(theirUsername);
     // }
 
-    // docClient.query(params3, function(err, data) {
-    //     if (!err) {
-    //         if (data.Count === 0) {
-    //             console.log(data);
-    //         } else {
-    //             console.log(data);
-    //         }
-    //     } else {
-    //         console.log(err);
-    //     }
-    // })
+/*>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-
-
-    /*var params = {
-            TableName: "GameGateAccounts",
-            ProjectionExpression: "#gameID, Username, Reviews, Reviews.Review, Reviews.s"
-            IndexName: "GameID-Username-index",
-            KeyConditionExpression: "#gameID = :User3 and ",
-            ExpressionAttributeNames: {
-                "#gameID": "GameID"
-            },
-            ExpressionAttributeValues: {
-                ":User3": username
-            }
-        }
-
-        docClient.query(params3, function(err, data) {
-            if (!err) {
-                //console.log("no error");
-                //console.log(data.Count, "Username entered: " + username);
-                if (data.Count === 0) {
-                    console.log("Username is available");
-                    canMake = canMake + 1;
-                } else {
-                    console.log("Username is not available");
-                }
-            } else {
-                //console.log(data.Username, "Username entered: " + username);
-                console.log(err);
-            }
-        })*/
-
-        //Add Review
-        /*var params5 = {
+    function decreaseFollowing = (yourUsername, theirUsername) => { 
+        var params2 = {
             TableName: "GameGateAccounts",
             IndexName: "Username-index",
             KeyConditionExpression: "#username = :User3",
@@ -146,163 +141,141 @@ const Profile = (props) => {
                 "#username": "Username"
             },
             ExpressionAttributeValues: {
-                ":User3": username
+                ":User3": yourUsername
             }
         }
-
-        docClient.query(params5, function(err, data) {
+    
+        docClient.query(params2, function(err, data) {
             if (!err) {
-                //console.log("no error");
-                //console.log(data.Count, "Username entered: " + username);
                 if (data.Count === 0) {
-                    console.log("Username is available");
-                    canMake = canMake + 1;
+                    console.log(data);
                 } else {
-                    console.log("Username is not available");
-                    var params4 = {
-                        TableName: "GameGateAccounts",
-                        Key: {
-                            "Email": data.Items[0].Email
-                        },
-                        UpdateExpression: "set Reviews = list_append(:Reviews)"
-                        ExpressionAttributeValues: {
-                            ":Reviews": [{Review: review, GameID: gameID, Rating": rating}]
-                        },
-                        ReturnVaues:"UPDATED_NEW"
-                    }
-                    docClient.update(params4, function(err, data) {
-                        if (!err) {
-                            console.log("Worked");
-                        } else {
-                            console.log("Not Worked");
-                        }
+                    console.log(data);
+                    data.Items.forEach(item => {
+                        var params1 = {
+                            TableName:"GameGateAccounts",
+                                Key:{
+                                "Email": item.Email,
+                            },
+                            UpdateExpression: "DELETE FollowingList :userViewedName SET Following = Following - :val",
+                            ExpressionAttributeValues:{
+                                ":userViewedName": props.docClient.createSet([theirUsername]),
+                                ":val": 1
+                            },
+                            ReturnValues:"UPDATED_NEW"
+                        };
+                        console.log(item);
+                        docClient.update(params1, function(err, data) {
+                            if (err) {
+                                console.log(err);
+                            } else {
+                                console.log(data);
+                                console.log("Updated the following count of", username);
+                            }
+                        });
                     })
                 }
-            } else {
-                console.log(err);
-            }*/
-
-  /* const increaseFollowing = (yourEmail, theirUsername) => { 
-        var params = {
-            TableName: "Username-index",
-            KeyConditionExpression: "#following = :email3",
-            ExpressionAttributeNames: {
-                "#email": "Email"
-            },
-            ExpressionAttributeValues: {
-                ":email3": email
-            },
-            UpdateExpression: "set Following = Following + :val",
-            ExpressionAttributeValues:{
-                ":val":1
-            },
-            ReturnValues:"UPDATED_NEW"
-        }
-
-        docClient.put(params, function(err, data) {
-            if (!err) {
-                console.log("Worked");
-                console.log("Following =", Following);
-            } else {
-                console.log("Not Worked");
             }
         })
+        decreaseFollowers(theirUsername);
     }
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>*/
 
+    // function increaseFollowers = (yourUsername, viewedUsername) => {  
+    //     var params2 = {
+    //         TableName: "GameGateAccounts",
+    //         IndexName: "Username-index",
+    //         KeyConditionExpression: "#username = :User3",
+    //         ExpressionAttributeNames: {
+    //             "#username": "Username"
+    //         },
+    //         ExpressionAttributeValues: {
+    //             ":User3": viewedUsername
+    //         }
+    //     }
+    
+    //     docClient.query(params2, function(err, data) {
+    //         if (!err) {
+    //             if (data.Count === 0) {
+    //                 console.log(data);
+    //             } else {
+    //                 console.log(data);
+    //                 data.Items.forEach(item => {
+    //                     var params1 = {
+    //                         TableName:"GameGateAccounts",
+    //                             Key:{
+    //                             "Email": item.Email,
+    //                         },
+    //                         UpdateExpression: "ADD FollowersList :yourUsername SET Followers = Followers + :val",
+    //                         ExpressionAttributeValues:{
+    //                             ":yourUsername": props.docClient.createSet([yourUsername]),
+    //                             ":val": 1
+    //                         },
+    //                         ReturnValues:"UPDATED_NEW"
+    //                     };
+    //                     console.log(item);
+    //                     docClient.update(params1, function(err, data) {
+    //                         if (err) {
+    //                             console.log(err);
+    //                         } else {
+    //                             console.log(data);
+    //                             console.log("Updated the following count of", username);
+    //                         }
+    //                     });
+    //                 })
+    //             }
+    //         }
+    //     })
+    // }
+
+    /*
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-const decreaseFollowing = (email) => { 
-    var params = {
-        TableName:"GameGateAccounts",
-        Key:{
-            "Email": em
-        },
-        UpdateExpression: "set Following = Following - :val",
-        ExpressionAttributeValues:{
-            ":val":1
-        },
-        ReturnValues:"UPDATED_NEW"
-    };
-
-    docClient.put(params, function(err, data) {
-                if (!err) {
-                        console.log("Worked");
-console.log("Following =", Following);
+    const decreaseFollowers = (yourUsername, viewedUsername) => { 
+        var params2 = {
+            TableName: "GameGateAccounts",
+            IndexName: "Username-index",
+            KeyConditionExpression: "#username = :User3",
+            ExpressionAttributeNames: {
+                "#username": "Username"
+            },
+            ExpressionAttributeValues: {
+                ":User3": viewedUsername
+            }
+        }
+    
+        docClient.query(params2, function(err, data) {
+            if (!err) {
+                if (data.Count === 0) {
+                    console.log(data);
                 } else {
-                        console.log("Not Worked");
+                    console.log(data);
+                    data.Items.forEach(item => {
+                        var params1 = {
+                            TableName:"GameGateAccounts",
+                                Key:{
+                                "Email": item.Email,
+                            },
+                            UpdateExpression: "DELETE FollowersList :yourUsername SET Followers = Followers - :val",
+                            ExpressionAttributeValues:{
+                                ":yourUsername": props.docClient.createSet([yourUsername]),
+                                ":val": 1
+                            },
+                            ReturnValues:"UPDATED_NEW"
+                        };
+                        console.log(item);
+                        docClient.update(params1, function(err, data) {
+                            if (err) {
+                                console.log(err);
+                            } else {
+                                console.log(data);
+                                console.log("Updated the following count of", username);
+                            }
+                        });
+                    })
                 }
-    });
-}
->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-const increaseFollowers = (user) => {  
-    var params = {
-        TableName:"GameGateAccounts",
-        Key:{
-            "Username": user
-        },
-        UpdateExpression: "set Followers = Followers + :val",
-        ExpressionAttributeValues:{
-            ":val":1
-        },
-        ReturnValues:"UPDATED_NEW"
-    };
-
-    docClient.put(params, function(err, data) {
-                if (!err) {
-                        console.log("Worked");
-console.log("Following =", Following);
-                } else {
-                        console.log("Not Worked");
-                }
-    });
-}
-
->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-const decreaseFollowers = (user) => { 
-    var params = {
-        TableName:"GameGateAccounts",
-        Key:{
-            "Username": user
-        },
-        UpdateExpression: "set Follower = Follower - :val",
-        ExpressionAttributeValues:{
-            ":val":1
-        },
-        ReturnValues:"UPDATED_NEW"
-    };
-
-    docClient.put(params, function(err, data) {
-                if (!err) {
-                        console.log("Worked");
-console.log("Following =", Following);
-                } else {
-                        console.log("Not Worked");
-                }
-    });
-
-    const updateRating = (rating, gameIDinfo) => { 
-    var params = {
-        TableName:"Games",
-        Key:{
-            "GameID": gameIDinfo
-        },
-        UpdateExpression: "set GameID =  ((x-1) * oldAverage + (1/x) * :rating)",
-        ExpressionAttributeValues:{
-            ":rating":rating
-        },
-        ReturnValues:"UPDATED_NEW"
-    };
-
-    docClient.put(params, function(err, data) {
-                if (!err) {
-                        console.log("Worked");
-                } else {
-                        console.log("Not Worked");
-                }
-    });
-}*/
+            }
+        })
+    }*/
 
     function updateProfilePic() {
         var params = {
@@ -398,6 +371,7 @@ console.log("Following =", Following);
                     </div>
                     <div>
                         <h2>{username}</h2>
+                        {props.loggedIn && username != props.currUser && <div><button className="list_entry" type="submit" onClick={console.log('epic')/*increaseFollowing(props.currUser, username)*/}>Follow</button></div> }
                     </div>
                     <div className="game-stats">
                         <div className="individual-stat-container">

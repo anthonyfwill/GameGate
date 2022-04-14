@@ -53,6 +53,7 @@ const Login = (props) => {
                                 props.setCurrUser(data.Item.Username);
                                 // console.log(data);
                                 props.setCurrUserInfo(data.Item);
+                                localStorage.setItem('user', JSON.stringify(data.Item));
                                 props.setLoggedIn(true);
                                 history.push(`/profile/${data.Item.Username}`);
                             },
