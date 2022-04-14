@@ -12,10 +12,7 @@ const Settings = (props) => {
             Key:{
                 "Email": props.currUserInfo.Email
             },
-            UpdateExpression: "set ProfilePicture = :profile",
-            ExpressionAttributeValues:{
-                ":profile":profileUrl
-            },
+            z
             ReturnValues:"UPDATED_NEW"
         };
 
