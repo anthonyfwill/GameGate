@@ -82,57 +82,57 @@ const Profile = (props) => {
         })
     }, [username])
 
-    // function increaseFollowing = (yourUsername, theirUsername) => { 
-    //     var params2 = {
-    //         TableName: "GameGateAccounts",
-    //         IndexName: "Username-index",
-    //         KeyConditionExpression: "#username = :User3",
-    //         ExpressionAttributeNames: {
-    //             "#username": "Username"
-    //         },
-    //         ExpressionAttributeValues: {
-    //             ":User3": yourUsername
-    //         }
-    //     }
+     const increaseFollowing = (yourUsername, theirUsername) => { 
+        var params2 = {
+            TableName: "GameGateAccounts",
+            IndexName: "Username-index",
+            KeyConditionExpression: "#username = :User3",
+            ExpressionAttributeNames: {
+                "#username": "Username"
+            },
+            ExpressionAttributeValues: {
+                ":User3": yourUsername
+            }
+        }
     
-    //     docClient.query(params2, function(err, data) {
-    //         if (!err) {
-    //             if (data.Count === 0) {
-    //                 console.log(data);
-    //             } else {
-    //                 console.log(data);
-    //                 data.Items.forEach(item => {
-    //                     var params1 = {
-    //                         TableName:"GameGateAccounts",
-    //                             Key:{
-    //                             "Email": item.Email,
-    //                         },
-    //                         UpdateExpression: "ADD FollowingList :userViewedName SET Following = Following + :val",
-    //                         ExpressionAttributeValues:{
-    //                             ":userViewedName": props.docClient.createSet([theirUsername]),
-    //                             ":val": 1
-    //                         },
-    //                         ReturnValues:"UPDATED_NEW"
-    //                     };
-    //                     console.log(item);
-    //                     docClient.update(params1, function(err, data) {
-    //                         if (err) {
-    //                             console.log(err);
-    //                         } else {
-    //                             console.log(data);
-    //                             console.log("Updated the following count of", username);
-    //                         }
-    //                     });
-    //                 })
-    //             }
-    //         }
-    //     })
-    //     increaseFollowers(theirUsername);
-    // }
+        docClient.query(params2, function(err, data) {
+            if (!err) {
+                if (data.Count === 0) {
+                    console.log(data);
+                } else {
+                    console.log(data);
+                    data.Items.forEach(item => {
+                        var params1 = {
+                            TableName:"GameGateAccounts",
+                                Key:{
+                                "Email": item.Email,
+                            },
+                            UpdateExpression: "ADD FollowingList :userViewedName SET Following = Following + :val",
+                            ExpressionAttributeValues:{
+                                ":userViewedName": docClient.createSet([theirUsername]),
+                                ":val": 1
+                            },
+                            ReturnValues:"UPDATED_NEW"
+                        };
+                        console.log(item);
+                        docClient.update(params1, function(err, data) {
+                            if (err) {
+                                console.log(err);
+                            } else {
+                                console.log(data);
+                                console.log("Updated the following count of", username);
+                            }
+                        });
+                    })
+                }
+            }
+        })
+        increaseFollowers(theirUsername);
+    }
 
-/*>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-    function decreaseFollowing = (yourUsername, theirUsername) => { 
+
+    const decreaseFollowing = (yourUsername, theirUsername) => { 
         var params2 = {
             TableName: "GameGateAccounts",
             IndexName: "Username-index",
@@ -159,7 +159,7 @@ const Profile = (props) => {
                             },
                             UpdateExpression: "DELETE FollowingList :userViewedName SET Following = Following - :val",
                             ExpressionAttributeValues:{
-                                ":userViewedName": props.docClient.createSet([theirUsername]),
+                                ":userViewedName": docClient.createSet([theirUsername]),
                                 ":val": 1
                             },
                             ReturnValues:"UPDATED_NEW"
@@ -179,57 +179,55 @@ const Profile = (props) => {
         })
         decreaseFollowers(theirUsername);
     }
->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>*/
 
-    // function increaseFollowers = (yourUsername, viewedUsername) => {  
-    //     var params2 = {
-    //         TableName: "GameGateAccounts",
-    //         IndexName: "Username-index",
-    //         KeyConditionExpression: "#username = :User3",
-    //         ExpressionAttributeNames: {
-    //             "#username": "Username"
-    //         },
-    //         ExpressionAttributeValues: {
-    //             ":User3": viewedUsername
-    //         }
-    //     }
+     const increaseFollowers = (yourUsername, viewedUsername) => {  
+        var params2 = {
+            TableName: "GameGateAccounts",
+            IndexName: "Username-index",
+            KeyConditionExpression: "#username = :User3",
+            ExpressionAttributeNames: {
+                "#username": "Username"
+            },
+            ExpressionAttributeValues: {
+                ":User3": viewedUsername
+            }
+        }
     
-    //     docClient.query(params2, function(err, data) {
-    //         if (!err) {
-    //             if (data.Count === 0) {
-    //                 console.log(data);
-    //             } else {
-    //                 console.log(data);
-    //                 data.Items.forEach(item => {
-    //                     var params1 = {
-    //                         TableName:"GameGateAccounts",
-    //                             Key:{
-    //                             "Email": item.Email,
-    //                         },
-    //                         UpdateExpression: "ADD FollowersList :yourUsername SET Followers = Followers + :val",
-    //                         ExpressionAttributeValues:{
-    //                             ":yourUsername": props.docClient.createSet([yourUsername]),
-    //                             ":val": 1
-    //                         },
-    //                         ReturnValues:"UPDATED_NEW"
-    //                     };
-    //                     console.log(item);
-    //                     docClient.update(params1, function(err, data) {
-    //                         if (err) {
-    //                             console.log(err);
-    //                         } else {
-    //                             console.log(data);
-    //                             console.log("Updated the following count of", username);
-    //                         }
-    //                     });
-    //                 })
-    //             }
-    //         }
-    //     })
-    // }
+        docClient.query(params2, function(err, data) {
+            if (!err) {
+                if (data.Count === 0) {
+                    console.log(data);
+                } else {
+                    console.log(data);
+                    data.Items.forEach(item => {
+                        var params1 = {
+                            TableName:"GameGateAccounts",
+                                Key:{
+                                "Email": item.Email,
+                            },
+                            UpdateExpression: "ADD FollowersList :yourUsername SET Followers = Followers + :val",
+                            ExpressionAttributeValues:{
+                                ":yourUsername": docClient.createSet([yourUsername]),
+                                ":val": 1
+                            },
+                            ReturnValues:"UPDATED_NEW"
+                        };
+                        console.log(item);
+                        docClient.update(params1, function(err, data) {
+                            if (err) {
+                                console.log(err);
+                            } else {
+                                console.log(data);
+                                console.log("Updated the following count of", username);
+                            }
+                        });
+                    })
+                }
+            }
+        })
+    }
 
-    /*
->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    
     const decreaseFollowers = (yourUsername, viewedUsername) => { 
         var params2 = {
             TableName: "GameGateAccounts",
@@ -257,7 +255,7 @@ const Profile = (props) => {
                             },
                             UpdateExpression: "DELETE FollowersList :yourUsername SET Followers = Followers - :val",
                             ExpressionAttributeValues:{
-                                ":yourUsername": props.docClient.createSet([yourUsername]),
+                                ":yourUsername": docClient.createSet([yourUsername]),
                                 ":val": 1
                             },
                             ReturnValues:"UPDATED_NEW"
@@ -275,7 +273,7 @@ const Profile = (props) => {
                 }
             }
         })
-    }*/
+    }
 
     function updateProfilePic() {
         var params = {
@@ -365,13 +363,10 @@ const Profile = (props) => {
                 <div className="stats-container">
                     <div className='image-section'>
                         <img id="pfp" src={results.ProfilePicture}/>
-                        {/* {props.currUser===username && !pfpEdit && <button className="profileBtn" onClick={() => setPfpEdit(true)}>Change Profile Picture</button> }
-                        {pfpEdit && <input type="text" value={profileUrl} onChange={(e) => setProfileurl(e.target.value)} placeholder="new profile image url"/>}
-                        {pfpEdit && <button className="profileBtn" onClick={updateProfilePic}>Submit</button>} */}
                     </div>
                     <div>
                         <h2>{username}</h2>
-                        {props.loggedIn && username != props.currUser && <div><button className="list_entry" type="submit" onClick={console.log('epic')/*increaseFollowing(props.currUser, username)*/}>Follow</button></div> }
+                        {props.loggedIn && username != props.currUser && <div><button className="list_entry" type="submit" onClick={increaseFollowing(props.currUser, username)}>Follow</button></div> }
                     </div>
                     <div className="game-stats">
                         <div className="individual-stat-container">
