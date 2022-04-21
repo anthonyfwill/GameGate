@@ -119,7 +119,7 @@ const GameDetails = (props) => {
             }
         })*/
 
-    function addPlanning(e) {
+    /*function addPlanning(e) {
         if(e.target.textContent === 'Add to planning') {
             e.target.textContent = 'Planning'
             //add code to update planning count for user and add game id to list of games user is planning on playing
@@ -127,7 +127,7 @@ const GameDetails = (props) => {
             e.target.textContent = 'Add to planning'
             //decrement planning count for user and remove game id from list of games user is planning to play
         }
-    }
+    }*/
 
     function updateReviews(gameName, username, reviewText, reviewScore, gameImg, profPic) {
         setReviewOpened(false);
@@ -187,6 +187,213 @@ const GameDetails = (props) => {
         //update the list of reviews for game and user tables
     }
 
+    function planningGames(yourUsername, gameName) { 
+        var params2 = {
+            TableName: "GameGateAccounts",
+            IndexName: "Username-index",
+            KeyConditionExpression: "#username = :User3",
+            ExpressionAttributeNames: {
+                "#username": "Username"
+            },
+            ExpressionAttributeValues: {
+                ":User3": yourUsername
+            }
+        }
+    
+        props.docClient.query(params2, function(err, data) {
+            if (!err) {
+                if (data.Count === 0) {
+                    console.log(data);
+                } else {
+                    console.log(data);
+                    data.Items.forEach(item => {
+                        var params1 = {
+                            TableName:"GameGateAccounts",
+                                Key:{
+                                "Email": item.Email,
+                            },
+                            UpdateExpression: "SET #pg = list_append(#pg, :gameList), Planning = Planning + :val" ,
+                            ConditionExpression: "not contains(#pg, :gameString)",
+                            ExpressionAttributeNames: {
+                                "#pg": "PlanningGames"
+                            },
+                            ExpressionAttributeValues:{
+                                ":gameList": [gameName],
+                                ":gameString": gameName,
+                                ":val": 1,
+                            },
+                            ReturnValues:"UPDATED_NEW"
+                        };
+                        console.log(item);
+                        props.docClient.update(params1, function(err, data) {
+                            if (err) {
+                                console.log(err);
+                            } else {
+                                console.log(data);
+                                console.log("The game added to PlanningGames is:", gameName);
+                            }
+                        });
+                    })
+                }
+            }
+        })
+    }
+
+    function completedGames(yourUsername, gameName) { 
+        var params2 = {
+            TableName: "GameGateAccounts",
+            IndexName: "Username-index",
+            KeyConditionExpression: "#username = :User3",
+            ExpressionAttributeNames: {
+                "#username": "Username"
+            },
+            ExpressionAttributeValues: {
+                ":User3": yourUsername
+            }
+        }
+    
+        props.docClient.query(params2, function(err, data) {
+            if (!err) {
+                if (data.Count === 0) {
+                    console.log(data);
+                } else {
+                    console.log(data);
+                    data.Items.forEach(item => {
+                        var params1 = {
+                            TableName:"GameGateAccounts",
+                                Key:{
+                                "Email": item.Email,
+                            },
+                            UpdateExpression: "SET #cg = list_append(#cg, :gameList), Completed = Completed + :val" ,
+                            ConditionExpression: "not contains(#cg, :gameString)",
+                            ExpressionAttributeNames: {
+                                "#cg": "CompletedGames"
+                            },
+                            ExpressionAttributeValues:{
+                                ":gameList": [gameName],
+                                ":gameString": gameName,
+                                ":val": 1,
+                            },
+                            ReturnValues:"UPDATED_NEW"
+                        };
+                        console.log(item);
+                        props.docClient.update(params1, function(err, data) {
+                            if (err) {
+                                console.log(err);
+                            } else {
+                                console.log(data);
+                                console.log("The game added to CompletedGames is:", gameName);
+                            }
+                        });
+                    })
+                }
+            }
+        })
+    }
+
+    function currentGames(yourUsername, gameName) { 
+        var params2 = {
+            TableName: "GameGateAccounts",
+            IndexName: "Username-index",
+            KeyConditionExpression: "#username = :User3",
+            ExpressionAttributeNames: {
+                "#username": "Username"
+            },
+            ExpressionAttributeValues: {
+                ":User3": yourUsername
+            }
+        }
+    
+        props.docClient.query(params2, function(err, data) {
+            if (!err) {
+                if (data.Count === 0) {
+                    console.log(data);
+                } else {
+                    console.log(data);
+                    data.Items.forEach(item => {
+                        var params1 = {
+                            TableName:"GameGateAccounts",
+                                Key:{
+                                "Email": item.Email,
+                            },
+                            UpdateExpression: "SET #cg = list_append(#cg, :gameList), Current = Current + :val" ,
+                            ConditionExpression: "not contains(#cg, :gameString)",
+                            ExpressionAttributeNames: {
+                                "#cg": "CurrentGames"
+                            },
+                            ExpressionAttributeValues:{
+                                ":gameList": [gameName],
+                                ":gameString": gameName,
+                                ":val": 1,
+                            },
+                            ReturnValues:"UPDATED_NEW"
+                        };
+                        console.log(item);
+                        props.docClient.update(params1, function(err, data) {
+                            if (err) {
+                                console.log(err);
+                            } else {
+                                console.log(data);
+                                console.log("The game added to CurrentGames is:", gameName);
+                            }
+                        });
+                    })
+                }
+            }
+        })
+    }
+
+    function droppedGames(yourUsername, gameName) { 
+        var params2 = {
+            TableName: "GameGateAccounts",
+            IndexName: "Username-index",
+            KeyConditionExpression: "#username = :User3",
+            ExpressionAttributeNames: {
+                "#username": "Username"
+            },
+            ExpressionAttributeValues: {
+                ":User3": yourUsername
+            }
+        }
+    
+        props.docClient.query(params2, function(err, data) {
+            if (!err) {
+                if (data.Count === 0) {
+                    console.log(data);
+                } else {
+                    console.log(data);
+                    data.Items.forEach(item => {
+                        var params1 = {
+                            TableName:"GameGateAccounts",
+                                Key:{
+                                "Email": item.Email,
+                            },
+                            UpdateExpression: "SET #dg = list_append(#dg, :gameList), Dropped = Dropped + :val" ,
+                            ConditionExpression: "not contains(#dg, :gameString)",
+                            ExpressionAttributeNames: {
+                                "#dg": "DroppedGames"
+                            },
+                            ExpressionAttributeValues:{
+                                ":gameList": [gameName],
+                                ":gameString": gameName,
+                                ":val": 1,
+                            },
+                            ReturnValues:"UPDATED_NEW"
+                        };
+                        console.log(item);
+                        props.docClient.update(params1, function(err, data) {
+                            if (err) {
+                                console.log(err);
+                            } else {
+                                console.log(data);
+                                console.log("The game added to DroppedGames is:", gameName);
+                            }
+                        });
+                    })
+                }
+            }
+        })
+    }
 
     return (
             <div className="new-parent">
@@ -196,7 +403,10 @@ const GameDetails = (props) => {
                 <div className="new-child">
                     <div className="coverTitleContainer">
                         <img className="coverArt" src={`https:${results[0].cover.url}`} alt="Game cover art"/>
-                        {props.loggedIn && <button type="button" className="list_entry" onClick={(e) => addPlanning(e)}>Add to planning</button>}
+                        {props.loggedIn && <button type="button" className="list_entry" onClick={() => planningGames(props.currUser, results[0].name)}>Planning to Play</button>}
+                        {props.loggedIn && <button type="button" className="list_entry" onClick={() => currentGames(props.currUser, results[0].name)}>Currently Playing</button>}
+                        {props.loggedIn && <button type="button" className="list_entry" onClick={() => completedGames(props.currUser, results[0].name)}>Completed</button>}
+                        {props.loggedIn && <button type="button" className="list_entry" onClick={() => droppedGames(props.currUser, results[0].name)}>Dropped</button>}
                     </div>
                     <hr className="rounded"/>
                     <div className="gameDescrip">

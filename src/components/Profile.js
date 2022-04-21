@@ -107,9 +107,14 @@ const Profile = (props) => {
                                 Key:{
                                 "Email": item.Email,
                             },
-                            UpdateExpression: "ADD FollowingList :userViewedName SET Following = Following + :val",
+                            UpdateExpression: "ADD #fl :userViewedNameList SET Following = Following + :val",
+                            ConditionExpression: "not contains(#fl, :userViewedNameString)",
+                            ExpressionAttributeNames: {
+                                "#fl": "FollowingList"
+                            },
                             ExpressionAttributeValues:{
-                                ":userViewedName": docClient.createSet([theirUsername]),
+                                ":userViewedNameList": docClient.createSet([theirUsername]),
+                                ":userViewedNameString": theirUsername,
                                 ":val": 1
                             },
                             ReturnValues:"UPDATED_NEW"
@@ -120,14 +125,14 @@ const Profile = (props) => {
                                 console.log(err);
                             } else {
                                 console.log(data);
-                                console.log("Updated the following count of", username);
+                                console.log("Increased the following count of", username);
                             }
                         });
                     })
                 }
             }
         })
-        increaseFollowers(theirUsername);
+        increaseFollowers(yourUsername, theirUsername);
     }
 
 
@@ -157,9 +162,14 @@ const Profile = (props) => {
                                 Key:{
                                 "Email": item.Email,
                             },
-                            UpdateExpression: "DELETE FollowingList :userViewedName SET Following = Following - :val",
+                            UpdateExpression: "DELETE #fl :userViewedNameList SET Following = Following - :val",
+                            ConditionExpression: "contains(#fl, :userViewedNameString)",
+                            ExpressionAttributeNames: {
+                                "#fl": "FollowingList"
+                            },
                             ExpressionAttributeValues:{
-                                ":userViewedName": docClient.createSet([theirUsername]),
+                                ":userViewedNameList": docClient.createSet([theirUsername]),
+                                ":userViewedNameString": theirUsername
                                 ":val": 1
                             },
                             ReturnValues:"UPDATED_NEW"
@@ -170,14 +180,14 @@ const Profile = (props) => {
                                 console.log(err);
                             } else {
                                 console.log(data);
-                                console.log("Updated the following count of", username);
+                                console.log("Decreased the following count of", username);
                             }
                         });
                     })
                 }
             }
         })
-        decreaseFollowers(theirUsername);
+        decreaseFollowers(yourUsername, theirUsername);
     }
 
      const increaseFollowers = (yourUsername, viewedUsername) => {  
@@ -205,9 +215,14 @@ const Profile = (props) => {
                                 Key:{
                                 "Email": item.Email,
                             },
-                            UpdateExpression: "ADD FollowersList :yourUsername SET Followers = Followers + :val",
+                            UpdateExpression: "ADD #fl :yourUsernameList SET Followers = Followers + :val",
+                            ConditionExpression: "not contains(#fl, :yourUsernameString)",
+                            ExpressionAttributeNames: {
+                                "#fl": "FollowersList"
+                            },
                             ExpressionAttributeValues:{
-                                ":yourUsername": docClient.createSet([yourUsername]),
+                                ":yourUsernameList": docClient.createSet([yourUsername]),
+                                ":yourUsernameString": yourUsername,
                                 ":val": 1
                             },
                             ReturnValues:"UPDATED_NEW"
@@ -218,7 +233,7 @@ const Profile = (props) => {
                                 console.log(err);
                             } else {
                                 console.log(data);
-                                console.log("Updated the following count of", username);
+                                console.log("Increased the followers count of", username);
                             }
                         });
                     })
@@ -253,9 +268,14 @@ const Profile = (props) => {
                                 Key:{
                                 "Email": item.Email,
                             },
-                            UpdateExpression: "DELETE FollowersList :yourUsername SET Followers = Followers - :val",
+                            UpdateExpression: "DELETE #fl :yourUsernameList SET Followers = Followers - :val",
+                            ConditionExpression: "contains(#fl, :yourUsernameString)",
+                            ExpressionAttributeNames: {
+                                "#fl": "FollowersList"
+                            },
                             ExpressionAttributeValues:{
-                                ":yourUsername": docClient.createSet([yourUsername]),
+                                ":yourUsernameList": docClient.createSet([yourUsername]),
+                                ":yourUsernameString": yourUsername,
                                 ":val": 1
                             },
                             ReturnValues:"UPDATED_NEW"
@@ -266,7 +286,7 @@ const Profile = (props) => {
                                 console.log(err);
                             } else {
                                 console.log(data);
-                                console.log("Updated the following count of", username);
+                                console.log("Decreased the followers count of", username);
                             }
                         });
                     })
@@ -366,7 +386,7 @@ const Profile = (props) => {
                     </div>
                     <div>
                         <h2>{username}</h2>
-                        {props.loggedIn && username != props.currUser && <div><button className="list_entry" type="submit" onClick={increaseFollowing(props.currUser, username)}>Follow</button></div> }
+                        {props.loggedIn && username != props.currUser && <div><button className="list_entry" type="submit" onClick={() => increaseFollowing(props.currUser, username)}>Follow</button></div> }
                     </div>
                     <div className="game-stats">
                         <div className="individual-stat-container">
