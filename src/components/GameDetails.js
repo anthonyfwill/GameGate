@@ -403,8 +403,8 @@ const GameDetails = (props) => {
                 <div className="new-child">
                     <div className="coverTitleContainer">
                         <img className="coverArt" src={`https:${results[0].cover.url}`} alt="Game cover art"/>
-                        {props.loggedIn && <button type="button" className="list_entry" onClick={() => planningGames(props.currUser, results[0].name)}>Planning to Play</button>}
-                        {props.loggedIn && <button type="button" className="list_entry" onClick={() => currentGames(props.currUser, results[0].name)}>Currently Playing</button>}
+                        {props.loggedIn && <button type="button" className="list_entry" onClick={() => planningGames(props.currUser, results[0].name)}>Planning</button>}
+                        {props.loggedIn && <button type="button" className="list_entry" onClick={() => currentGames(props.currUser, results[0].name)}>Playing</button>}
                         {props.loggedIn && <button type="button" className="list_entry" onClick={() => completedGames(props.currUser, results[0].name)}>Completed</button>}
                         {props.loggedIn && <button type="button" className="list_entry" onClick={() => droppedGames(props.currUser, results[0].name)}>Dropped</button>}
                     </div>
