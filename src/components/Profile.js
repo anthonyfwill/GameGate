@@ -88,17 +88,29 @@ const Profile = (props) => {
         }
         console.log(following);
         if(props.currUserInfo) {
+            console.log(props.currUserInfo);
             checkFollowing();
         }
     }, [username, following, props.completion])
 
     const checkFollowing = () => {
         // console.log(props.currUserInfo);
-        for(let i of props.currUserInfo.FollowingList) {
-            if(i === username) {
-                setFollowing(true);
+        console.log(typeof(props.currUserInfo.FollowingList.values));
+        console.log(typeof(props.currUserInfo.FollowingList));
+        if(typeof(props.currUserInfo.FollowingList.values) !== typeof(props.currUserInfo.FollowingList)) {
+            console.log('here');
+            for(let i of props.currUserInfo.FollowingList) {
+                if(i === username) {
+                    setFollowing(true);
+                }
             }
-        }
+        } else {
+            for(let i of props.currUserInfo.FollowingList.values) {
+                if(i === username) {
+                    setFollowing(true);
+                }
+            }
+        } 
         // console.log(props.currUserInfo.FollowingList);
     }
 
