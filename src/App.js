@@ -87,7 +87,7 @@ function App() {
           <Route exact path="/game/:id">
             <GameDetails loggedIn={loggedIn} docClient={docClient} currUser={currUser} currUserInfo={currUserInfo}/>
           </Route>
-          <Route exact path="/followers/:username">
+          <Route exact path="/following/:username">
             <FollowList docClient={docClient}/>
           </Route>
         </Switch>
