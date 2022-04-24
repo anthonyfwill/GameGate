@@ -169,7 +169,7 @@ const Profile = (props) => {
                             },
                             ExpressionAttributeValues:{
                                 ":userViewedNameList": docClient.createSet([theirUsername]),
-                                ":userViewedNameString": theirUsername
+                                ":userViewedNameString": theirUsername,
                                 ":val": 1
                             },
                             ReturnValues:"UPDATED_NEW"
