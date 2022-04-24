@@ -15,72 +15,92 @@ const docClient = new AWS.DynamoDB.DocumentClient()
 const Profile = (props) => {
     const [results, setResults] = useState(null);
     const [isPending, setPending] = useState(true);
+    const [requesting, setRequesting] = useState(false);
     const [error, setError] = useState(null);
-    const [pfpEdit, setPfpEdit] = useState(false);
-    const [profileUrl, setProfileurl] = useState('');
     const [reviewInfo, setReviewInfo] = useState([]);
+    const [following, setFollowing] = useState(false);
 
     const {username} = useParams();
 
     useEffect(() => {
-        var params = {
-            TableName: "GameGateAccounts",
-            IndexName: "Username-index",
-            KeyConditionExpression: "#username = :User3",
-            ExpressionAttributeNames: {
-                "#username": "Username"
-            },
-            ExpressionAttributeValues: {
-                ":User3": username
+        if(!requesting && (results === null || results.Username !== username)) {
+            // console.log(results);
+            // console.log(results, username);
+            setRequesting(true);
+            var params = {
+                TableName: "GameGateAccounts",
+                IndexName: "Username-index",
+                KeyConditionExpression: "#username = :User3",
+                ExpressionAttributeNames: {
+                    "#username": "Username"
+                },
+                ExpressionAttributeValues: {
+                    ":User3": username
+                }
             }
-        }
-        
-        docClient.query(params, function(err, data) {
-            if(err) {
-                console.log('Could not retrieve information for that user');
-                setError('Could not retrieve information for that user');
-                setPending(false);
-            } else if(data.Count === 0) {
-                console.log('User does not exist');
-                setError('User does not exist');
-                setPending(false);
-            }
-            else {
-                setResults(data.Items[0]);
-                setPending(false);
-                setError(null);
-            }
-        })
+            
+            docClient.query(params, function(err, data) {
+                if(err) {
+                    console.log('Could not retrieve information for that user');
+                    setError('Could not retrieve information for that user');
+                    setPending(false);
+                } else if(data.Count === 0) {
+                    console.log('User does not exist');
+                    setError('User does not exist');
+                    setPending(false);
+                }
+                else {
+                    setResults(data.Items[0]);
+                    setPending(false);
+                    setError(null);
+                }
+            })
 
-        var params3 = {
-            TableName: "Games",
-            IndexName: "Username-index",
-            KeyConditionExpression: "#username = :User3",
-            ExpressionAttributeNames: {
-                "#username": "Username"
-            },
-            ExpressionAttributeValues: {
-                ":User3": username
+            var params3 = {
+                TableName: "Games",
+                IndexName: "Username-index",
+                KeyConditionExpression: "#username = :User3",
+                ExpressionAttributeNames: {
+                    "#username": "Username"
+                },
+                ExpressionAttributeValues: {
+                    ":User3": username
+                }
+            }
+        
+            docClient.query(params3, function(err, data) {
+                if (!err) {
+                    let newReviewInfo = [];
+                    if (data.Count === 0) {
+                        console.log(data);
+                    } else {
+                        console.log(data);
+                    }
+                    for(let i = 0; i < data.Count; i++) {
+                        newReviewInfo.push(data.Items[i]);
+                    }
+                    setReviewInfo(newReviewInfo);
+                } else {
+                    console.log(err);
+                }
+                setRequesting(false);
+            })
+        }
+        console.log(following);
+        if(props.currUserInfo) {
+            checkFollowing();
+        }
+    }, [username, following, props.completion])
+
+    const checkFollowing = () => {
+        // console.log(props.currUserInfo);
+        for(let i of props.currUserInfo.FollowingList) {
+            if(i === username) {
+                setFollowing(true);
             }
         }
-    
-        docClient.query(params3, function(err, data) {
-            if (!err) {
-                let newReviewInfo = [];
-                if (data.Count === 0) {
-                    console.log(data);
-                } else {
-                    console.log(data);
-                }
-                for(let i = 0; i < data.Count; i++) {
-                    newReviewInfo.push(data.Items[i]);
-                }
-                setReviewInfo(newReviewInfo);
-            } else {
-                console.log(err);
-            }
-        })
-    }, [username])
+        // console.log(props.currUserInfo.FollowingList);
+    }
 
      const increaseFollowing = (yourUsername, theirUsername) => { 
         var params2 = {
@@ -137,6 +157,7 @@ const Profile = (props) => {
                 }
             }
         })
+        setFollowing(true);
         increaseFollowers(yourUsername, theirUsername);
     }
 
@@ -312,7 +333,8 @@ const Profile = (props) => {
                     </div>
                     <div>
                         <h2>{username}</h2>
-                        {props.loggedIn && username != props.currUser && <div><button className="list_entry" type="submit" onClick={() => increaseFollowing(props.currUser, username)}>Follow</button></div> }
+                        {!following && props.loggedIn && username != props.currUser && <div><button className="list_entry" type="submit" onClick={() => increaseFollowing(props.currUser, username)}>Follow</button></div> }
+                        {following && props.loggedIn && username != props.currUser && <div><button className="list_entry" type="submit" onClick={() => console.log('unfollow')}>Unfollow</button></div> }
                     </div>
                     <div className="game-stats">
                         <div className="individual-stat-container">
