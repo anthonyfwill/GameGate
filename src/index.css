@@ -380,6 +380,7 @@ color: white;
 .reviews-container {
   display: flex;
   flex-direction: column;
+  text-decoration: none;
 }
 
 .reviews {
@@ -511,3 +512,5 @@ a:link {
 a:visited {
   text-decoration: none;
 }
+
+a { color: inherit; } 
