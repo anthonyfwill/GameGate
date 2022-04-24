@@ -2,6 +2,7 @@ import Review from "./Review";
 import { useParams } from "react-router-dom";
 import * as AWS from 'aws-sdk';
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 var myCredentials = new AWS.CognitoIdentityCredentials({IdentityPoolId:'us-east-1:1f1634e0-e85f-4ffe-a509-ecb75c777309'});
 var myConfig = new AWS.Config({
@@ -368,12 +369,16 @@ const Profile = (props) => {
                     </div>
                     <div className="follow-stats">
                         <div className="individual-stat-container">
-                            <h2>{results.Followers}</h2>
-                            <p>Followers</p>
+                            <Link to={`/followers/${username}`}>
+                                <h2>{results.Followers}</h2>
+                                <p>Followers</p>
+                            </Link>
                         </div>
                         <div className="individual-stat-container">
-                            <h2>{results.Following}</h2>
-                            <p>Following</p>
+                            <Link to={`/following/${username}`}>
+                                <h2>{results.Following}</h2>
+                                <p>Following</p>
+                            </Link>
                         </div>
                     </div>
                 </div>
