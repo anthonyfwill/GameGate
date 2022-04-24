@@ -24,20 +24,32 @@ function App() {
 
   const [loggedIn, setLoggedIn] = useState(false);
   const [currUser, setCurrUser] = useState(null);
+  const [userRetrieval, setUserRetrieval] = useState(false);
   const [currUserInfo, setCurrUserInfo] = useState(null);
+  const [completion, setCompletion] = useState(false);
 
   useEffect(() => {
-    const user = localStorage.getItem("user");
-    async function getLoginInfo() {
-      if(user) {
-        setCurrUserInfo(await JSON.parse(user));
-        setCurrUser(await JSON.parse(user).Username);
-        setLoggedIn(true);
+    if(!userRetrieval) {
+      const user = localStorage.getItem("user");
+      async function getLoginInfo() {
+        if(user) {
+          setUserRetrieval(true);
+          let jsoned = await JSON.parse(user);
+          setCurrUserInfo(jsoned);
+          // setCurrUserInfo(await JSON.parse(user));
+          let parsed = await jsoned.Username;
+          setCurrUser(parsed);
+          setLoggedIn(true);
+          // setCurrUser(await JSON.parse(user).Username);
+          // console.log(jsoned);
+        }
       }
+      getLoginInfo();
+    } else {
+      setCompletion(true);
+      // console.log(currUserInfo);
     }
-
-    getLoginInfo();
-  }, [])
+  }, [currUserInfo])
 
   function logOut() {
     setLoggedIn(false);
@@ -66,11 +78,10 @@ function App() {
             <Home />
           </Route>
           <Route exact path="/profile/:username">
-            <Profile loggedIn={loggedIn} currUser={currUser} setCurrUserInfo={setCurrUserInfo}/>
+            <Profile completion={completion} loggedIn={loggedIn} currUser={currUser} setCurrUserInfo={setCurrUserInfo} currUserInfo={currUserInfo}/>
           </Route>
           <Route exact path="/settings">
-          <Settings currUser={currUser} setCurrUser={setCurrUser} docClient={docClient} setCurrUserInfo={setCurrUserInfo} currUserInfo={currUserInfo}/>
-
+            <Settings currUser={currUser} setCurrUser={setCurrUser} docClient={docClient} setCurrUserInfo={setCurrUserInfo} currUserInfo={currUserInfo}/>
           </Route>
           <Route exact path="/game/:id">
             <GameDetails loggedIn={loggedIn} docClient={docClient} currUser={currUser} currUserInfo={currUserInfo}/>
