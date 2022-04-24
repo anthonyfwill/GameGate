@@ -369,8 +369,10 @@ const Profile = (props) => {
                     </div>
                     <div className="follow-stats">
                         <div className="individual-stat-container">
-                            <h2>{results.Followers}</h2>
-                            <p>Followers</p>
+                            <Link to={`/followers/${username}`}>
+                                <h2>{results.Followers}</h2>
+                                <p>Followers</p>
+                            </Link>
                         </div>
                         <div className="individual-stat-container">
                             <Link to={`/following/${username}`}>

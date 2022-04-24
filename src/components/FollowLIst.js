@@ -29,8 +29,12 @@ export default function FollowList(props) {
                 // setPending(false);
             }
             else {
-                console.log(data.Items[0].FollowingList.values);
-                setFollowList(data.Items[0].FollowingList.values);
+                // console.log(data.Items[0].FollowingList.values);
+                if(props.type === 'following') {
+                    setFollowList(data.Items[0].FollowingList.values);
+                } else {
+                    setFollowList(data.Items[0].FollowersList.values);
+                }
                 // const newResults = [];
                 // for(let i = 0; i < data.Count; i++) {
                 //     newResults.push(data.Items[i]);
