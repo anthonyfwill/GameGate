@@ -10,6 +10,7 @@ import Profile from './components/Profile';
 import { useEffect, useState } from 'react';
 import * as AWS from 'aws-sdk';
 import Settings from './components/Settings';
+import FollowList from './components/FollowList';
 
 var myCredentials = new AWS.CognitoIdentityCredentials({IdentityPoolId:'us-east-1:1f1634e0-e85f-4ffe-a509-ecb75c777309'});
 var myConfig = new AWS.Config({
@@ -85,6 +86,12 @@ function App() {
           </Route>
           <Route exact path="/game/:id">
             <GameDetails loggedIn={loggedIn} docClient={docClient} currUser={currUser} currUserInfo={currUserInfo}/>
+          </Route>
+          <Route exact path="/following/:username">
+            <FollowList type={'following'} docClient={docClient}/>
+          </Route>
+          <Route exact path="/followers/:username">
+            <FollowList type={'follower'} docClient={docClient}/>
           </Route>
         </Switch>
       </div>
