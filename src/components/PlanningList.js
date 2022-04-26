@@ -52,9 +52,7 @@ export default function PlanningList(props) {
                     // <Link to={`/game/${val}`} key={val}>
                     <p key={val}>{val}</p>
                     // </Link>
-                    // <FollowElement username={val} key={val}/>
                     )
-                    // return <p key={val}>{val}</p>
                 })
             }
         </div>

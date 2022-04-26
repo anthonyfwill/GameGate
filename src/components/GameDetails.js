@@ -10,6 +10,40 @@ const GameDetails = (props) => {
     const [reviewOpened, setReviewOpened] = useState(false);
     const [reviewText, setReviewText] = useState('');
     const [reviewScore, setReviewScore] = useState('');
+    const [planning, setPlanning] = useState(false);
+
+    useEffect(() => {
+        if(props.currUserInfo) {
+            // console.log(props.currUserInfo);
+            checkPlanning();
+            // console.log(props.currUserInfo);
+            // console.log(results);
+        }
+    }, [props.completion, results]);
+
+    function checkPlanning() {
+        // console.log('not amazing');
+        // console.log(props.currUserInfo);
+        if(props.currUserInfo.PlanningGames != undefined && results != undefined) {
+            if(typeof(props.currUserInfo.PlanningGames.values) !== typeof(props.currUserInfo.PlanningGames)) {
+                for(let i of props.currUserInfo.PlanningGames) {
+                    // console.log(i);
+                    if(i === results[0].name) {
+                        console.log(i);
+                        setPlanning(true);
+                    }
+                }
+            } else {
+                for(let i of props.currUserInfo.PlanningGames.values) {
+                    // console.log
+                    if(i === results[0].name) {
+                        console.log(i);
+                        setPlanning(true);
+                    }
+                }
+            }
+        }
+    }
 
     function combineAll(array) {
         const output = [];
@@ -229,7 +263,13 @@ const GameDetails = (props) => {
                             if (err) {
                                 console.log(err);
                             } else {
-                                console.log(data);
+                                // console.log(data);
+                                let newInfo = Object.assign({}, props.currUserInfo);
+                                newInfo.Planning = data.Attributes.Planning;
+                                newInfo.PlanningGames = data.Attributes.PlanningGames;
+                                props.setCurrUserInfo(newInfo);
+                                localStorage.setItem('user', JSON.stringify(newInfo));
+                                console.log(newInfo);
                                 console.log("The game added to PlanningGames is:", gameName);
                             }
                         });
@@ -237,9 +277,11 @@ const GameDetails = (props) => {
                 }
             }
         })
-        removeCompletedGame(yourUsername, gameName);
-        removeCurrentGame(yourUsername, gameName);
-        removeDroppedGame(yourUsername, gameName);
+        setPlanning(true);
+        console.log(planning);
+        // removeCompletedGame(yourUsername, gameName);
+        // removeCurrentGame(yourUsername, gameName);
+        // removeDroppedGame(yourUsername, gameName);
     }
 
     function removePlanningGame(yourUsername, gameName) { 
@@ -284,14 +326,21 @@ const GameDetails = (props) => {
                             if (err) {
                                 console.log(err);
                             } else {
-                                console.log(data);
+                                // console.log(data);
                                 console.log("The game removed from PlanningGames is:", gameName);
+                                let newInfo = Object.assign({}, props.currUserInfo);
+                                newInfo.Planning = data.Attributes.Planning;
+                                newInfo.PlanningGames = data.Attributes.PlanningGames;
+                                props.setCurrUserInfo(newInfo);
+                                localStorage.setItem('user', JSON.stringify(newInfo));
+                                console.log(newInfo);
                             }
                         });
                     })
                 }
             }
         })
+        setPlanning(false);
     }
 
     function completedGames(yourUsername, gameName) { 
@@ -623,7 +672,8 @@ const GameDetails = (props) => {
                 <div className="new-child">
                     <div className="coverTitleContainer">
                         <img className="coverArt" src={`https:${results[0].cover.url}`} alt="Game cover art"/>
-                        {props.loggedIn && <button type="button" className="list_entry" onClick={() => planningGames(props.currUser, results[0].name)}>Planning</button>}
+                        {!planning && props.loggedIn && <button type="button" className="list_entry" onClick={() => planningGames(props.currUser, results[0].name)}>Planning</button>}
+                        {planning && props.loggedIn && <button type="button" className="list_entry" onClick={() => removePlanningGame(props.currUser, results[0].name)}>Remove from Planning</button>}
                         {props.loggedIn && <button type="button" className="list_entry" onClick={() => currentGames(props.currUser, results[0].name)}>Playing</button>}
                         {props.loggedIn && <button type="button" className="list_entry" onClick={() => completedGames(props.currUser, results[0].name)}>Completed</button>}
                         {props.loggedIn && <button type="button" className="list_entry" onClick={() => droppedGames(props.currUser, results[0].name)}>Dropped</button>}
