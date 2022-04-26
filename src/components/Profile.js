@@ -89,29 +89,36 @@ const Profile = (props) => {
         }
         console.log(following);
         if(props.currUserInfo) {
-            console.log(props.currUserInfo);
+            // console.log(props.currUserInfo);
             checkFollowing();
+            console.log(props.currUserInfo);
         }
-    }, [username, following, props.completion])
+    }, [username, props.completion])
 
     const checkFollowing = () => {
         // console.log(props.currUserInfo);
-        console.log(typeof(props.currUserInfo.FollowingList.values));
-        console.log(typeof(props.currUserInfo.FollowingList));
-        if(typeof(props.currUserInfo.FollowingList.values) !== typeof(props.currUserInfo.FollowingList)) {
-            console.log('here');
-            for(let i of props.currUserInfo.FollowingList) {
-                if(i === username) {
-                    setFollowing(true);
+        // console.log(typeof(props.currUserInfo.FollowingList.values));
+        // console.log(typeof(props.currUserInfo.FollowingList));
+        if(props.currUserInfo.FollowingList != undefined) {
+            if(typeof(props.currUserInfo.FollowingList.values) !== typeof(props.currUserInfo.FollowingList)) {
+                // console.log('here');
+                for(let i of props.currUserInfo.FollowingList) {
+                    if(i === username) {
+                        console.log(i);
+                        setFollowing(true);
+                    }
+                }
+            } else {
+                for(let i of props.currUserInfo.FollowingList.values) {
+                    if(i === username) {
+                        // console.log('here');
+                        console.log(props.currUserInfo);
+                        setFollowing(true);
+                    }
                 }
             }
-        } else {
-            for(let i of props.currUserInfo.FollowingList.values) {
-                if(i === username) {
-                    setFollowing(true);
-                }
-            }
-        } 
+        }
+        console.log(following);
         // console.log(props.currUserInfo.FollowingList);
     }
 
@@ -218,14 +225,21 @@ const Profile = (props) => {
                             if (err) {
                                 console.log(err);
                             } else {
-                                console.log(data);
+                                // console.log(data);
                                 console.log("Decreased the following count of", username);
+                                let newInfo = Object.assign({}, props.currUserInfo);
+                                newInfo.Following = data.Attributes.Following;
+                                newInfo.FollowingList = data.Attributes.FollowingList;
+                                props.setCurrUserInfo(newInfo);
+                                localStorage.setItem('user', JSON.stringify(newInfo));
+                                console.log(newInfo);
                             }
                         });
                     })
                 }
             }
         })
+        setFollowing(false);
         decreaseFollowers(yourUsername, theirUsername);
     }
 
@@ -245,9 +259,9 @@ const Profile = (props) => {
         docClient.query(params2, function(err, data) {
             if (!err) {
                 if (data.Count === 0) {
-                    console.log(data);
+                    // console.log(data);
                 } else {
-                    console.log(data);
+                    // console.log(data);
                     data.Items.forEach(item => {
                         var params1 = {
                             TableName:"GameGateAccounts",
@@ -347,11 +361,11 @@ const Profile = (props) => {
                     <div>
                         <h2>{username}</h2>
                         {!following && props.loggedIn && username != props.currUser && <div><button className="list_entry" type="submit" onClick={() => increaseFollowing(props.currUser, username)}>Follow</button></div> }
-                        {following && props.loggedIn && username != props.currUser && <div><button className="list_entry" type="submit" onClick={() => console.log('unfollow')}>Unfollow</button></div> }
+                        {following && props.loggedIn && username != props.currUser && <div><button className="list_entry" type="submit" onClick={() => decreaseFollowing(props.currUser, username)}>Unfollow</button></div> }
                     </div>
                     <div className="game-stats">
                         <div className="individual-stat-container">
-                            <h2>{results.Current}</h2>
+                            <h2>{results.CurrentG}</h2>
                             <p>Current</p>
                         </div>
                         <div className="individual-stat-container">
