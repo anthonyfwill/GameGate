@@ -6,7 +6,7 @@ import Review from "./Review";
 const GameDetails = (props) => {
     const { id } = useParams();
 
-    const { results, isPending, error, reviewInfo, setReviewInfo } = useFetch(id, props.docClient);
+    const { results, isPending, error, reviewInfo, setReviewInfo, score, setScore } = useFetch(id, props.docClient);
     const [reviewOpened, setReviewOpened] = useState(false);
     const [reviewText, setReviewText] = useState('');
     const [reviewScore, setReviewScore] = useState('');
@@ -211,6 +211,8 @@ const GameDetails = (props) => {
                         ProfilePic: profPic
                     });
                 }
+                // console.log(moreReviewInfo);
+                updateScore(moreReviewInfo);
                 setReviewInfo(moreReviewInfo);
                 setReviewScore('');
                 setReviewText('');
@@ -219,6 +221,16 @@ const GameDetails = (props) => {
             }
         })
         //update the list of reviews for game and user tables
+    }
+
+    function updateScore(moreReviewInfo) {
+        let newScore = 0;
+        for(let i = 0; i < moreReviewInfo.length; i++) {
+            newScore += parseInt(moreReviewInfo[i].Rating);
+        }
+        newScore = newScore / moreReviewInfo.length;
+        setScore(newScore);
+        // console.log(newScore);
     }
 
     function planningGames(yourUsername, gameName) { 
@@ -684,6 +696,7 @@ const GameDetails = (props) => {
                         <p>Platforms: {combineAll(results[0].platforms)}</p>
                         <p>{results[0].summary}</p>
                         <p>Genres: {combineAll(results[0].genres)}</p>
+                        <h2>Average Rating: {score}</h2>
                     </div>
                 </div> }
                 <div className="game-reviews">
