@@ -79,6 +79,7 @@ const useFetch = (id ,docClient) => {
                         }
                         totalScore = totalScore / data.Count;
                     }
+                    totalScore = Math.round(totalScore * 100) / 100;
                     // console.log(totalScore);
                     // console.log(newReviewInfo);
                     // results[0].averageRating = totalScore;

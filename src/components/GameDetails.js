@@ -229,6 +229,7 @@ const GameDetails = (props) => {
             newScore += parseInt(moreReviewInfo[i].Rating);
         }
         newScore = newScore / moreReviewInfo.length;
+        newScore = Math.round(newScore * 100) / 100;
         setScore(newScore);
         // console.log(newScore);
     }
