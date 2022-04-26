@@ -11,6 +11,7 @@ const useFetch = (id ,docClient) => {
     const [isPending, setPending] = useState(true);
     const [error, setError] = useState(null);
     const [reviewInfo, setReviewInfo] = useState([]);
+    const [score, setScore] = useState(null);
 
     useEffect(() => {
         var myHeaders = new Headers();
@@ -66,11 +67,24 @@ const useFetch = (id ,docClient) => {
                     } else {
                         console.log(data);
                     }
-                    for(let i = 0; i < data.Count; i++) {
-                        newReviewInfo.push(data.Items[i]);
+                    let totalScore = 0;
+                    if(data.Count === 0) {
+                        totalScore = 'No Ratings';
                     }
+                    else{
+                        for(let i = 0; i < data.Count; i++) {
+                            totalScore += parseInt(data.Items[i].Rating);
+                            // console.log(totalScore);
+                            newReviewInfo.push(data.Items[i]);
+                        }
+                        totalScore = totalScore / data.Count;
+                    }
+                    // console.log(totalScore);
+                    // console.log(newReviewInfo);
+                    // results[0].averageRating = totalScore;
+                    setScore(totalScore);
                     setReviewInfo(newReviewInfo);
-                    console.log(newReviewInfo);
+                    // console.log(newReviewInfo);
                 } else {
                     console.log(err);
                 }
@@ -83,7 +97,7 @@ const useFetch = (id ,docClient) => {
         });
     }, []);
 
-    return { results, isPending, error, reviewInfo, setReviewInfo };
+    return { results, isPending, error, reviewInfo, setReviewInfo, score, setScore };
 }
 
 export default useFetch;
