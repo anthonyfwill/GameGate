@@ -90,11 +90,7 @@ const Register = (props) => {
                                         "Dropped": 0,
                                         "Planning": 0,
                                         "Followers": 0,
-                                        "Following": 0,
-                                        "CurrentGames": [],
-                                        "CompletedGames": [],
-                                        "DroppedGames": [],
-                                        "PlanningGames": []
+                                        "Following": 0
                                     }
                                 }
                                 props.docClient.put(params2, function(err, data2) {

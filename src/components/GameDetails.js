@@ -212,13 +212,13 @@ const GameDetails = (props) => {
                                 Key:{
                                 "Email": item.Email,
                             },
-                            UpdateExpression: "SET #pg = list_append(#pg, :gameList), Planning = Planning + :val" ,
+                            UpdateExpression: "ADD #pg :gameList SET Planning = Planning + :val" ,
                             ConditionExpression: "not contains(#pg, :gameString)",
                             ExpressionAttributeNames: {
                                 "#pg": "PlanningGames"
                             },
                             ExpressionAttributeValues:{
-                                ":gameList": [gameName],
+                                ":gameList": props.docClient.createSet([gameName]),
                                 ":gameString": gameName,
                                 ":val": 1,
                             },
@@ -231,6 +231,61 @@ const GameDetails = (props) => {
                             } else {
                                 console.log(data);
                                 console.log("The game added to PlanningGames is:", gameName);
+                            }
+                        });
+                    })
+                }
+            }
+        })
+        removeCompletedGame(yourUsername, gameName);
+        removeCurrentGame(yourUsername, gameName);
+        removeDroppedGame(yourUsername, gameName);
+    }
+
+    function removePlanningGame(yourUsername, gameName) { 
+        var params2 = {
+            TableName: "GameGateAccounts",
+            IndexName: "Username-index",
+            KeyConditionExpression: "#username = :User3",
+            ExpressionAttributeNames: {
+                "#username": "Username"
+            },
+            ExpressionAttributeValues: {
+                ":User3": yourUsername
+            }
+        }
+    
+        props.docClient.query(params2, function(err, data) {
+            if (!err) {
+                if (data.Count === 0) {
+                    console.log(data);
+                } else {
+                    console.log(data);
+                    data.Items.forEach(item => {
+                        var params1 = {
+                            TableName:"GameGateAccounts",
+                                Key:{
+                                "Email": item.Email,
+                            },
+                            UpdateExpression: "DELETE #pg :gameList SET Planning = Planning - :val" ,
+                            ConditionExpression: "contains(#pg, :gameString)",
+                            ExpressionAttributeNames: {
+                                "#pg": "PlanningGames"
+                            },
+                            ExpressionAttributeValues:{
+                                ":gameList": props.docClient.createSet([gameName]),
+                                ":gameString": gameName,
+                                ":val": 1,
+                            },
+                            ReturnValues:"UPDATED_NEW"
+                        };
+                        console.log(item);
+                        props.docClient.update(params1, function(err, data) {
+                            if (err) {
+                                console.log(err);
+                            } else {
+                                console.log(data);
+                                console.log("The game removed from PlanningGames is:", gameName);
                             }
                         });
                     })
@@ -264,13 +319,13 @@ const GameDetails = (props) => {
                                 Key:{
                                 "Email": item.Email,
                             },
-                            UpdateExpression: "SET #cg = list_append(#cg, :gameList), Completed = Completed + :val" ,
+                            UpdateExpression: "ADD #cg :gameList SET Completed = Completed + :val" ,
                             ConditionExpression: "not contains(#cg, :gameString)",
                             ExpressionAttributeNames: {
                                 "#cg": "CompletedGames"
                             },
                             ExpressionAttributeValues:{
-                                ":gameList": [gameName],
+                                ":gameList": props.docClient.createSet([gameName]),
                                 ":gameString": gameName,
                                 ":val": 1,
                             },
@@ -283,6 +338,61 @@ const GameDetails = (props) => {
                             } else {
                                 console.log(data);
                                 console.log("The game added to CompletedGames is:", gameName);
+                            }
+                        });
+                    })
+                }
+            }
+        })
+        removePlanningGame(yourUsername, gameName);
+        removeCurrentGame(yourUsername, gameName);
+        removeDroppedGame(yourUsername, gameName);
+    }
+
+    function removeCompletedGame(yourUsername, gameName) { 
+        var params2 = {
+            TableName: "GameGateAccounts",
+            IndexName: "Username-index",
+            KeyConditionExpression: "#username = :User3",
+            ExpressionAttributeNames: {
+                "#username": "Username"
+            },
+            ExpressionAttributeValues: {
+                ":User3": yourUsername
+            }
+        }
+    
+        props.docClient.query(params2, function(err, data) {
+            if (!err) {
+                if (data.Count === 0) {
+                    console.log(data);
+                } else {
+                    console.log(data);
+                    data.Items.forEach(item => {
+                        var params1 = {
+                            TableName:"GameGateAccounts",
+                                Key:{
+                                "Email": item.Email,
+                            },
+                            UpdateExpression: "DELETE #cg :gameList SET Completed = Completed - :val" ,
+                            ConditionExpression: "contains(#cg, :gameString)",
+                            ExpressionAttributeNames: {
+                                "#cg": "CompletedGames"
+                            },
+                            ExpressionAttributeValues:{
+                                ":gameList": props.docClient.createSet([gameName]),
+                                ":gameString": gameName,
+                                ":val": 1,
+                            },
+                            ReturnValues:"UPDATED_NEW"
+                        };
+                        console.log(item);
+                        props.docClient.update(params1, function(err, data) {
+                            if (err) {
+                                console.log(err);
+                            } else {
+                                console.log(data);
+                                console.log("The game removed from CompletedGames is:", gameName);
                             }
                         });
                     })
@@ -316,13 +426,13 @@ const GameDetails = (props) => {
                                 Key:{
                                 "Email": item.Email,
                             },
-                            UpdateExpression: "SET #cg = list_append(#cg, :gameList), Current = Current + :val" ,
+                            UpdateExpression: "ADD #cg :gameList SET CurrentG = CurrentG + :val" ,
                             ConditionExpression: "not contains(#cg, :gameString)",
                             ExpressionAttributeNames: {
                                 "#cg": "CurrentGames"
                             },
                             ExpressionAttributeValues:{
-                                ":gameList": [gameName],
+                                ":gameList": props.docClient.createSet([gameName]),
                                 ":gameString": gameName,
                                 ":val": 1,
                             },
@@ -335,6 +445,61 @@ const GameDetails = (props) => {
                             } else {
                                 console.log(data);
                                 console.log("The game added to CurrentGames is:", gameName);
+                            }
+                        });
+                    })
+                }
+            }
+        })
+        removePlanningGame(yourUsername, gameName);
+        removeCompletedGame(yourUsername, gameName);
+        removeDroppedGame(yourUsername, gameName);
+    }
+
+    function removeCurrentGame(yourUsername, gameName) { 
+        var params2 = {
+            TableName: "GameGateAccounts",
+            IndexName: "Username-index",
+            KeyConditionExpression: "#username = :User3",
+            ExpressionAttributeNames: {
+                "#username": "Username"
+            },
+            ExpressionAttributeValues: {
+                ":User3": yourUsername
+            }
+        }
+    
+        props.docClient.query(params2, function(err, data) {
+            if (!err) {
+                if (data.Count === 0) {
+                    console.log(data);
+                } else {
+                    console.log(data);
+                    data.Items.forEach(item => {
+                        var params1 = {
+                            TableName:"GameGateAccounts",
+                                Key:{
+                                "Email": item.Email,
+                            },
+                            UpdateExpression: "DELETE #cg :gameList SET CurrentG = CurrentG - :val" ,
+                            ConditionExpression: "contains(#cg, :gameString)",
+                            ExpressionAttributeNames: {
+                                "#cg": "CurrentGames"
+                            },
+                            ExpressionAttributeValues:{
+                                ":gameList": props.docClient.createSet([gameName]),
+                                ":gameString": gameName,
+                                ":val": 1,
+                            },
+                            ReturnValues:"UPDATED_NEW"
+                        };
+                        console.log(item);
+                        props.docClient.update(params1, function(err, data) {
+                            if (err) {
+                                console.log(err);
+                            } else {
+                                console.log(data);
+                                console.log("The game dropped from CurrentGames is:", gameName);
                             }
                         });
                     })
@@ -368,13 +533,13 @@ const GameDetails = (props) => {
                                 Key:{
                                 "Email": item.Email,
                             },
-                            UpdateExpression: "SET #dg = list_append(#dg, :gameList), Dropped = Dropped + :val" ,
+                            UpdateExpression: "ADD #dg :gameList SET Dropped = Dropped + :val" ,
                             ConditionExpression: "not contains(#dg, :gameString)",
                             ExpressionAttributeNames: {
                                 "#dg": "DroppedGames"
                             },
                             ExpressionAttributeValues:{
-                                ":gameList": [gameName],
+                                ":gameList": props.docClient.createSet([gameName]),
                                 ":gameString": gameName,
                                 ":val": 1,
                             },
@@ -387,6 +552,61 @@ const GameDetails = (props) => {
                             } else {
                                 console.log(data);
                                 console.log("The game added to DroppedGames is:", gameName);
+                            }
+                        });
+                    })
+                }
+            }
+        })
+        removePlanningGame(yourUsername, gameName);
+        removeCompletedGame(yourUsername, gameName);
+        removeCurrentGame(yourUsername, gameName);
+    }
+
+    function removeDroppedGame(yourUsername, gameName) { 
+        var params2 = {
+            TableName: "GameGateAccounts",
+            IndexName: "Username-index",
+            KeyConditionExpression: "#username = :User3",
+            ExpressionAttributeNames: {
+                "#username": "Username"
+            },
+            ExpressionAttributeValues: {
+                ":User3": yourUsername
+            }
+        }
+    
+        props.docClient.query(params2, function(err, data) {
+            if (!err) {
+                if (data.Count === 0) {
+                    console.log(data);
+                } else {
+                    console.log(data);
+                    data.Items.forEach(item => {
+                        var params1 = {
+                            TableName:"GameGateAccounts",
+                                Key:{
+                                "Email": item.Email,
+                            },
+                            UpdateExpression: "DELETE #dg :gameList SET Dropped = Dropped - :val" ,
+                            ConditionExpression: "contains(#dg, :gameString)",
+                            ExpressionAttributeNames: {
+                                "#dg": "DroppedGames"
+                            },
+                            ExpressionAttributeValues:{
+                                ":gameList": props.docClient.createSet([gameName]),
+                                ":gameString": gameName,
+                                ":val": 1,
+                            },
+                            ReturnValues:"UPDATED_NEW"
+                        };
+                        console.log(item);
+                        props.docClient.update(params1, function(err, data) {
+                            if (err) {
+                                console.log(err);
+                            } else {
+                                console.log(data);
+                                console.log("The game dropped from DroppedGames is:", gameName);
                             }
                         });
                     })

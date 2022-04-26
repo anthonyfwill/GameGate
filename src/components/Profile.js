@@ -365,7 +365,7 @@ const Profile = (props) => {
                     </div>
                     <div className="game-stats">
                         <div className="individual-stat-container">
-                            <h2>{results.Current}</h2>
+                            <h2>{results.CurrentG}</h2>
                             <p>Current</p>
                         </div>
                         <div className="individual-stat-container">
