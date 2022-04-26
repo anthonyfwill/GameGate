@@ -377,8 +377,10 @@ const Profile = (props) => {
                             <p>Dropped</p>
                         </div>
                         <div className="individual-stat-container">
-                            <h2>{results.Planning}</h2>
-                            <p>Planning</p>
+                            <Link to={`/planning/${username}`}>
+                                <h2>{results.Planning}</h2>
+                                <p>Planning</p>
+                            </Link>
                         </div>
                     </div>
                     <div className="follow-stats">
