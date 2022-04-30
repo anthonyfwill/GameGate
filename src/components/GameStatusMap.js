@@ -3,7 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import GameStatus from "./GameStatus";
 
 
-export default function PlanningList(props) {
+export default function GameStatusMap(props) {
     const {username} = useParams();
     const [planningMap, setPlanningMap] = useState({});
 
@@ -35,12 +35,20 @@ export default function PlanningList(props) {
                 console.log('Could not retrieve user');
             } else {
                 if (data.Items.length !== 0) {
-                    //if (props.type === "planning") {
+                    if (props.type === "planning") {
                         setPlanningMap(data.Items[0].PlanningGames);
                         console.log(props.type);
-                    //}
+                    } else if (props.type === "currentG") {
+                        setPlanningMap(data.Items[0].CurrentGames);
+                        console.log(props.type);
+                    } else if (props.type === "completed") {
+                        setPlanningMap(data.Items[0].CompletedGames);
+                        console.log(props.type);
+                    } else if (props.type === "dropped") {
+                        setPlanningMap(data.Items[0].DroppedGames);
+                        console.log(props.type);
+                    }
                 }
-                console.log(data.Items[0].PlanningGames);
             }
         })
     }
@@ -48,7 +56,6 @@ export default function PlanningList(props) {
     return (
         <div className="plannings">
             {Object.entries(planningMap).map(item => {
-            {console.log(item[1].GameName, "render planning")}
                 return (
                     <Link to={`/game/${item[1].GameID}`} key={item[1].GameID}>
                         <GameStatus GameName={item[1].GameName} GameCover={item[1].GameCover}/>

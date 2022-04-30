@@ -2,6 +2,9 @@ import React from "react";
 
 export default function FollowElement(props) {
     return (
-        <p>{props.username}</p>
+        <div>
+            <img id="pfp" src={props.ProfilePicture}/>
+            <p>{props.Username}</p>
+        </div>
     )
 }
