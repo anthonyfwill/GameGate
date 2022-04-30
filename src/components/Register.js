@@ -90,7 +90,9 @@ const Register = (props) => {
                                         "Dropped": 0,
                                         "Planning": 0,
                                         "Followers": 0,
-                                        "Following": 0
+                                        "Following": 0,
+                                        "FollowersMap": {},
+                                        "FollowingMap": {}
                                     }
                                 }
                                 props.docClient.put(params2, function(err, data2) {

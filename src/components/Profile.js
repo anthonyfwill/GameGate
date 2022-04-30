@@ -20,6 +20,7 @@ const Profile = (props) => {
     const [error, setError] = useState(null);
     const [reviewInfo, setReviewInfo] = useState([]);
     const [following, setFollowing] = useState(false);
+    const [notFollowing, setNotFollowing] = useState(false);
 
     const {username} = useParams();
 
@@ -95,19 +96,19 @@ const Profile = (props) => {
         }
     }, [username, props.completion])
 
-    const checkFollowing = () => {
+    const checkFollowing =  async () => {
         // console.log(props.currUserInfo);
-        // console.log(typeof(props.currUserInfo.FollowingList.values));
-        // console.log(typeof(props.currUserInfo.FollowingList));
-        if(props.currUserInfo.FollowingList != undefined) {
-            if(typeof(props.currUserInfo.FollowingList.values) !== typeof(props.currUserInfo.FollowingList)) {
+        // console.log(typeof(props.currUserInfo.FollowingMap.values));
+        // console.log(typeof(props.currUserInfo.FollowingMap));
+        /*if(props.currUserInfo.FollowingMap != undefined) {
+            if(typeof(props.currUserInfo.FollowingMap.values) !== typeof(props.currUserInfo.FollowingMap)) {
                 // console.log('here');
-                for(let i of props.currUserInfo.FollowingList) {
-                    if(i === username) {
-                        console.log(i);
+                props.currUserInfo.FollowingMap.forEach((usernameInfo, userEmail) => {
+                    if(usernameInfo.Username === username) {
+                        console.log(usernameInfo);
                         setFollowing(true);
                     }
-                }
+                })
             } else {
                 for(let i of props.currUserInfo.FollowingList.values) {
                     if(i === username) {
@@ -117,12 +118,15 @@ const Profile = (props) => {
                     }
                 }
             }
-        }
-        console.log(following);
-        // console.log(props.currUserInfo.FollowingList);
+        }*/
+        await findUser();
+
+
+        //console.log(props.currUserInfo.FollowingMap.Username, "yes");
+        //console.log(props.currUserInfo.FollowingMap, "yes");
     }
 
-     const increaseFollowing = (yourUsername, theirUsername) => { 
+    const findUser = () => {
         var params2 = {
             TableName: "GameGateAccounts",
             IndexName: "Username-index",
@@ -131,7 +135,64 @@ const Profile = (props) => {
                 "#username": "Username"
             },
             ExpressionAttributeValues: {
-                ":User3": yourUsername
+                ":User3": username
+            }
+        }
+    
+        const data2 = docClient.query(params2, function(err, data) {
+            if (!err) {
+                if (data.Count === 0) {
+                    console.log(data);
+                } else {
+                    console.log(data);
+                    data.Items.forEach(item => {
+                        followingStatus(item);
+                    })
+                }
+            }
+        })
+    }
+
+    const followingStatus = (item) => {
+        var params1 = {
+            TableName:"GameGateAccounts",
+            KeyConditionExpression: "#email = :email3",
+            FilterExpression: "attribute_exists(#fl.#userN.Username)",
+            ExpressionAttributeNames: {
+                "#email": "Email",
+                "#fl": "FollowingMap",
+                "#userN": item.Email
+            },
+            ExpressionAttributeValues: {
+                ":email3": props.currUserInfo.Email
+            }
+        };
+        console.log(item);
+        docClient.query(params1, function(err, data) {
+            if (err) {
+                console.log(err);
+            } else {
+                console.log(data, "working");
+                console.log(following);
+                if (data.Items.length !== 0) {
+                    console.log("went through");
+                    setFollowing(true);
+                    console.log(following);
+                }
+            }
+        });
+    }
+
+     const increaseFollowing = (yourUsername, theirUsername, yourProfilePicture, theirProfilePicture) => { 
+        var params2 = {
+            TableName: "GameGateAccounts",
+            IndexName: "Username-index",
+            KeyConditionExpression: "#username = :User3",
+            ExpressionAttributeNames: {
+                "#username": "Username"
+            },
+            ExpressionAttributeValues: {
+                ":User3": theirUsername
             }
         }
     
@@ -145,16 +206,19 @@ const Profile = (props) => {
                         var params1 = {
                             TableName:"GameGateAccounts",
                                 Key:{
-                                "Email": item.Email,
+                                "Email": props.currUserInfo.Email,
                             },
-                            UpdateExpression: "ADD #fl :userViewedNameList SET Following = Following + :val",
-                            ConditionExpression: "not contains(#fl, :userViewedNameString)",
+                            UpdateExpression: "SET #fl.#userN = :userViewedName, Following = Following + :val",
+                            ConditionExpression: "attribute_not_exists(#fl.#userN.Username)",
                             ExpressionAttributeNames: {
-                                "#fl": "FollowingList"
+                                "#fl": "FollowingMap",
+                                "#userN": item.Email
                             },
                             ExpressionAttributeValues:{
-                                ":userViewedNameList": docClient.createSet([theirUsername]),
-                                ":userViewedNameString": theirUsername,
+                                ":userViewedName":{
+                                    "Username": theirUsername,
+                                    "ProfilePicture": theirProfilePicture
+                                },
                                 ":val": 1
                             },
                             ReturnValues:"UPDATED_NEW"
@@ -166,11 +230,11 @@ const Profile = (props) => {
                             } else {
                                 let newInfo = Object.assign({}, props.currUserInfo);
                                 newInfo.Following = data.Attributes.Following;
-                                newInfo.FollowingList = data.Attributes.FollowingList;
+                                newInfo.FollowingMap = data.Attributes.FollowingMap;
                                 props.setCurrUserInfo(newInfo);
                                 localStorage.setItem('user', JSON.stringify(newInfo));
                                 console.log(newInfo);
-                                console.log("Increased the following count of", username);
+                                console.log("Increased the following count of", yourUsername);
                             }
                         });
                     })
@@ -178,12 +242,12 @@ const Profile = (props) => {
             }
         })
         setFollowing(true);
-        increaseFollowers(yourUsername, theirUsername);
+        increaseFollowers(yourUsername, theirUsername, yourProfilePicture);
     }
 
 
 
-    const decreaseFollowing = (yourUsername, theirUsername) => { 
+    const decreaseFollowing = (yourUsername, theirUsername, yourProfilePicture, theirProfilePicture) => { 
         var params2 = {
             TableName: "GameGateAccounts",
             IndexName: "Username-index",
@@ -192,7 +256,7 @@ const Profile = (props) => {
                 "#username": "Username"
             },
             ExpressionAttributeValues: {
-                ":User3": yourUsername
+                ":User3": theirUsername
             }
         }
     
@@ -206,16 +270,15 @@ const Profile = (props) => {
                         var params1 = {
                             TableName:"GameGateAccounts",
                                 Key:{
-                                "Email": item.Email,
+                                "Email": props.currUserInfo.Email,
                             },
-                            UpdateExpression: "DELETE #fl :userViewedNameList SET Following = Following - :val",
-                            ConditionExpression: "contains(#fl, :userViewedNameString)",
+                            UpdateExpression: "REMOVE #fl.#userN SET Following = Following - :val",
+                            ConditionExpression: "attribute_exists(#fl.#userN.Username)",
                             ExpressionAttributeNames: {
-                                "#fl": "FollowingList"
+                                "#fl": "FollowingMap",
+                                "#userN": item.Email
                             },
                             ExpressionAttributeValues:{
-                                ":userViewedNameList": docClient.createSet([theirUsername]),
-                                ":userViewedNameString": theirUsername,
                                 ":val": 1
                             },
                             ReturnValues:"UPDATED_NEW"
@@ -226,10 +289,10 @@ const Profile = (props) => {
                                 console.log(err);
                             } else {
                                 // console.log(data);
-                                console.log("Decreased the following count of", username);
+                                console.log("Decreased the following count of", yourUsername);
                                 let newInfo = Object.assign({}, props.currUserInfo);
                                 newInfo.Following = data.Attributes.Following;
-                                newInfo.FollowingList = data.Attributes.FollowingList;
+                                newInfo.FollowingMap = data.Attributes.FollowingMap;
                                 props.setCurrUserInfo(newInfo);
                                 localStorage.setItem('user', JSON.stringify(newInfo));
                                 console.log(newInfo);
@@ -240,10 +303,10 @@ const Profile = (props) => {
             }
         })
         setFollowing(false);
-        decreaseFollowers(yourUsername, theirUsername);
+        decreaseFollowers(yourUsername, theirUsername, yourProfilePicture);
     }
 
-     const increaseFollowers = (yourUsername, viewedUsername) => {  
+    const increaseFollowers = (yourUsername, viewedUsername, yourProfilePicture) => {  
         var params2 = {
             TableName: "GameGateAccounts",
             IndexName: "Username-index",
@@ -268,14 +331,17 @@ const Profile = (props) => {
                                 Key:{
                                 "Email": item.Email,
                             },
-                            UpdateExpression: "ADD #fl :yourUsernameList SET Followers = Followers + :val",
-                            ConditionExpression: "not contains(#fl, :yourUsernameString)",
+                            UpdateExpression: "SET #fl.#userN = :yourUsername, Followers = Followers + :val",
+                            ConditionExpression: "attribute_not_exists(#fl.#userN.Username)",
                             ExpressionAttributeNames: {
-                                "#fl": "FollowersList"
+                                "#fl": "FollowersMap",
+                                "#userN": props.currUserInfo.Email
                             },
                             ExpressionAttributeValues:{
-                                ":yourUsernameList": docClient.createSet([yourUsername]),
-                                ":yourUsernameString": yourUsername,
+                                ":yourUsername":{
+                                    "Username": yourUsername,
+                                    "ProfilePicture": yourProfilePicture
+                                },
                                 ":val": 1
                             },
                             ReturnValues:"UPDATED_NEW"
@@ -296,7 +362,7 @@ const Profile = (props) => {
     }
 
     
-    const decreaseFollowers = (yourUsername, viewedUsername) => { 
+    const decreaseFollowers = (yourUsername, viewedUsername, yourProfilePicture) => { 
         var params2 = {
             TableName: "GameGateAccounts",
             IndexName: "Username-index",
@@ -312,23 +378,22 @@ const Profile = (props) => {
         docClient.query(params2, function(err, data) {
             if (!err) {
                 if (data.Count === 0) {
-                    console.log(data);
+                    // console.log(data);
                 } else {
-                    console.log(data);
+                    // console.log(data);
                     data.Items.forEach(item => {
                         var params1 = {
                             TableName:"GameGateAccounts",
                                 Key:{
                                 "Email": item.Email,
                             },
-                            UpdateExpression: "DELETE #fl :yourUsernameList SET Followers = Followers - :val",
-                            ConditionExpression: "contains(#fl, :yourUsernameString)",
+                            UpdateExpression: "REMOVE #fl.#userN SET Followers = Followers - :val",
+                            ConditionExpression: "attribute_exists(#fl.#userN.Username)",
                             ExpressionAttributeNames: {
-                                "#fl": "FollowersList"
+                                "#fl": "FollowersMap",
+                                "#userN": props.currUserInfo.Email
                             },
                             ExpressionAttributeValues:{
-                                ":yourUsernameList": docClient.createSet([yourUsername]),
-                                ":yourUsernameString": yourUsername,
                                 ":val": 1
                             },
                             ReturnValues:"UPDATED_NEW"
@@ -360,21 +425,28 @@ const Profile = (props) => {
                     </div>
                     <div>
                         <h2>{username}</h2>
-                        {!following && props.loggedIn && username != props.currUser && <div><button className="list_entry" type="submit" onClick={() => increaseFollowing(props.currUser, username)}>Follow</button></div> }
-                        {following && props.loggedIn && username != props.currUser && <div><button className="list_entry" type="submit" onClick={() => decreaseFollowing(props.currUser, username)}>Unfollow</button></div> }
+                        {console.log(following, following)}
+                        {!following && props.loggedIn && username != props.currUser && <div><button className="list_entry" type="submit" onClick={() => increaseFollowing(props.currUser, username, props.currUserInfo.ProfilePicture, results.ProfilePicture)}>Follow</button></div> }
+                        {following && props.loggedIn && username != props.currUser && <div><button className="list_entry" type="submit" onClick={() => decreaseFollowing(props.currUser, username, props.currUserInfo.ProfilePicture, results.ProfilePicture)}>Unfollow</button></div> }
                     </div>
                     <div className="game-stats">
                         <div className="individual-stat-container">
-                            <h2>{results.CurrentG}</h2>
-                            <p>Current</p>
+                            <Link to={`/currentG/${username}`}>
+                                <h2>{results.CurrentG}</h2>
+                                <p>Current</p>
+                            </Link>
                         </div>
                         <div className="individual-stat-container">
-                            <h2>{results.Completed}</h2>
-                            <p>Completed</p>
+                            <Link to={`/completed/${username}`}>
+                                <h2>{results.Completed}</h2>
+                                <p>Completed</p>
+                            </Link>
                         </div>
                         <div className="individual-stat-container">
-                            <h2>{results.Dropped}</h2>
-                            <p>Dropped</p>
+                            <Link to={`/dropped/${username}`}>
+                                <h2>{results.Dropped}</h2>
+                                <p>Dropped</p>
+                            </Link>
                         </div>
                         <div className="individual-stat-container">
                             <Link to={`/planning/${username}`}>
