@@ -11,38 +11,105 @@ const GameDetails = (props) => {
     const [reviewText, setReviewText] = useState('');
     const [reviewScore, setReviewScore] = useState('');
     const [planning, setPlanning] = useState(false);
+    const [currentG, setCurrentG] = useState(false);
+    const [completed, setCompleted] = useState(false);
+    const [dropped, setDropped] = useState(false);
 
     useEffect(() => {
         if(props.currUserInfo) {
             // console.log(props.currUserInfo);
             checkPlanning();
+            checkCurrent();
+            checkCompleted();
+            checkDropped();
             // console.log(props.currUserInfo);
             // console.log(results);
         }
     }, [props.completion, results]);
 
-    function checkPlanning() {
+    const checkPlanning = async () => {
         // console.log('not amazing');
         // console.log(props.currUserInfo);
-        if(props.currUserInfo.PlanningGames != undefined && results != undefined) {
-            if(typeof(props.currUserInfo.PlanningGames.values) !== typeof(props.currUserInfo.PlanningGames)) {
-                for(let i of props.currUserInfo.PlanningGames) {
-                    // console.log(i);
-                    if(i === results[0].name) {
-                        console.log(i);
-                        setPlanning(true);
-                    }
-                }
+        // if(props.currUserInfo.PlanningGames != undefined && results != undefined) {
+        //     if(typeof(props.currUserInfo.PlanningGames.values) !== typeof(props.currUserInfo.PlanningGames)) {
+        //         let arr = Array.from(props.currUser.PlanningGames, ([name, keys]) => ({name, keys}));
+        //         for(let i of arr) {
+        //             // console.log(i);
+        //             if(i.name === results[0].name) {
+        //                 console.log(i);
+        //                 setPlanning(true);
+        //             }
+        //         }
+        //     } else {
+        //         for(let i of props.currUserInfo.PlanningGames.values) {
+        //             // console.log
+        //             if(i === results[0].name) {
+        //                 console.log(i);
+        //                 setPlanning(true);
+        //             }
+        //         }
+        //     }
+        // }
+        if (results != undefined) {
+            await gameStatusMap(results[0].name, "PlanningGames")
+        }
+    }
+
+    const checkCurrent = async () => {
+        if (results != undefined) {
+            await gameStatusMap(results[0].name, "CurrentGames")
+        }
+    }
+
+    const checkCompleted = async () => {
+        if (results != undefined) {
+            await gameStatusMap(results[0].name, "CompletedGames")
+        }
+    }
+
+    const checkDropped = async () => {
+        if (results != undefined) {
+            await gameStatusMap(results[0].name, "DroppedGames")
+        }
+    }
+
+    const gameStatusMap = (gameName, gameStatus) => {
+        var params1 = {
+            TableName:"GameGateAccounts",
+            KeyConditionExpression: "#email = :email3",
+            FilterExpression: "attribute_exists(#gs.#gn.GameName)",
+            ExpressionAttributeNames: {
+                "#email": "Email",
+                "#gs": gameStatus,
+                "#gn": gameName
+            },
+            ExpressionAttributeValues: {
+                ":email3": props.currUserInfo.Email
+            }
+        };
+        props.docClient.query(params1, function(err, data) {
+            if (err) {
+                console.log(err);
             } else {
-                for(let i of props.currUserInfo.PlanningGames.values) {
-                    // console.log
-                    if(i === results[0].name) {
-                        console.log(i);
-                        setPlanning(true);
-                    }
+                if (data.Items.length !== 0) {
+                    console.log("game status:", gameStatus);
+
+                    let pg = (gameStatus === "PlanningGames") ? true : false;
+                    setPlanning(pg);
+
+                    let complG = (gameStatus === "CompletedGames") ? true : false;
+                    setCurrentG(complG);
+
+                    let currG = (gameStatus === "CurrentGames") ? true : false;
+                    setCurrentG(currG);
+
+                    let dg = (gameStatus === "DroppedGames") ? true : false;
+                    setDropped(dg);
+
+                    console.log(planning, "planning", completed, "completed", currentG, "currentG", dropped, "dropped");
                 }
             }
-        }
+        });
     }
 
     function combineAll(array) {
@@ -234,7 +301,8 @@ const GameDetails = (props) => {
         // console.log(newScore);
     }
 
-    function planningGames(yourUsername, gameName) { 
+    function planningGames(yourUsername, gameName, gameID, gameImg) { 
+        console.log(results[0], "results");
         var params2 = {
             TableName: "GameGateAccounts",
             IndexName: "Username-index",
@@ -259,14 +327,18 @@ const GameDetails = (props) => {
                                 Key:{
                                 "Email": item.Email,
                             },
-                            UpdateExpression: "ADD #pg :gameList SET Planning = Planning + :val" ,
-                            ConditionExpression: "not contains(#pg, :gameString)",
+                            UpdateExpression: "SET #pg.#gn = :gameMap, Planning = Planning + :val" ,
+                            ConditionExpression: "attribute_not_exists(#pg.#gn.GameName)",
                             ExpressionAttributeNames: {
-                                "#pg": "PlanningGames"
+                                "#pg": "PlanningGames",
+                                "#gn": gameName
                             },
                             ExpressionAttributeValues:{
-                                ":gameList": props.docClient.createSet([gameName]),
-                                ":gameString": gameName,
+                                ":gameMap": {
+                                    "GameName": gameName,
+                                    "GameID": gameID,
+                                    "GameCover": gameImg
+                                },
                                 ":val": 1,
                             },
                             ReturnValues:"UPDATED_NEW"
@@ -292,12 +364,12 @@ const GameDetails = (props) => {
         })
         setPlanning(true);
         console.log(planning);
-        // removeCompletedGame(yourUsername, gameName);
-        // removeCurrentGame(yourUsername, gameName);
-        // removeDroppedGame(yourUsername, gameName);
+        removeCompletedGame(yourUsername, gameName);
+        removeCurrentGame(yourUsername, gameName);
+        removeDroppedGame(yourUsername, gameName);
     }
 
-    function removePlanningGame(yourUsername, gameName) { 
+    function removePlanningGame(yourUsername, gameName, gameID, gameImg) { 
         var params2 = {
             TableName: "GameGateAccounts",
             IndexName: "Username-index",
@@ -322,19 +394,17 @@ const GameDetails = (props) => {
                                 Key:{
                                 "Email": item.Email,
                             },
-                            UpdateExpression: "DELETE #pg :gameList SET Planning = Planning - :val" ,
-                            ConditionExpression: "contains(#pg, :gameString)",
+                            UpdateExpression: "REMOVE #pg.#gn SET Planning = Planning - :val" ,
+                            ConditionExpression: "attribute_exists(#pg.#gn.GameName)",
                             ExpressionAttributeNames: {
-                                "#pg": "PlanningGames"
+                                "#pg": "PlanningGames",
+                                "#gn": gameName
                             },
                             ExpressionAttributeValues:{
-                                ":gameList": props.docClient.createSet([gameName]),
-                                ":gameString": gameName,
                                 ":val": 1,
                             },
                             ReturnValues:"UPDATED_NEW"
                         };
-                        console.log(item);
                         props.docClient.update(params1, function(err, data) {
                             if (err) {
                                 console.log(err);
@@ -356,7 +426,7 @@ const GameDetails = (props) => {
         setPlanning(false);
     }
 
-    function completedGames(yourUsername, gameName) { 
+    function completedGames(yourUsername, gameName, gameID, gameImg) { 
         var params2 = {
             TableName: "GameGateAccounts",
             IndexName: "Username-index",
@@ -381,19 +451,22 @@ const GameDetails = (props) => {
                                 Key:{
                                 "Email": item.Email,
                             },
-                            UpdateExpression: "ADD #cg :gameList SET Completed = Completed + :val" ,
-                            ConditionExpression: "not contains(#cg, :gameString)",
+                            UpdateExpression: "SET #cg.#gn = :gameMap, Completed = Completed + :val" ,
+                            ConditionExpression: "attribute_not_exists(#cg.#gn.GameName)",
                             ExpressionAttributeNames: {
-                                "#cg": "CompletedGames"
+                                "#cg": "CompletedGames",
+                                "#gn": gameName
                             },
                             ExpressionAttributeValues:{
-                                ":gameList": props.docClient.createSet([gameName]),
-                                ":gameString": gameName,
+                                ":gameMap": {
+                                    "GameName": gameName,
+                                    "GameID": gameID,
+                                    "GameCover": gameImg
+                                },
                                 ":val": 1,
                             },
                             ReturnValues:"UPDATED_NEW"
                         };
-                        console.log(item);
                         props.docClient.update(params1, function(err, data) {
                             if (err) {
                                 console.log(err);
@@ -406,12 +479,13 @@ const GameDetails = (props) => {
                 }
             }
         })
+        setCompleted(true);
         removePlanningGame(yourUsername, gameName);
         removeCurrentGame(yourUsername, gameName);
         removeDroppedGame(yourUsername, gameName);
     }
 
-    function removeCompletedGame(yourUsername, gameName) { 
+    function removeCompletedGame(yourUsername, gameName, gameID, gameImg) { 
         var params2 = {
             TableName: "GameGateAccounts",
             IndexName: "Username-index",
@@ -436,14 +510,13 @@ const GameDetails = (props) => {
                                 Key:{
                                 "Email": item.Email,
                             },
-                            UpdateExpression: "DELETE #cg :gameList SET Completed = Completed - :val" ,
-                            ConditionExpression: "contains(#cg, :gameString)",
+                            UpdateExpression: "REMOVE #cg.#gn SET Completed = Completed - :val" ,
+                            ConditionExpression: "attribute_exists(#cg.#gn.GameName)",
                             ExpressionAttributeNames: {
-                                "#cg": "CompletedGames"
+                                "#cg": "CompletedGames",
+                                "#gn": gameName
                             },
                             ExpressionAttributeValues:{
-                                ":gameList": props.docClient.createSet([gameName]),
-                                ":gameString": gameName,
                                 ":val": 1,
                             },
                             ReturnValues:"UPDATED_NEW"
@@ -461,9 +534,10 @@ const GameDetails = (props) => {
                 }
             }
         })
+        setCompleted(false);
     }
 
-    function currentGames(yourUsername, gameName) { 
+    function currentGames(yourUsername, gameName, gameID, gameImg) { 
         var params2 = {
             TableName: "GameGateAccounts",
             IndexName: "Username-index",
@@ -488,18 +562,21 @@ const GameDetails = (props) => {
                                 Key:{
                                 "Email": item.Email,
                             },
-                            UpdateExpression: "ADD #cg :gameList SET CurrentG = CurrentG + :val" ,
-                            ConditionExpression: "not contains(#cg, :gameString)",
+                            UpdateExpression: "SET #cg.#gn = :gameMap, CurrentG = CurrentG + :val" ,
+                            ConditionExpression: "attribute_not_exists(#cg.#gn.GameName)",
                             ExpressionAttributeNames: {
-                                "#cg": "CurrentGames"
+                                "#cg": "CurrentGames",
+                                "#gn": gameName
                             },
                             ExpressionAttributeValues:{
-                                ":gameList": props.docClient.createSet([gameName]),
-                                ":gameString": gameName,
+                                ":gameMap": {
+                                    "GameName": gameName,
+                                    "GameID": gameID,
+                                    "GameCover": gameImg
+                                },
                                 ":val": 1,
                             },
-                            ReturnValues:"UPDATED_NEW"
-                        };
+                        }
                         console.log(item);
                         props.docClient.update(params1, function(err, data) {
                             if (err) {
@@ -513,12 +590,13 @@ const GameDetails = (props) => {
                 }
             }
         })
+        setCurrentG(true)
         removePlanningGame(yourUsername, gameName);
         removeCompletedGame(yourUsername, gameName);
         removeDroppedGame(yourUsername, gameName);
     }
 
-    function removeCurrentGame(yourUsername, gameName) { 
+    function removeCurrentGame(yourUsername, gameName, gameID, gameImg) { 
         var params2 = {
             TableName: "GameGateAccounts",
             IndexName: "Username-index",
@@ -543,14 +621,13 @@ const GameDetails = (props) => {
                                 Key:{
                                 "Email": item.Email,
                             },
-                            UpdateExpression: "DELETE #cg :gameList SET CurrentG = CurrentG - :val" ,
-                            ConditionExpression: "contains(#cg, :gameString)",
+                            UpdateExpression: "REMOVE #cg.#gn SET CurrentG = CurrentG - :val" ,
+                            ConditionExpression: "attribute_exists(#cg.#gn.GameName)",
                             ExpressionAttributeNames: {
-                                "#cg": "CurrentGames"
+                                "#cg": "CurrentGames",
+                                "#gn": gameName
                             },
                             ExpressionAttributeValues:{
-                                ":gameList": props.docClient.createSet([gameName]),
-                                ":gameString": gameName,
                                 ":val": 1,
                             },
                             ReturnValues:"UPDATED_NEW"
@@ -568,9 +645,10 @@ const GameDetails = (props) => {
                 }
             }
         })
+        setCurrentG(false);
     }
 
-    function droppedGames(yourUsername, gameName) { 
+    function droppedGames(yourUsername, gameName, gameID, gameImg) { 
         var params2 = {
             TableName: "GameGateAccounts",
             IndexName: "Username-index",
@@ -595,18 +673,21 @@ const GameDetails = (props) => {
                                 Key:{
                                 "Email": item.Email,
                             },
-                            UpdateExpression: "ADD #dg :gameList SET Dropped = Dropped + :val" ,
-                            ConditionExpression: "not contains(#dg, :gameString)",
+                            UpdateExpression: "SET #dg.#gn = :gameMap, Dropped = Dropped + :val" ,
+                            ConditionExpression: "attribute_not_exists(#dg.#gn.GameName)",
                             ExpressionAttributeNames: {
-                                "#dg": "DroppedGames"
+                                "#dg": "DroppedGames",
+                                "#gn": gameName
                             },
                             ExpressionAttributeValues:{
-                                ":gameList": props.docClient.createSet([gameName]),
-                                ":gameString": gameName,
+                                ":gameMap": {
+                                    "GameName": gameName,
+                                    "GameID": gameID,
+                                    "GameCover": gameImg
+                                },
                                 ":val": 1,
                             },
-                            ReturnValues:"UPDATED_NEW"
-                        };
+                        }
                         console.log(item);
                         props.docClient.update(params1, function(err, data) {
                             if (err) {
@@ -620,12 +701,13 @@ const GameDetails = (props) => {
                 }
             }
         })
+        setDropped(true);
         removePlanningGame(yourUsername, gameName);
         removeCompletedGame(yourUsername, gameName);
         removeCurrentGame(yourUsername, gameName);
     }
 
-    function removeDroppedGame(yourUsername, gameName) { 
+    function removeDroppedGame(yourUsername, gameName, gameID, gameImg) { 
         var params2 = {
             TableName: "GameGateAccounts",
             IndexName: "Username-index",
@@ -650,14 +732,13 @@ const GameDetails = (props) => {
                                 Key:{
                                 "Email": item.Email,
                             },
-                            UpdateExpression: "DELETE #dg :gameList SET Dropped = Dropped - :val" ,
-                            ConditionExpression: "contains(#dg, :gameString)",
+                            UpdateExpression: "REMOVE #dg.#gn SET Dropped = Dropped - :val" ,
+                            ConditionExpression: "attribute_exists(#dg.#gn.GameName)",
                             ExpressionAttributeNames: {
-                                "#dg": "DroppedGames"
+                                "#dg": "DroppedGames",
+                                "#gn": gameName
                             },
                             ExpressionAttributeValues:{
-                                ":gameList": props.docClient.createSet([gameName]),
-                                ":gameString": gameName,
                                 ":val": 1,
                             },
                             ReturnValues:"UPDATED_NEW"
@@ -675,6 +756,7 @@ const GameDetails = (props) => {
                 }
             }
         })
+        setDropped(false);
     }
 
     return (
@@ -685,11 +767,17 @@ const GameDetails = (props) => {
                 <div className="new-child">
                     <div className="coverTitleContainer">
                         <img className="coverArt" src={`https:${results[0].cover.url}`} alt="Game cover art"/>
-                        {!planning && props.loggedIn && <button type="button" className="list_entry" onClick={() => planningGames(props.currUser, results[0].name)}>Planning</button>}
-                        {planning && props.loggedIn && <button type="button" className="list_entry" onClick={() => removePlanningGame(props.currUser, results[0].name)}>Remove from Planning</button>}
-                        {props.loggedIn && <button type="button" className="list_entry" onClick={() => currentGames(props.currUser, results[0].name)}>Playing</button>}
-                        {props.loggedIn && <button type="button" className="list_entry" onClick={() => completedGames(props.currUser, results[0].name)}>Completed</button>}
-                        {props.loggedIn && <button type="button" className="list_entry" onClick={() => droppedGames(props.currUser, results[0].name)}>Dropped</button>}
+                        {!planning && props.loggedIn && <button type="button" className="list_entry" onClick={() => planningGames(props.currUser, results[0].name, results[0].id, results[0].smallCover)}>Planning</button>}
+                        {planning && props.loggedIn && <button type="button" className="list_entry" onClick={() => removePlanningGame(props.currUser, results[0].name, results[0].id, results[0].smallCover)}>Remove from Planning</button>}
+                        
+                        {!currentG && props.loggedIn && <button type="button" className="list_entry" onClick={() => currentGames(props.currUser, results[0].name, results[0].id, results[0].smallCover)}>Playing</button>}
+                        {currentG && props.loggedIn && <button type="button" className="list_entry" onClick={() => removeCurrentGame(props.currUser, results[0].name, results[0].id, results[0].smallCover)}>Remove from Playing</button>}
+
+                        {!completed && props.loggedIn && <button type="button" className="list_entry" onClick={() => completedGames(props.currUser, results[0].name, results[0].id, results[0].smallCover)}>Completed</button>}
+                        {completed && props.loggedIn && <button type="button" className="list_entry" onClick={() => removeCompletedGame(props.currUser, results[0].name, results[0].id, results[0].smallCover)}>Remove from Completed</button>}
+
+                        {!dropped && props.loggedIn && <button type="button" className="list_entry" onClick={() => droppedGames(props.currUser, results[0].name, results[0].id, results[0].smallCover)}>Dropped</button>}
+                        {dropped && props.loggedIn && <button type="button" className="list_entry" onClick={() => removeDroppedGame(props.currUser, results[0].name, results[0].id, results[0].smallCover)}>Remove from Dropped</button>}
                     </div>
                     <hr className="rounded"/>
                     <div className="gameDescrip">

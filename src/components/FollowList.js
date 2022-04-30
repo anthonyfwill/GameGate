@@ -4,10 +4,21 @@ import FollowElement from "./FollowElement";
 
 export default function FollowList(props) {
     const {username} = useParams();
-    const [followList, setFollowList] = useState([]);
+    const [followMap, setFollowMap] = useState({});
 
     useEffect(() => {
-        var params = {
+        checkFollowers();
+        console.log(followMap, "use");
+    }, [])
+
+    const checkFollowers = async () => {
+        if (followMap != undefined) {
+            await followersExist();
+        }
+    }
+
+    const followersExist = () => {
+         var params = {
             TableName: "GameGateAccounts",
             IndexName: "Username-index",
             KeyConditionExpression: "#username = :User3",
@@ -21,46 +32,28 @@ export default function FollowList(props) {
         props.docClient.query(params, function(err, data) {
             if(err) {
                 console.log('Could not retrieve user');
-                // setError('Could not retrieve user');
-                // setPending(false);
-            } else if(data.Count === 0) {
-                console.log('User does not exist');
-                // setError('User does not exist');
-                // setPending(false);
-            }
-            else {
-                // console.log(data.Items[0].FollowingList.values);
-                if(props.type === 'following') {
-                    setFollowList(data.Items[0].FollowingList.values);
-                } else {
-                    setFollowList(data.Items[0].FollowersList.values);
+            } else {
+                if (data.Items.length !== 0) {
+                    if (props.type === "following") {
+                        setFollowMap(data.Items[0].FollowingMap);
+                    } else {
+                        setFollowMap(data.Items[0].FollowersMap);
+                    }
                 }
-                // const newResults = [];
-                // for(let i = 0; i < data.Count; i++) {
-                //     newResults.push(data.Items[i]);
-                // }
-                // setUserInfo(newResults);
-                // setResults([]);
-                // setResults(data.Items[0]);
-                // setPending(false);
-                // setError(null);
             }
         })
-    }, [])
+    }
 
     return (
         <div className="follows">
-            {followList &&
-                followList.map((val) => {
-                    return (
-                    <Link to={`/profile/${val}`} key={val}>
-                        <FollowElement username={val} key={val}/>
+           {Object.entries(followMap).map(item => {
+            {console.log(item[1].Username, "render")}
+                return (
+                    <Link to={`/profile/${item[1].Username}`} key={item[1].Username}>
+                        <FollowElement Username={item[1].Username} ProfilePicture={item[1].ProfilePicture}/>
                     </Link>
-                    // <FollowElement username={val} key={val}/>
-                    )
-                    // return <p key={val}>{val}</p>
-                })
-            }
-        </div>
+                )
+            })} 
+        </div>    
     )
 }

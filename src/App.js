@@ -12,6 +12,8 @@ import * as AWS from 'aws-sdk';
 import Settings from './components/Settings';
 import FollowList from './components/FollowList';
 import PlanningList from './components/PlanningList'
+import GameStatusMap from './components/GameStatusMap'
+
 
 var myCredentials = new AWS.CognitoIdentityCredentials({IdentityPoolId:'us-east-1:1f1634e0-e85f-4ffe-a509-ecb75c777309'});
 var myConfig = new AWS.Config({
@@ -95,7 +97,16 @@ function App() {
             <FollowList type={'follower'} docClient={docClient}/>
           </Route>
           <Route exact path="/planning/:username">
-            <PlanningList docClient={docClient}/>
+            <GameStatusMap type={'planning'} docClient={docClient}/>
+          </Route>
+          <Route exact path="/currentG/:username">
+            <GameStatusMap type={'currentG'} docClient={docClient}/>
+          </Route>
+          <Route exact path="/completed/:username">
+            <GameStatusMap type={'completed'} docClient={docClient}/>
+          </Route>
+          <Route exact path="/dropped/:username">
+            <GameStatusMap type={'dropped'} docClient={docClient}/>
           </Route>
         </Switch>
       </div>
