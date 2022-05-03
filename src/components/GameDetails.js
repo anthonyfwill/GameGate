@@ -758,6 +758,23 @@ const GameDetails = (props) => {
         })
         setDropped(false);
     }
+    
+
+    function gameStatusButton() {
+        document.getElementById("gameStatuses").classList.toggle("show");
+    }
+    window.onclick = function(event) {
+        if (!event.target.matches('.gameStatusBox')) {
+          const dropdowns = document.getElementsByClassName("gamestatus-dropdown");
+          let i;
+          for (i = 0; i < dropdowns.length; i++) {
+            const openDropdown = dropdowns[i];
+            if (openDropdown.classList.contains('show')) {
+              openDropdown.classList.remove('show');
+            }
+          }
+        }
+      }
 
     return (
             <div className="new-parent">
@@ -767,17 +784,24 @@ const GameDetails = (props) => {
                 <div className="new-child">
                     <div className="coverTitleContainer">
                         <img className="coverArt" src={`https:${results[0].cover.url}`} alt="Game cover art"/>
-                        {!planning && props.loggedIn && <button type="button" className="list_entry" onClick={() => planningGames(props.currUser, results[0].name, results[0].id, results[0].smallCover)}>Planning</button>}
-                        {planning && props.loggedIn && <button type="button" className="list_entry" onClick={() => removePlanningGame(props.currUser, results[0].name, results[0].id, results[0].smallCover)}>Remove from Planning</button>}
                         
-                        {!currentG && props.loggedIn && <button type="button" className="list_entry" onClick={() => currentGames(props.currUser, results[0].name, results[0].id, results[0].smallCover)}>Playing</button>}
-                        {currentG && props.loggedIn && <button type="button" className="list_entry" onClick={() => removeCurrentGame(props.currUser, results[0].name, results[0].id, results[0].smallCover)}>Remove from Playing</button>}
-
-                        {!completed && props.loggedIn && <button type="button" className="list_entry" onClick={() => completedGames(props.currUser, results[0].name, results[0].id, results[0].smallCover)}>Completed</button>}
-                        {completed && props.loggedIn && <button type="button" className="list_entry" onClick={() => removeCompletedGame(props.currUser, results[0].name, results[0].id, results[0].smallCover)}>Remove from Completed</button>}
-
-                        {!dropped && props.loggedIn && <button type="button" className="list_entry" onClick={() => droppedGames(props.currUser, results[0].name, results[0].id, results[0].smallCover)}>Dropped</button>}
-                        {dropped && props.loggedIn && <button type="button" className="list_entry" onClick={() => removeDroppedGame(props.currUser, results[0].name, results[0].id, results[0].smallCover)}>Remove from Dropped</button>}
+                       
+                        <div className="dropdown">
+                        <button id="gameStatusText" className="gameStatusBox" onClick={() => gameStatusButton()}>Add to list</button>
+                            <div id="gameStatuses" className="gamestatus-dropdown">
+                                {!planning && props.loggedIn && <h2 className="list_entry" onClick={() => planningGames(props.currUser, results[0].name, results[0].id, results[0].smallCover)}>Planning</h2>}
+                                {planning && props.loggedIn && <h2 className="list_entry" onClick={() => removePlanningGame(props.currUser, results[0].name, results[0].id, results[0].smallCover)}>Remove from Planning</h2>}
+                                
+                                {!currentG && props.loggedIn && <h2 className="list_entry" onClick={() => currentGames(props.currUser, results[0].name, results[0].id, results[0].smallCover)}>Playing</h2>}
+                                {currentG && props.loggedIn && <h2 className="list_entry" onClick={() => removeCurrentGame(props.currUser, results[0].name, results[0].id, results[0].smallCover)}>Remove from Playing</h2>}
+                                
+                                {!completed && props.loggedIn && <h2 className="list_entry" onClick={() => completedGames(props.currUser, results[0].name, results[0].id, results[0].smallCover)}>Completed</h2>}
+                                {completed && props.loggedIn && <h2 className="list_entry" onClick={() => removeCompletedGame(props.currUser, results[0].name, results[0].id, results[0].smallCover)}>Remove from Completed</h2>}
+                                
+                                {!dropped && props.loggedIn && <h2 className="list_entry" onClick={() => droppedGames(props.currUser, results[0].name, results[0].id, results[0].smallCover)}>Dropped</h2>}
+                                {dropped && props.loggedIn && <h2 className="list_entry" onClick={() => removeDroppedGame(props.currUser, results[0].name, results[0].id, results[0].smallCover)}>Remove from Dropped</h2>}
+                            </div>
+                        </div>
                     </div>
                     <hr className="rounded"/>
                     <div className="gameDescrip">
