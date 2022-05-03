@@ -85,7 +85,7 @@ const Register = (props) => {
                                         "Password": pw,
                                         "Username": username,
                                         "ProfilePicture": "https://i.imgur.com/y0B5yj6.jpg",
-                                        "Current": 0,
+                                        "CurrentG": 0,
                                         "Completed": 0,
                                         "Dropped": 0,
                                         "Planning": 0,
