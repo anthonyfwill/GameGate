@@ -2,9 +2,9 @@ import React from "react";
 
 export default function FollowElement(props) {
     return (
-        <div>
-            <img id="pfp" src={props.ProfilePicture}/>
-            <p>{props.Username}</p>
+        <div className="gameStatusContainer">
+            <img id="game-pfp" src={props.ProfilePicture}/>
+            <h3>{props.Username}</h3>
         </div>
     )
 }
