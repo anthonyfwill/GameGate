@@ -27,6 +27,12 @@ const GameDetails = (props) => {
         }
     }, [props.completion, results]);
 
+    const checkUpvote = async () => {
+        if (results != undefined) {
+            await gameStatusMap(results[0].name, "CurrentGames")
+        }
+    }
+
     const checkPlanning = async () => {
         // console.log('not amazing');
         // console.log(props.currUserInfo);
@@ -241,7 +247,9 @@ const GameDetails = (props) => {
                 "Review": reviewText,
                 "Rating": reviewScore,
                 "GameImage": gameImg,
-                "ProfilePic": profPic
+                "ProfilePic": profPic,
+                "Upvotes": {},
+                "UpvotesCount": 0
             }
         }
         //console.log(results[0].name, props.currUser, reviewText, reviewScore)
@@ -262,7 +270,9 @@ const GameDetails = (props) => {
                             Review: reviewText,
                             Rating: reviewScore,
                             GameImage: gameImg,
-                            ProfilePic: profPic
+                            ProfilePic: profPic,
+                            Upvotes: {},
+                            UpvotesCount: 0
                         }
                         found = true;
                     }
@@ -275,7 +285,9 @@ const GameDetails = (props) => {
                         Review: reviewText,
                         Rating: reviewScore,
                         GameImage: gameImg,
-                        ProfilePic: profPic
+                        ProfilePic: profPic,
+                        Upvotes: {},
+                        UpvotesCount: 0
                     });
                 }
                 // console.log(moreReviewInfo);
@@ -776,6 +788,114 @@ const GameDetails = (props) => {
         }
       }
 
+    function addUpvote(yourUsername, theirUsername, gameID) { 
+        var params2 = {
+            TableName: "GameGateAccounts",
+            IndexName: "Username-index",
+            KeyConditionExpression: "#username = :User3",
+            ExpressionAttributeNames: {
+                "#username": "Username"
+            },
+            ExpressionAttributeValues: {
+                ":User3": yourUsername
+            }
+        }
+    
+        props.docClient.query(params2, function(err, data) {
+            if (!err) {
+                if (data.Count === 0) {
+                    console.log(data);
+                } else {
+                    console.log(data);
+                    data.Items.forEach(item => {
+                        var params1 = {
+                            TableName:"Games",
+                                Key:{
+                                "GameID": gameID,
+                                "Username": theirUsername
+                            },
+                            UpdateExpression: "SET #uv.#em = :upvote, UpvotesCount = UpvotesCount + :val" ,
+                            ConditionExpression: "attribute_not_exists(#uv.#em.Username)",
+                            ExpressionAttributeNames: {
+                                "#uv": "Upvotes",
+                                "#em": item.Email
+                            },
+                            ExpressionAttributeValues:{
+                                ":upvote": {
+                                    "Username": yourUsername,
+                                    "ProfilePicture": item.ProfilePic,
+                                },
+                                ":val": 1,
+                            },
+                            ReturnValues:"UPDATED_NEW"
+                        };
+                        console.log(item);
+                        props.docClient.update(params1, function(err, data) {
+                            if (err) {
+                                console.log(err);
+                                removeUpvote(yourUsername, theirUsername, gameID);
+                            } else {
+                                console.log(data);
+                            }
+                        });
+                    })
+                }
+            }
+        })
+        console.log("upvote added");
+    }
+
+    function removeUpvote(yourUsername, theirUsername, gameID) { 
+        var params2 = {
+            TableName: "GameGateAccounts",
+            IndexName: "Username-index",
+            KeyConditionExpression: "#username = :User3",
+            ExpressionAttributeNames: {
+                "#username": "Username"
+            },
+            ExpressionAttributeValues: {
+                ":User3": yourUsername
+            }
+        }
+    
+        props.docClient.query(params2, function(err, data) {
+            if (!err) {
+                if (data.Count === 0) {
+                    console.log(data);
+                } else {
+                    console.log(data);
+                    data.Items.forEach(item => {
+                        var params1 = {
+                            TableName:"Games",
+                                Key:{
+                                "GameID": gameID,
+                                "Username": theirUsername
+                            },
+                            UpdateExpression: "REMOVE #uv.#em SET UpvotesCount = UpvotesCount - :val" ,
+                            ConditionExpression: "attribute_exists(#uv.#em.GameName)",
+                            ExpressionAttributeNames: {
+                                "#uv": "Upvotes",
+                                "#em": item.Email
+                            },
+                            ExpressionAttributeValues:{
+                                ":val": 1,
+                            },
+                            ReturnValues:"UPDATED_NEW"
+                        };
+                        props.docClient.update(params1, function(err, data) {
+                            if (err) {
+                                console.log(err);
+                            } else {
+                                console.log(data)
+                            }
+                        });
+                    })
+                }
+            }
+        })
+        console.log("upvote removed");
+    }
+
     return (
             <div className="new-parent">
                 {isPending && <div>Loading...</div>}
@@ -827,7 +947,7 @@ const GameDetails = (props) => {
                     </div> }
                     {
                         reviewInfo.map(val => (
-                            <Review username={val.Username} content={val.Review} score={val.Rating} profPic={val.ProfilePic} key={val.Username}/>
+                            <Review username={val.Username} content={val.Review} score={val.Rating} profPic={val.ProfilePic} UpvotesCount={val.UpvotesCount} key={val.Username}/>
                         ))
                     }
                 </div>

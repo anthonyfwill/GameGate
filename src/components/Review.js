@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import GameDetails from "./GameDetails"
 
 const Review = (props) => {
     return (
@@ -18,6 +19,7 @@ const Review = (props) => {
                 </div>
                 <p className="score-color">Score: {props.score}/10</p>
                 <p>{props.content}</p>
+                <p>Upvotes: {props.UpvotesCount}</p>
             </div>
         </div>
     );
