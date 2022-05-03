@@ -80,14 +80,9 @@ const Settings = (props) => {
         
         setPfpEdit(false);
         setProfileurl('');
-<<<<<<< HEAD
-
-      function changeUsername(oldUsername, newUsername) {
-=======
         
       //Update Username
     /*function changeUsername(oldUsername, newUsername) {
->>>>>>> 27dcb8899ab6e3c247cc38ca28033c1c6c03933a
         var params2 = {
             TableName: "GameGateAccounts",
             IndexName: "Username-index",
@@ -174,6 +169,7 @@ const Settings = (props) => {
                     })
                 }
 
+//Update Username of all Reviews
 var params2 = {
             TableName: "Games",
             IndexName: "Username-index",
@@ -212,7 +208,7 @@ var params2 = {
                                     props.setCurrUser(username);
                                     props.setLoggedIn(true);
                                     history.push(`/profile/${username}`);
-                                    history.push(`/login`);
+                                    //history.push(`/login`);
 
                                } else {
                                     console.log("Not Worked");
@@ -221,7 +217,7 @@ var params2 = {
                             })
                      })
         }
-    }
+    }*/
 }
     return (
         <div className = 'feed_container'>
