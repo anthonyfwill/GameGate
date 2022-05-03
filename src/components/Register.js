@@ -85,14 +85,18 @@ const Register = (props) => {
                                         "Password": pw,
                                         "Username": username,
                                         "ProfilePicture": "https://i.imgur.com/y0B5yj6.jpg",
-                                        "Current": 0,
+                                        "CurrentG": 0,
                                         "Completed": 0,
                                         "Dropped": 0,
                                         "Planning": 0,
                                         "Followers": 0,
                                         "Following": 0,
                                         "FollowersMap": {},
-                                        "FollowingMap": {}
+                                        "FollowingMap": {},
+                                        "CompletedGames": {},
+                                        "CurrentGames": {},
+                                        "DroppedGames": {},
+                                        "PlanningGames": {}
                                     }
                                 }
                                 props.docClient.put(params2, function(err, data2) {
