@@ -236,13 +236,14 @@ const GameDetails = (props) => {
         }
     }*/
 
-    function updateReviews(gameName, username, reviewText, reviewScore, gameImg, profPic) {
+    function updateReviews(gameName, email, username, reviewText, reviewScore, gameImg, profPic) {
         setReviewOpened(false);
         var params = {
             TableName: "Games",
             Item: {
                 "GameID": id,
                 "GameName": gameName,
+                "Email": email,
                 "Username": username,
                 "Review": reviewText,
                 "Rating": reviewScore,
@@ -266,6 +267,7 @@ const GameDetails = (props) => {
                         moreReviewInfo[i] = {
                             GameID: id,
                             GameName: gameName,
+                            Email: email,
                             Username: username,
                             Review: reviewText,
                             Rating: reviewScore,
@@ -281,6 +283,7 @@ const GameDetails = (props) => {
                     moreReviewInfo.push({
                         GameID: id,
                         GameName: gameName,
+                        Email: email,
                         Username: username,
                         Review: reviewText,
                         Rating: reviewScore,
@@ -368,6 +371,14 @@ const GameDetails = (props) => {
                                 localStorage.setItem('user', JSON.stringify(newInfo));
                                 console.log(newInfo);
                                 console.log("The game added to PlanningGames is:", gameName);
+                                const action = yourUsername + " is planning to play " + gameName;
+                                console.log(action);
+                                var dateTime = new Date();
+                                var dateTimeEST = dateTime.toLocaleString('en-US', {timeZone: 'America/New_York'});
+                                console.log(dateTimeEST);
+                                let idNum = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
+                                let idStr = idNum.toString();
+                                addUserFeed(item.Email, yourUsername, idStr, gameID, gameName, gameImg, action, dateTimeEST);
                             }
                         });
                     })
@@ -381,7 +392,7 @@ const GameDetails = (props) => {
         removeDroppedGame(yourUsername, gameName);
     }
 
-    function removePlanningGame(yourUsername, gameName, gameID, gameImg) { 
+    function removePlanningGame(yourUsername, gameName, gameID, gameImg, dateTime) { 
         var params2 = {
             TableName: "GameGateAccounts",
             IndexName: "Username-index",
@@ -485,6 +496,14 @@ const GameDetails = (props) => {
                             } else {
                                 console.log(data);
                                 console.log("The game added to CompletedGames is:", gameName);
+                                const action = yourUsername + " has completed " + gameName;
+                                console.log(action);
+                                var dateTime = new Date();
+                                var dateTimeEST = dateTime.toLocaleString('en-US', {timeZone: 'America/New_York'});
+                                console.log(dateTimeEST);
+                                let idNum = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
+                                let idStr = idNum.toString();
+                                addUserFeed(item.Email, yourUsername, idStr, gameID, gameName, gameImg, action, dateTimeEST);
                             }
                         });
                     })
@@ -596,6 +615,14 @@ const GameDetails = (props) => {
                             } else {
                                 console.log(data);
                                 console.log("The game added to CurrentGames is:", gameName);
+                                const action = yourUsername + " is currently playing " + gameName;
+                                console.log(action);
+                                var dateTime = new Date();
+                                var dateTimeEST = dateTime.toLocaleString('en-US', {timeZone: 'America/New_York'});
+                                console.log(dateTimeEST);
+                                let idNum = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
+                                let idStr = idNum.toString();
+                                addUserFeed(item.Email, yourUsername, idStr, gameID, gameName, gameImg, action, dateTimeEST);
                             }
                         });
                     })
@@ -707,6 +734,14 @@ const GameDetails = (props) => {
                             } else {
                                 console.log(data);
                                 console.log("The game added to DroppedGames is:", gameName);
+                                const action = yourUsername + " has dropped " + gameName;
+                                console.log(action);
+                                var dateTime = new Date();
+                                var dateTimeEST = dateTime.toLocaleString('en-US', {timeZone: 'America/New_York'});
+                                console.log(dateTimeEST);
+                                let idNum = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
+                                let idStr = idNum.toString();
+                                addUserFeed(item.Email, yourUsername, idStr, gameID, gameName, gameImg, action, dateTimeEST);
                             }
                         });
                     })
@@ -879,6 +914,55 @@ const GameDetails = (props) => {
         console.log("upvote removed");
     }
 
+    function addUserFeed(yourEmail, yourUsername, idNumber, gameID, gameName, gameImg, action, dateTimeEST) {
+        var params1 = {
+            TableName: "UserFeed",
+            IndexName: "ID-Email-index",
+            KeyConditionExpression: "#id = :ID3",
+            ExpressionAttributeNames: {
+                "#id": "ID",
+            },
+            ExpressionAttributeValues: {
+                ":ID3": "idNumber"
+            }
+        }
+    
+        props.docClient.query(params1, function(err, data) {
+            if(err) {
+                console.log(data, "ID is already being used generating a new ID");
+                let idNum = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
+                let idStr = idNum.toString();
+                addUserFeed(yourEmail, yourUsername, idStr, gameID, gameName, gameImg, action, dateTimeEST);
+            } else if (!err) {
+                if (data.Count === 0) {
+                    console.log(data);
+                    var params2 = {
+                        TableName:"UserFeed",
+                        Item:{
+                            "Email": yourEmail,
+                             "ID": idNumber,
+                            "Username": yourUsername,
+                            "Action": action,
+                            "GameID": gameID,
+                            "GameImg": gameImg,
+                            "GameName": gameName,
+                            "DateOf": dateTimeEST
+                        }
+                    };
+                    props.docClient.put(params2, function(err, data) {
+                        if (err) {
+                            console.log(err);
+                        } else {
+                            console.log(data, "created")
+                        }
+                    });
+                } else {
+                    console.log(data);
+                }
+            }
+        });
+    }
+
     return (
             <div className="new-parent">
                 {isPending && <div>Loading...</div>}
@@ -918,12 +1002,12 @@ const GameDetails = (props) => {
                         {/* <input type="number" id="scorereview" name="quantity" min="1" max="10"></input> */}
                         <textarea id="scorereview" maxLength="2" placeholder="Score / 10" pattern="\d$" value={reviewScore} onChange={(e) => setReviewScore(e.target.value)}></textarea>
                         <div>
-                            <input className="reviewBtn" type="submit" value="Publish" onClick={() => updateReviews(results[0].name, props.currUser, reviewText, reviewScore, results[0].smallCover, props.currUserInfo.ProfilePicture)}/>
+                            <input className="reviewBtn" type="submit" value="Publish" onClick={() => updateReviews(results[0].name, props.currUserInfo.Email, props.currUser, reviewText, reviewScore, results[0].smallCover, props.currUserInfo.ProfilePicture)}/>
                         </div>
                     </div> }
                     {
                         reviewInfo.map(val => (
-                            <Review username={val.Username} content={val.Review} score={val.Rating} profPic={val.ProfilePic} UpvotesCount={val.UpvotesCount} key={val.Username}/>
+                            <Review yourUsername={props.currUser} username2={val.Username} content={val.Review} score={val.Rating} profPic={val.ProfilePic} UpvotesCount={val.UpvotesCount} gameID={results[0].id} key={val.Username}/>
                         ))
                     }
                 </div>
