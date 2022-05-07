@@ -79,7 +79,7 @@ function App() {
             <Login setLoggedIn={setLoggedIn} setCurrUser={setCurrUser} docClient={docClient} setCurrUserInfo={setCurrUserInfo}/>
           </Route>
           <Route exact path="/home">
-            <Home />
+            <Home currUser={currUser} setCurrUser={setCurrUser} docClient={docClient} setCurrUserInfo={setCurrUserInfo} currUserInfo={currUserInfo}/>
           </Route>
           <Route exact path="/profile/:username">
             <Profile completion={completion} loggedIn={loggedIn} currUser={currUser} setCurrUserInfo={setCurrUserInfo} currUserInfo={currUserInfo}/>
