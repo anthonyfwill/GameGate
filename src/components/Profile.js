@@ -26,66 +26,29 @@ const Profile = (props) => {
 
     useEffect(() => {
         if(!requesting && (results === null || results.Username !== username)) {
-            // console.log(results);
-            // console.log(results, username);
             setRequesting(true);
-            var params = {
-                TableName: "GameGateAccounts",
-                IndexName: "Username-index",
-                KeyConditionExpression: "#username = :User3",
-                ExpressionAttributeNames: {
-                    "#username": "Username"
-                },
-                ExpressionAttributeValues: {
-                    ":User3": username
+            var requestOptions = {
+                method: 'GET',
+                redirect: 'follow'
+            };
+            fetch('http://localhost:5000/api/user/' + username, requestOptions)
+            .then(response => {
+                if(!response.ok) {
+                    throw Error('User does not exist');
                 }
-            }
-            
-            docClient.query(params, function(err, data) {
-                if(err) {
-                    console.log('Could not retrieve information for that user');
-                    setError('Could not retrieve information for that user');
-                    setPending(false);
-                } else if(data.Count === 0) {
-                    console.log('User does not exist');
-                    setError('User does not exist');
-                    setPending(false);
-                }
-                else {
-                    var params3 = {
-                TableName: "Games",
-                IndexName: "Email-GameID-index",
-                KeyConditionExpression: "#email = :Email3",
-                ExpressionAttributeNames: {
-                    "#email": "Email"
-                },
-                ExpressionAttributeValues: {
-                    ":Email3": data.Items[0].Email
-                }
-            }
-        
-            docClient.query(params3, function(err, data) {
-                if (!err) {
-                    let newReviewInfo = [];
-                    if (data.Count === 0) {
-                        console.log(data);
-                    } else {
-                        console.log(data);
-                    }
-                    for(let i = 0; i < data.Count; i++) {
-                        newReviewInfo.push(data.Items[i]);
-                    }
-                    setReviewInfo(newReviewInfo);
-                } else {
-                    console.log(err);
-                }
+                return response.json()
+            })
+            .then(result => {
+                setReviewInfo(result.reviews.Items);
+                setResults(result.user.Items[0]);
+                setPending(false);
+                setError(null);
                 setRequesting(false);
             })
-                    setResults(data.Items[0]);
-                    setPending(false);
-                    setError(null);
-                }
-            })
+            .catch(error => {
+                setError(error.message);
+                setPending(false);
+            });
         }
         console.log(following);
         if(props.currUserInfo) {
