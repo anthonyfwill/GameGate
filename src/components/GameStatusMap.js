@@ -9,7 +9,6 @@ export default function GameStatusMap(props) {
 
     useEffect(() => {
         checkPlanningGames();
-        console.log(planningMap, "planning");
     }, [])
 
     const checkPlanningGames = async () => {
@@ -18,38 +17,42 @@ export default function GameStatusMap(props) {
         }
     }
 
-    const gamesExist = () => {
-         var params = {
-            TableName: "GameGateAccounts",
-            IndexName: "Username-index",
-            KeyConditionExpression: "#username = :User3",
-            ExpressionAttributeNames: {
-                "#username": "Username"
-            },
-            ExpressionAttributeValues: {
-                ":User3": username
+    const gamesExist = async () => {
+        var requestOptions = {
+            method: 'GET',
+            redirect: 'follow'
+        };
+        fetch(`http://localhost:5000/api/user/${username}/gamestatuses`, requestOptions)
+        .then(response => {
+            if(!response.ok) {
+                throw Error('Could not retrieve user');
             }
-        }
-        props.docClient.query(params, function(err, data) {
-            if(err) {
-                console.log('Could not retrieve user');
-            } else {
-                if (data.Items.length !== 0) {
-                    if (props.type === "planning") {
-                        setPlanningMap(data.Items[0].PlanningGames);
-                        console.log(props.type);
-                    } else if (props.type === "currentG") {
-                        setPlanningMap(data.Items[0].CurrentGames);
-                        console.log(props.type);
-                    } else if (props.type === "completed") {
-                        setPlanningMap(data.Items[0].CompletedGames);
-                        console.log(props.type);
-                    } else if (props.type === "dropped") {
-                        setPlanningMap(data.Items[0].DroppedGames);
-                        console.log(props.type);
-                    }
+            return response.json();
+        })
+        .then(result => {
+            if(result.Items.length != 0) {
+                switch(props.type) {
+                    case 'planning':
+                        setPlanningMap(result.Items[0].PlanningGames);
+                        break;
+                    case 'currentG':
+                        setPlanningMap(result.Items[0].CurrentGames);
+                        break;
+                    case 'completed':
+                        setPlanningMap(result.Items[0].CompletedGames);
+                        break;
+                    case 'dropped':
+                        setPlanningMap(result.Items[0].DroppedGames);
+                        break;
+                    default:
+                        // console.log('Oops');
+                        throw Error('Invalid game status type');
+                        break;
                 }
             }
+        })
+        .catch(error => {
+            console.log(error.message);
         })
     }
 
