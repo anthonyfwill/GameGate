@@ -824,6 +824,7 @@ const GameDetails = (props) => {
       }
 
     function addUpvote(yourUsername, theirUsername, gameID) { 
+        console.log("upvote");
         var params2 = {
             TableName: "GameGateAccounts",
             IndexName: "Username-index",
@@ -832,39 +833,40 @@ const GameDetails = (props) => {
                 "#username": "Username"
             },
             ExpressionAttributeValues: {
-                ":User3": yourUsername
+                ":User3": theirUsername
             }
         }
-    
+        console.log(yourUsername, theirUsername, gameID);
         props.docClient.query(params2, function(err, data) {
-            if (!err) {
+            if (err) {
+                console.log(err);
+            }else if (!err) {
                 if (data.Count === 0) {
-                    console.log(data);
+                    //console.log(data);
                 } else {
                     console.log(data);
                     data.Items.forEach(item => {
+                        console.log(item, "itemmmmm");
                         var params1 = {
                             TableName:"Games",
                                 Key:{
-                                "GameID": gameID,
-                                "Username": theirUsername
+                                "GameID": id,
+                                "Email": item.Email
                             },
                             UpdateExpression: "SET #uv.#em = :upvote, UpvotesCount = UpvotesCount + :val" ,
                             ConditionExpression: "attribute_not_exists(#uv.#em.Username)",
                             ExpressionAttributeNames: {
                                 "#uv": "Upvotes",
-                                "#em": item.Email
+                                "#em": props.currUserInfo.Email
                             },
                             ExpressionAttributeValues:{
                                 ":upvote": {
                                     "Username": yourUsername,
-                                    "ProfilePicture": item.ProfilePic,
                                 },
                                 ":val": 1,
                             },
                             ReturnValues:"UPDATED_NEW"
                         };
-                        console.log(item);
                         props.docClient.update(params1, function(err, data) {
                             if (err) {
                                 console.log(err);
@@ -881,6 +883,7 @@ const GameDetails = (props) => {
     }
 
     function removeUpvote(yourUsername, theirUsername, gameID) { 
+        console.log("remove upvote");
         var params2 = {
             TableName: "GameGateAccounts",
             IndexName: "Username-index",
@@ -889,7 +892,7 @@ const GameDetails = (props) => {
                 "#username": "Username"
             },
             ExpressionAttributeValues: {
-                ":User3": yourUsername
+                ":User3": theirUsername
             }
         }
     
@@ -900,17 +903,18 @@ const GameDetails = (props) => {
                 } else {
                     console.log(data);
                     data.Items.forEach(item => {
+                        console.log(item, "itemmmmm");
                         var params1 = {
                             TableName:"Games",
                                 Key:{
-                                "GameID": gameID,
-                                "Username": theirUsername
+                                "GameID": id,
+                                "Email": item.Email
                             },
                             UpdateExpression: "REMOVE #uv.#em SET UpvotesCount = UpvotesCount - :val" ,
-                            ConditionExpression: "attribute_exists(#uv.#em.GameName)",
+                            ConditionExpression: "attribute_exists(#uv.#em.Username)",
                             ExpressionAttributeNames: {
                                 "#uv": "Upvotes",
-                                "#em": item.Email
+                                "#em": props.currUserInfo.Email
                             },
                             ExpressionAttributeValues:{
                                 ":val": 1,
@@ -957,7 +961,7 @@ const GameDetails = (props) => {
                         TableName:"UserFeed",
                         Item:{
                             "Email": yourEmail,
-                             "ID": idNumber,
+                            "ID": idNumber,
                             "Username": yourUsername,
                             "Action": action,
                             "GameID": gameID,
@@ -1031,7 +1035,12 @@ const GameDetails = (props) => {
                     </div> }
                     {
                         reviewInfo.map(val => (
-                            <Review yourUsername={props.currUser} username2={val.Username} content={val.Review} score={val.Rating} profPic={val.ProfilePic} UpvotesCount={val.UpvotesCount} gameID={results[0].id} key={val.Username}/>
+                            <div>
+                            <Review yourUsername={props.currUser} username2={val.Username} username={val.Username} content={val.Review} score={val.Rating} profPic={val.ProfilePic} UpvotesCount={val.UpvotesCount} gameID={results[0].id} key={val.Username}/>
+                                {props.currUser !== val.Username &&
+                                    <button type="button" className="list_entry" onClick={() =>addUpvote(props.currUser, val.Username, results[0].id)}>Upvotes</button>
+                                }
+                            </div>
                         ))
                     }
                 </div>

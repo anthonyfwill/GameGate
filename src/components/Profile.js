@@ -52,13 +52,7 @@ const Profile = (props) => {
                     setPending(false);
                 }
                 else {
-                    setResults(data.Items[0]);
-                    setPending(false);
-                    setError(null);
-                }
-            })
-
-            var params3 = {
+                    var params3 = {
                 TableName: "Games",
                 IndexName: "Email-GameID-index",
                 KeyConditionExpression: "#email = :Email3",
@@ -66,7 +60,7 @@ const Profile = (props) => {
                     "#email": "Email"
                 },
                 ExpressionAttributeValues: {
-                    ":Email3": props.currUserInfo.Email
+                    ":Email3": data.Items[0].Email
                 }
             }
         
@@ -86,6 +80,11 @@ const Profile = (props) => {
                     console.log(err);
                 }
                 setRequesting(false);
+            })
+                    setResults(data.Items[0]);
+                    setPending(false);
+                    setError(null);
+                }
             })
         }
         console.log(following);
@@ -240,7 +239,9 @@ const Profile = (props) => {
                                 var dateTime = new Date();
                                 var dateTimeEST = dateTime.toLocaleString('en-US', {timeZone: 'America/New_York'});
                                 console.log(dateTimeEST);
-                                addUserFeed(props.currUserInfo.Email, yourUsername, Math.floor(Math.random() * Number.MAX_SAFE_INTEGER), theirUsername, yourProfilePicture, theirProfilePicture, action, dateTimeEST);
+                                let idNum = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
+                                let idStr = idNum.toString();
+                                addUserFeed(props.currUserInfo.Email, yourUsername, idStr, theirUsername, yourProfilePicture, theirProfilePicture, action, dateTimeEST);
                             }
                         });
                     })
@@ -307,7 +308,9 @@ const Profile = (props) => {
                                 var dateTime = new Date();
                                 var dateTimeEST = dateTime.toLocaleString('en-US', {timeZone: 'America/New_York'});
                                 console.log(dateTimeEST);
-                                addUserFeed(props.currUserInfo.Email, yourUsername, Math.floor(Math.random() * Number.MAX_SAFE_INTEGER), theirUsername, yourProfilePicture, theirProfilePicture, action, dateTimeEST);
+                                let idNum = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
+                                let idStr = idNum.toString();
+                                addUserFeed(props.currUserInfo.Email, yourUsername, idStr, theirUsername, yourProfilePicture, theirProfilePicture, action, dateTimeEST);
                             }
                         });
                     })
@@ -370,7 +373,9 @@ const Profile = (props) => {
                                 var dateTime = new Date();
                                 var dateTimeEST = dateTime.toLocaleString('en-US', {timeZone: 'America/New_York'});
                                 console.log(dateTimeEST);
-                                addUserFeed(item.Email, viewedUsername, Math.floor(Math.random() * Number.MAX_SAFE_INTEGER), yourUsername, theirProfilePicture, yourProfilePicture, action, dateTimeEST);
+                                let idNum = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
+                                let idStr = idNum.toString();
+                                addUserFeed(item.Email, viewedUsername, idStr, yourUsername, theirProfilePicture, yourProfilePicture, action, dateTimeEST);
                             }
                         });
                     })
@@ -428,7 +433,9 @@ const Profile = (props) => {
                                 var dateTime = new Date();
                                 var dateTimeEST = dateTime.toLocaleString('en-US', {timeZone: 'America/New_York'});
                                 console.log(dateTimeEST);
-                                addUserFeed(item.Email, viewedUsername, Math.floor(Math.random() * Number.MAX_SAFE_INTEGER), yourUsername, theirProfilePicture, yourProfilePicture, action, dateTimeEST);
+                                let idNum = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
+                                let idStr = idNum.toString();
+                                addUserFeed(item.Email, viewedUsername, idStr, yourUsername, theirProfilePicture, yourProfilePicture, action, dateTimeEST);
                             }
                         });
                     })
@@ -453,7 +460,9 @@ const Profile = (props) => {
         docClient.query(params1, function(err, data) {
             if (err) {
                 console.log(err, "ID is already being used generating a new ID");
-                addUserFeed(yourEmail, yourUsername, Math.floor(Math.random() * Number.MAX_SAFE_INTEGER), theirUsername, yourProfilePicture, theirProfilePicture, action, dateTimeEST)
+                let idNum = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
+                let idStr = idNum.toString();
+                addUserFeed(yourEmail, yourUsername, idStr, theirUsername, yourProfilePicture, theirProfilePicture, action, dateTimeEST)
             }else if (!err) {
                 if (data.Count === 0) {
                     console.log(data);
@@ -482,8 +491,9 @@ const Profile = (props) => {
         });
     }
 
-
     function addUpvote(yourUsername, theirUsername, gameID) { 
+        var id = gameID.toString();
+        console.log("upvote");
         var params2 = {
             TableName: "GameGateAccounts",
             IndexName: "Username-index",
@@ -496,36 +506,37 @@ const Profile = (props) => {
             }
         }
         console.log(yourUsername, theirUsername, gameID);
-        props.docClient.query(params2, function(err, data) {
-            if (!err) {
+        docClient.query(params2, function(err, data) {
+            if (err) {
+                console.log(err);
+            }else if (!err) {
                 if (data.Count === 0) {
-                    console.log(data);
+                    //console.log(data);
                 } else {
                     console.log(data);
                     data.Items.forEach(item => {
+                        console.log(item, "itemmmmm");
                         var params1 = {
                             TableName:"Games",
                                 Key:{
-                                "GameID": gameID,
-                                "Email": item.email
+                                "GameID": id,
+                                "Email": item.Email
                             },
                             UpdateExpression: "SET #uv.#em = :upvote, UpvotesCount = UpvotesCount + :val" ,
                             ConditionExpression: "attribute_not_exists(#uv.#em.Username)",
                             ExpressionAttributeNames: {
                                 "#uv": "Upvotes",
-                                "#em": props.Email
+                                "#em": props.currUserInfo.Email
                             },
                             ExpressionAttributeValues:{
                                 ":upvote": {
                                     "Username": yourUsername,
-                                    "ProfilePicture": item.ProfilePic,
                                 },
                                 ":val": 1,
                             },
                             ReturnValues:"UPDATED_NEW"
                         };
-                        console.log(item);
-                        props.docClient.update(params1, function(err, data) {
+                        docClient.update(params1, function(err, data) {
                             if (err) {
                                 console.log(err);
                                 removeUpvote(yourUsername, theirUsername, gameID);
@@ -541,6 +552,8 @@ const Profile = (props) => {
     }
 
     function removeUpvote(yourUsername, theirUsername, gameID) { 
+        var id = gameID.toString();
+        console.log("remove upvote");
         var params2 = {
             TableName: "GameGateAccounts",
             IndexName: "Username-index",
@@ -549,35 +562,36 @@ const Profile = (props) => {
                 "#username": "Username"
             },
             ExpressionAttributeValues: {
-                ":User3": yourUsername
+                ":User3": theirUsername
             }
         }
     
-        props.docClient.query(params2, function(err, data) {
+        docClient.query(params2, function(err, data) {
             if (!err) {
                 if (data.Count === 0) {
                     console.log(data);
                 } else {
                     console.log(data);
                     data.Items.forEach(item => {
+                        console.log(item, "itemmmmm");
                         var params1 = {
                             TableName:"Games",
                                 Key:{
-                                "GameID": gameID,
-                                "Username": theirUsername
+                                "GameID": id,
+                                "Email": item.Email
                             },
                             UpdateExpression: "REMOVE #uv.#em SET UpvotesCount = UpvotesCount - :val" ,
-                            ConditionExpression: "attribute_exists(#uv.#em.GameName)",
+                            ConditionExpression: "attribute_exists(#uv.#em.Username)",
                             ExpressionAttributeNames: {
                                 "#uv": "Upvotes",
-                                "#em": item.Email
+                                "#em": props.currUserInfo.Email
                             },
                             ExpressionAttributeValues:{
                                 ":val": 1,
                             },
                             ReturnValues:"UPDATED_NEW"
                         };
-                        props.docClient.update(params1, function(err, data) {
+                        docClient.update(params1, function(err, data) {
                             if (err) {
                                 console.log(err);
                             } else {
@@ -656,7 +670,14 @@ const Profile = (props) => {
                     <div className="reviews">
                         {
                             reviewInfo.map(val => (
-                                <Review email={props.currUserInfo.Email} yourUsername={props.currUser} username2={val.Username} gameImage={val.GameImage} name={val.GameName} content={val.Review} score={val.Rating} id={val.GameID}  UpvotesCount={val.UpvotesCount} key={val.GameName}/>
+                                <div>
+                                {console.log(val, "val")}
+                                <Review email={props.currUserInfo.Email} yourUsername={props.currUser} username2={username} gameImage={val.GameImage} name={val.GameName} content={val.Review} score={val.Rating} id={val.GameID}  UpvotesCount={val.UpvotesCount} key={val.GameName}/>
+                                {console.log(props.currUser, val.Username)}
+                                {props.currUser !== username &&
+                                    <button type="button" className="list_entry" onClick={() =>addUpvote(props.currUser, username, val.GameID)}>Upvotes</button>
+                                }
+                                </div>
                             ))
                         }
                     </div>
