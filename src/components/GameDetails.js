@@ -17,13 +17,9 @@ const GameDetails = (props) => {
 
     useEffect(() => {
         if(props.currUserInfo) {
-            // console.log(props.currUserInfo);
-            checkPlanning();
-            checkCurrent();
-            checkCompleted();
-            checkDropped();
-            // console.log(props.currUserInfo);
-            // console.log(results);
+            if(results != undefined) {
+                gameStatusMap(results[0].name);
+            }
         }
     }, [props.completion, results]);
 
@@ -33,89 +29,35 @@ const GameDetails = (props) => {
         }
     }
 
-    const checkPlanning = async () => {
-        // console.log('not amazing');
-        // console.log(props.currUserInfo);
-        // if(props.currUserInfo.PlanningGames != undefined && results != undefined) {
-        //     if(typeof(props.currUserInfo.PlanningGames.values) !== typeof(props.currUserInfo.PlanningGames)) {
-        //         let arr = Array.from(props.currUser.PlanningGames, ([name, keys]) => ({name, keys}));
-        //         for(let i of arr) {
-        //             // console.log(i);
-        //             if(i.name === results[0].name) {
-        //                 console.log(i);
-        //                 setPlanning(true);
-        //             }
-        //         }
-        //     } else {
-        //         for(let i of props.currUserInfo.PlanningGames.values) {
-        //             // console.log
-        //             if(i === results[0].name) {
-        //                 console.log(i);
-        //                 setPlanning(true);
-        //             }
-        //         }
-        //     }
-        // }
-        if (results != undefined) {
-            await gameStatusMap(results[0].name, "PlanningGames")
-        }
-    }
-
-    const checkCurrent = async () => {
-        if (results != undefined) {
-            await gameStatusMap(results[0].name, "CurrentGames")
-        }
-    }
-
-    const checkCompleted = async () => {
-        if (results != undefined) {
-            await gameStatusMap(results[0].name, "CompletedGames")
-        }
-    }
-
-    const checkDropped = async () => {
-        if (results != undefined) {
-            await gameStatusMap(results[0].name, "DroppedGames")
-        }
-    }
-
-    const gameStatusMap = (gameName, gameStatus) => {
-        var params1 = {
-            TableName:"GameGateAccounts",
-            KeyConditionExpression: "#email = :email3",
-            FilterExpression: "attribute_exists(#gs.#gn.GameName)",
-            ExpressionAttributeNames: {
-                "#email": "Email",
-                "#gs": gameStatus,
-                "#gn": gameName
-            },
-            ExpressionAttributeValues: {
-                ":email3": props.currUserInfo.Email
-            }
+    const gameStatusMap = async (gameName) => {
+        var requestOptions = {
+            method: 'GET',
+            redirect: 'follow'
         };
-        props.docClient.query(params1, function(err, data) {
-            if (err) {
-                console.log(err);
-            } else {
-                if (data.Items.length !== 0) {
-                    console.log("game status:", gameStatus);
+          
+        fetch(`http://localhost:5000/api/user/${props.currUser}/gamestatuses/?gameName=${gameName}`, requestOptions)
+            .then(response => response.json())
+            .then(result => {
+                let pg = (result.status === "PlanningGames") ? true : false;
+                setPlanning(pg);
 
-                    let pg = (gameStatus === "PlanningGames") ? true : false;
-                    setPlanning(pg);
+                let complG = (result.status === "CompletedGames") ? true : false;
+                setCompleted(complG);
 
-                    let complG = (gameStatus === "CompletedGames") ? true : false;
-                    setCurrentG(complG);
+                let currG = (result.status === "CurrentGames") ? true : false;
+                setCurrentG(currG);
 
-                    let currG = (gameStatus === "CurrentGames") ? true : false;
-                    setCurrentG(currG);
+                let dg = (result.status === "DroppedGames") ? true : false;
+                setDropped(dg);
 
-                    let dg = (gameStatus === "DroppedGames") ? true : false;
-                    setDropped(dg);
-
-                    console.log(planning, "planning", completed, "completed", currentG, "currentG", dropped, "dropped");
+                if(!pg && !complG && !currG && !dg) {
+                    setPlanning(false);
+                    setCompleted(false);
+                    setCurrentG(false);
+                    setDropped(false);
                 }
-            }
-        });
+            })
+            .catch(error => console.log('error', error));
     }
 
     function combineAll(array) {
@@ -125,116 +67,6 @@ const GameDetails = (props) => {
         }
         return output.join(', ');
     }
-    //All reviews for a game (Just have to loop through game api and with the parameter of the gameID which is "gameID" in this function)
-        // var params2 = {
-        //     TableName: "Games",
-        //     //ProjectionExpression: "#gameID",
-        //     KeyConditionExpression: "#gameID = :gameID3",
-        //     ExpressionAttributeNames: {
-        //         "#gameID": "GameID",
-        //     },
-        //     ExpressionAttributeValues: {
-        //         ":gameID3": id
-        //     }
-        // }
-
-        // props.docClient.query(params2, function(err, data) {
-        //     if (!err) {
-        //         if (data.Count === 0) {
-        //             console.log(data);
-        //         } else {
-        //             console.log(data);
-        //         }
-        //     } else {
-        //         console.log(err);
-        //     }
-        // })
-
-        /*var params3 = {
-            TableName: "Games",
-            Item: {
-                "GameID": id,
-                "Username": Username,
-                "Review": review,
-            },
-
-        }
-
-        props.docClient.query(params2, function(err, data) {
-            if (!err) {
-                if (data.Count === 0) {
-                    console.log(data);
-                } else {
-                    console.log(data);
-
-                }
-            } else {
-                console.log(err);
-            }
-        })*/
-
-        /*var params2 = {
-            TableName: "Games",
-            KeyConditionExpression: "#gameID = :gameID3 and #username = :username",
-            ExpressionAttributeNames: {
-                "#gameID": "GameID",
-                "#username": "Username"
-            },
-            ExpressionAttributeValues: {
-                ":gameID3": id,
-                ":username": username
-            }
-        }
-
-        props.docClient.put(params2, function(err, data) {
-            if (!err) {
-                if (data.Count === 0) {
-                    console.log(data);
-                } else {
-                    console.log(data);
-
-                }
-            } else {
-                console.log(err);
-            }
-        })*/
-
-        //ADD ITEMS**********************88
-        /*var params = {
-            TableName: "Games",
-            Item: {
-                "GameID": gameID,
-                "Username": username,
-                "Review": review,
-                "Rating": rating
-            }
-        }
-
-        props.docClient.query(params, function(err, data) {
-            if (!err) {
-                //console.log("no error");
-                //console.log(data, "Email entered: " + email);
-                if (data.Count === 0) {
-                    console.log("Email available");
-                    canMake = canMake + 1;
-                } else {
-                    console.log("Email is not available");
-                }
-            } else {
-                canMake += 1
-                console.log(err);
-            }
-        })*/
-
-    /*function addPlanning(e) {
-        if(e.target.textContent === 'Add to planning') {
-            e.target.textContent = 'Planning'
-            //add code to update planning count for user and add game id to list of games user is planning on playing
-        } else {
-            e.target.textContent = 'Add to planning'
-            //decrement planning count for user and remove game id from list of games user is planning to play
-        }
-    }*/
 
     function updateReviews(gameName, email, username, reviewText, reviewScore, gameImg, profPic) {
         setReviewOpened(false);
@@ -313,7 +145,6 @@ const GameDetails = (props) => {
         newScore = newScore / moreReviewInfo.length;
         newScore = Math.round(newScore * 100) / 100;
         setScore(newScore);
-        // console.log(newScore);
     }
 
     function planningGames(yourUsername, gameName, gameID, gameImg) { 

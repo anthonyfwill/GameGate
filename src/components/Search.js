@@ -34,13 +34,11 @@ function Search(props) {
             return response.json();
         })
         .then(results => {
-            console.log(results[0]);
             if(results.length === 0) {
                 throw Error('No games match that name');
             }
             let oldResults = [];
             for(let i = 0; i < results.length; i++) {
-                // console.log(results[i]['first_release_date']);
                 if(results[i]['first_release_date'] != undefined && results[i].cover != undefined) {
                     oldResults.push(results[i]);
                 }
@@ -49,7 +47,6 @@ function Search(props) {
                 oldResults[i].first_release_date = timeConverter(oldResults[i].first_release_date);
                 oldResults[i].cover.url = 'https:' + oldResults[i].cover.url;
             }
-            console.log(oldResults);
             setPending(false);
             setUserResults([]);
             setResults(oldResults);
