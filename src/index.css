@@ -8,13 +8,8 @@ h1 {
 }
 
 .indexcaptions {
-  display: flex;
-  gap: 100px;
-  flex-direction: column;
-  padding-top: 20px;
-  padding-left: 100px;
-  width: 600px;
-  overflow-wrap: break-word;
+  text-align: center;
+  font-family: 'Source Sans Pro', sans-serif;
 }
 
 .headfirst{
@@ -636,7 +631,7 @@ a { color: inherit; }
   overflow-wrap: break-word;
 }
 
-img {
+.caption_images {
   max-width: 100%;
   height: auto;
 }
