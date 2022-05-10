@@ -12,62 +12,35 @@ const Login = (props) => {
     const [password, setPassword] = useState('');
 
     const logIn = () => {
-        var params = {
-            TableName: "GameGateAccounts",
-            Key: {
-                "Email": email,
-            }
-        }
-        props.docClient.scan(params, function (err, data) {
-            if (!err) {
-            }
-        }) 
-        props.docClient.get(params, function(err, data) {
-            if (!err && Object.keys(data).length !== 0) {
-                if (password === data.Item.Password) {
-                        console.log("match");
 
-                        const user = new CognitoUser({
-                            Username: email,
-                            Pool: UserPool,
-                        })
+        var myHeaders = new Headers();
+        myHeaders.append("Content", "application/json");
+        myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
 
-                        const authDetails = new AuthenticationDetails({
-                            Username: email,
-                            Password: password,
-                        })
+        var urlencoded = new URLSearchParams();
+        urlencoded.append("email", email);
+        urlencoded.append("password", password);
 
-                        user.authenticateUser(authDetails, {
-                            onSuccess: (data2) => {
-                                props.setCurrUser(data.Item.Username);
-                                props.setCurrUserInfo(data.Item);
-                                localStorage.setItem('user', JSON.stringify(data.Item));
-                                props.setLoggedIn(true);
-                                history.push(`/profile/${data.Item.Username}`);
-                            },
-                            onFailure: (err2) => {
-                                console.error(err2);
-                                setError('Email not verified');
-                                setEmail('');
-                                setPassword('');
-                            },
-                            newPasswordRequired: (data) => {
-                                console.log("newPasswordRequired: ", data);
-                            },
-                        })
-                
-                } else {
-                    console.log("Wrong password or email");
-                    setError('Incorrect Login Credentials');
-                    setEmail('');
-                    setPassword('');
-                }
-            } else {
-                setError('Incorrect Login Credentials');
-                setEmail('');
-                setPassword('');
-                console.log(err);
-            }
+        var requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        body: urlencoded,
+        redirect: 'follow'
+        };
+
+        fetch("http://localhost:5000/api/users/login", requestOptions)
+        .then(response => response.json())
+        .then(result => {
+            props.setCurrUser(result.Username);
+            props.setCurrUserInfo(result);
+            localStorage.setItem('user', JSON.stringify(result));
+            props.setLoggedIn(true);
+            history.push(`/profile/${result.Username}`);
+        })
+        .catch(error => {
+            setError('Login Failed');
+            setEmail('');
+            setPassword('');
         })
     }
 
