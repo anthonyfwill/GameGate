@@ -1038,7 +1038,7 @@ const GameDetails = (props) => {
                             <div>
                             <Review yourUsername={props.currUser} username2={val.Username} username={val.Username} content={val.Review} score={val.Rating} profPic={val.ProfilePic} UpvotesCount={val.UpvotesCount} gameID={results[0].id} key={val.Username}/>
                                 {props.currUser !== val.Username &&
-                                    <button type="button" className="list_entry" onClick={() =>addUpvote(props.currUser, val.Username, results[0].id)}>Upvotes</button>
+                                    <button type="button" className="upvote" onClick={() =>addUpvote(props.currUser, val.Username, results[0].id)}></button>
                                 }
                             </div>
                         ))
