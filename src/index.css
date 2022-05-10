@@ -631,7 +631,7 @@ a { color: inherit; }
   overflow-wrap: break-word;
 }
 
-img {
+.caption_images {
   max-width: 100%;
   height: auto;
 }
