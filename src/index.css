@@ -624,3 +624,19 @@ a { color: inherit; }
   gap: 15px;
   margin-top: 10px;
 }
+
+.captions {
+  display: grid;
+  padding: 2rem;
+  grid-template-columns: 1fr 1fr;
+  gap: 7rem;
+  align-items: center;
+  margin: 0 auto;
+  font: 500 100%/1.5 system-ui;
+  overflow-wrap: break-word;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
