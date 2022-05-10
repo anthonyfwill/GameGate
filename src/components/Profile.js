@@ -59,90 +59,33 @@ const Profile = (props) => {
     }, [username, props.completion])
 
     const checkFollowing =  async () => {
-        // console.log(props.currUserInfo);
-        // console.log(typeof(props.currUserInfo.FollowingMap.values));
-        // console.log(typeof(props.currUserInfo.FollowingMap));
-        /*if(props.currUserInfo.FollowingMap != undefined) {
-            if(typeof(props.currUserInfo.FollowingMap.values) !== typeof(props.currUserInfo.FollowingMap)) {
-                // console.log('here');
-                props.currUserInfo.FollowingMap.forEach((usernameInfo, userEmail) => {
-                    if(usernameInfo.Username === username) {
-                        console.log(usernameInfo);
-                        setFollowing(true);
-                    }
-                })
-            } else {
-                for(let i of props.currUserInfo.FollowingList.values) {
-                    if(i === username) {
-                        // console.log('here');
-                        console.log(props.currUserInfo);
-                        setFollowing(true);
-                    }
-                }
-            }
-        }*/
         await findUser();
-
-
-        //console.log(props.currUserInfo.FollowingMap.Username, "yes");
-        //console.log(props.currUserInfo.FollowingMap, "yes");
     }
 
-    const findUser = () => {
-        var params2 = {
-            TableName: "GameGateAccounts",
-            IndexName: "Username-index",
-            KeyConditionExpression: "#username = :User3",
-            ExpressionAttributeNames: {
-                "#username": "Username"
-            },
-            ExpressionAttributeValues: {
-                ":User3": username
+    const findUser = async () => {
+        const requestOptions = {
+            method: 'GET',
+            redirect: 'follow'
+        };
+        fetch(`http://localhost:5000/api/user/${username}/followers`, requestOptions)
+        .then(response => {
+            if(!response.ok) {
+                throw Error('Could not gather user info');
             }
-        }
-    
-        const data2 = docClient.query(params2, function(err, data) {
-            if (!err) {
-                if (data.Count === 0) {
-                    console.log(data);
-                } else {
-                    console.log(data);
-                    data.Items.forEach(item => {
-                        followingStatus(item);
-                    })
+            return response.json();
+        })
+        .then(results => {
+            if(results.Items[0].Followers != 0) {
+                for(let i in results.Items[0].FollowersMap) {
+                    if(results.Items[0].FollowersMap[i].Username == props.currUser) {
+                        setFollowing(true);
+                    }
                 }
             }
         })
-    }
-
-    const followingStatus = (item) => {
-        var params1 = {
-            TableName:"GameGateAccounts",
-            KeyConditionExpression: "#email = :email3",
-            FilterExpression: "attribute_exists(#fl.#userN.Username)",
-            ExpressionAttributeNames: {
-                "#email": "Email",
-                "#fl": "FollowingMap",
-                "#userN": item.Email
-            },
-            ExpressionAttributeValues: {
-                ":email3": props.currUserInfo.Email
-            }
-        };
-        console.log(item);
-        docClient.query(params1, function(err, data) {
-            if (err) {
-                console.log(err);
-            } else {
-                console.log(data, "working");
-                console.log(following);
-                if (data.Items.length !== 0) {
-                    console.log("went through");
-                    setFollowing(true);
-                    console.log(following);
-                }
-            }
-        });
+        .catch(err => {
+            console.log(err);
+        })
     }
 
      const increaseFollowing = (yourUsername, theirUsername, yourProfilePicture, theirProfilePicture) => { 
