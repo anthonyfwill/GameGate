@@ -581,7 +581,7 @@ const Profile = (props) => {
                                 <Review email={props.currUserInfo.Email} yourUsername={props.currUser} username2={username} gameImage={val.GameImage} name={val.GameName} content={val.Review} score={val.Rating} id={val.GameID}  UpvotesCount={val.UpvotesCount} key={val.GameName}/>
                                 {console.log(props.currUser, val.Username)}
                                 {props.currUser !== username &&
-                                    <button type="button" className="list_entry" onClick={() =>addUpvote(props.currUser, username, val.GameID)}>Upvotes</button>
+                                    <button type="button" className="upvote" onClick={() =>addUpvote(props.currUser, username, val.GameID)}></button>
                                 }
                                 </div>
                             ))

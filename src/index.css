@@ -324,6 +324,24 @@ background-color: #3e8e41;
 color: white;
 }
 
+.upvote {
+  background-image: url(https://i.imgur.com/XCMHNI0.png);
+  background-color: rgb(121, 118, 146);
+  color: white;
+  background-size: 100%;
+  width: 40px;
+  height: 35px;
+  border: 0;
+}
+
+::-webkit-tap-highlight-color {
+  background-color: transparent;
+}
+
+.upvote:hover {
+  background-color: rgb(201, 58, 58);
+}
+
 
 .feed_container {
   display: flex;
@@ -389,6 +407,11 @@ color: white;
     flex-direction: column;
     padding: 20px;
     border-radius: 10px;
+    gap: 50px;
+}
+
+.reviews_subcontainer {
+  display: flex;
 }
 
 .profile-topmost > p {
