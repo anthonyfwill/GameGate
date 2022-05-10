@@ -8,7 +8,6 @@ export default function FollowList(props) {
 
     useEffect(() => {
         checkFollowers();
-        console.log(followMap, "use");
     }, [])
 
     const checkFollowers = async () => {
@@ -17,28 +16,24 @@ export default function FollowList(props) {
         }
     }
 
-    const followersExist = () => {
-         var params = {
-            TableName: "GameGateAccounts",
-            IndexName: "Username-index",
-            KeyConditionExpression: "#username = :User3",
-            ExpressionAttributeNames: {
-                "#username": "Username"
-            },
-            ExpressionAttributeValues: {
-                ":User3": username
+    const followersExist = async () => {
+        var requestOptions = {
+            method: 'GET',
+            redirect: 'follow'
+        };
+        fetch(`http://localhost:5000/api/user/${username}/follows`, requestOptions)
+        .then(response => {
+            if(!response.ok) {
+                throw Error('Could not find user information');
             }
-        }
-        props.docClient.query(params, function(err, data) {
-            if(err) {
-                console.log('Could not retrieve user');
-            } else {
-                if (data.Items.length !== 0) {
-                    if (props.type === "following") {
-                        setFollowMap(data.Items[0].FollowingMap);
-                    } else {
-                        setFollowMap(data.Items[0].FollowersMap);
-                    }
+            return response.json();
+        })
+        .then(results => {
+            if(results.Items.length !== 0) {
+                if(props.type === 'following') {
+                    setFollowMap(results.Items[0].FollowingMap);
+                } else {
+                    setFollowMap(results.Items[0].FollowersMap);
                 }
             }
         })
@@ -47,7 +42,6 @@ export default function FollowList(props) {
     return (
         <div className="follows">
            {Object.entries(followMap).map(item => {
-            {console.log(item[1].Username, "render")}
                 return (
                     <Link to={`/profile/${item[1].Username}`} key={item[1].Username}>
                         <FollowElement Username={item[1].Username} ProfilePicture={item[1].ProfilePicture}/>

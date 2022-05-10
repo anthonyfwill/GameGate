@@ -11,7 +11,6 @@ import { useEffect, useState } from 'react';
 import * as AWS from 'aws-sdk';
 import Settings from './components/Settings';
 import FollowList from './components/FollowList';
-import PlanningList from './components/PlanningList'
 import GameStatusMap from './components/GameStatusMap'
 
 
