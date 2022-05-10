@@ -6,19 +6,6 @@ import { Link } from "react-router-dom";
 function Search(props) {
     const [searchTerm, setSearchTerm] = useState('');
     const [searchType, setSearchType] = useState('Games');
-    let myHeaders = new Headers();
-    myHeaders.append("Client-ID", `${process.env.REACT_APP_CLIENT_ID}`);
-    myHeaders.append("Authorization", `${process.env.REACT_APP_BEARER_TOKEN}`);
-    myHeaders.append("Content-Type", "text/plain");
-
-    let raw = `search \"${searchTerm}\";fields name,first_release_date,cover.url;`;
-
-    let requestOptions = {
-        method: 'POST',
-        headers: myHeaders,
-        body: raw,
-        redirect: 'follow'
-    };
 
     const [results, setResults] = useState([]);
     const [userResults, setUserResults] = useState([]);
@@ -34,68 +21,75 @@ function Search(props) {
     const searchGames = () => {
         setError(false);
         setPending(true);
-        fetch("https://rocky-hamlet-24680.herokuapp.com/https://api.igdb.com/v4/games", requestOptions)
-        .then(response => response.json())
-        .then(data => {
-            console.log(data);
-            if(data.length === 0) {
+
+        var requestOptions = {
+            method: 'GET',
+            redirect: 'follow'
+        }
+        fetch(`http://localhost:5000/api/games/?searchTerm=${searchTerm}`, requestOptions)
+        .then(response => {
+            if(!response.ok) {
+                throw Error('Could not get info for that game');
+            }
+            return response.json();
+        })
+        .then(results => {
+            console.log(results[0]);
+            if(results.length === 0) {
                 throw Error('No games match that name');
             }
             let oldResults = [];
-            for(let i = 0; i < data.length; i++) {
-                if(data[i]['first_release_date'] != undefined && data[i].cover != undefined) {
-                    oldResults.push(data[i]);
+            for(let i = 0; i < results.length; i++) {
+                // console.log(results[i]['first_release_date']);
+                if(results[i]['first_release_date'] != undefined && results[i].cover != undefined) {
+                    oldResults.push(results[i]);
                 }
             }
             for(let i = 0; i < oldResults.length; i++) {
                 oldResults[i].first_release_date = timeConverter(oldResults[i].first_release_date);
                 oldResults[i].cover.url = 'https:' + oldResults[i].cover.url;
             }
+            console.log(oldResults);
             setPending(false);
             setUserResults([]);
             setResults(oldResults);
         })
-        .catch((err) => {
+        .catch(err => {
             setPending(false);
             setError(err.message);
         })
     }
 
     const searchUsers = () => {
-        var params = {
-            TableName: "GameGateAccounts",
-            IndexName: "Username-index",
-            KeyConditionExpression: "#username = :User3",
-            ExpressionAttributeNames: {
-                "#username": "Username"
-            },
-            ExpressionAttributeValues: {
-                ":User3": searchTerm
-            }
+        var requestOptions = {
+            method: 'GET',
+            redirect: 'follow'
         }
-        
-        props.docClient.query(params, function(err, data) {
-            if(err) {
-                console.log('Could not retrieve user');
-                setError('Could not retrieve user');
-                setPending(false);
-            } else if(data.Count === 0) {
-                console.log('User does not exist');
+        fetch(`http://localhost:5000/api/users/?Username=${searchTerm}`, requestOptions)
+        .then(response => {
+            if(!response.ok) {
+                throw Error('Could not get info for that user');
+            }
+            return response.json();
+        })
+        .then(results => {
+            if(results.Count === 0) {
                 setError('User does not exist');
                 setPending(false);
-            }
-            else {
-                console.log(data);
+            } else {
                 const newResults = [];
-                for(let i = 0; i < data.Count; i++) {
-                    newResults.push(data.Items[i]);
+                for(let i = 0; i < results.Count; i++) {
+                    newResults.push(results.Items[i]);
+                    setUserResults(newResults);
+                    setResults([]);
+                    setPending(false);
+                    setError(null);
                 }
-                setUserResults(newResults);
-                setResults([]);
-                // setResults(data.Items[0]);
-                setPending(false);
-                setError(null);
             }
+        })
+        .catch(err => {
+            setError('Could not retrieve user');
+            setPending(false);
         })
     }
 
