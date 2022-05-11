@@ -34,28 +34,6 @@ const GameDetails = (props) => {
     }
 
     const checkPlanning = async () => {
-        // console.log('not amazing');
-        // console.log(props.currUserInfo);
-        // if(props.currUserInfo.PlanningGames != undefined && results != undefined) {
-        //     if(typeof(props.currUserInfo.PlanningGames.values) !== typeof(props.currUserInfo.PlanningGames)) {
-        //         let arr = Array.from(props.currUser.PlanningGames, ([name, keys]) => ({name, keys}));
-        //         for(let i of arr) {
-        //             // console.log(i);
-        //             if(i.name === results[0].name) {
-        //                 console.log(i);
-        //                 setPlanning(true);
-        //             }
-        //         }
-        //     } else {
-        //         for(let i of props.currUserInfo.PlanningGames.values) {
-        //             // console.log
-        //             if(i === results[0].name) {
-        //                 console.log(i);
-        //                 setPlanning(true);
-        //             }
-        //         }
-        //     }
-        // }
         if (results != undefined) {
             await gameStatusMap(results[0].name, "PlanningGames")
         }
@@ -125,116 +103,6 @@ const GameDetails = (props) => {
         }
         return output.join(', ');
     }
-    //All reviews for a game (Just have to loop through game api and with the parameter of the gameID which is "gameID" in this function)
-        // var params2 = {
-        //     TableName: "Games",
-        //     //ProjectionExpression: "#gameID",
-        //     KeyConditionExpression: "#gameID = :gameID3",
-        //     ExpressionAttributeNames: {
-        //         "#gameID": "GameID",
-        //     },
-        //     ExpressionAttributeValues: {
-        //         ":gameID3": id
-        //     }
-        // }
-
-        // props.docClient.query(params2, function(err, data) {
-        //     if (!err) {
-        //         if (data.Count === 0) {
-        //             console.log(data);
-        //         } else {
-        //             console.log(data);
-        //         }
-        //     } else {
-        //         console.log(err);
-        //     }
-        // })
-
-        /*var params3 = {
-            TableName: "Games",
-            Item: {
-                "GameID": id,
-                "Username": Username,
-                "Review": review,
-            },
-
-        }
-
-        props.docClient.query(params2, function(err, data) {
-            if (!err) {
-                if (data.Count === 0) {
-                    console.log(data);
-                } else {
-                    console.log(data);
-
-                }
-            } else {
-                console.log(err);
-            }
-        })*/
-
-        /*var params2 = {
-            TableName: "Games",
-            KeyConditionExpression: "#gameID = :gameID3 and #username = :username",
-            ExpressionAttributeNames: {
-                "#gameID": "GameID",
-                "#username": "Username"
-            },
-            ExpressionAttributeValues: {
-                ":gameID3": id,
-                ":username": username
-            }
-        }
-
-        props.docClient.put(params2, function(err, data) {
-            if (!err) {
-                if (data.Count === 0) {
-                    console.log(data);
-                } else {
-                    console.log(data);
-
-                }
-            } else {
-                console.log(err);
-            }
-        })*/
-
-        //ADD ITEMS**********************88
-        /*var params = {
-            TableName: "Games",
-            Item: {
-                "GameID": gameID,
-                "Username": username,
-                "Review": review,
-                "Rating": rating
-            }
-        }
-
-        props.docClient.query(params, function(err, data) {
-            if (!err) {
-                //console.log("no error");
-                //console.log(data, "Email entered: " + email);
-                if (data.Count === 0) {
-                    console.log("Email available");
-                    canMake = canMake + 1;
-                } else {
-                    console.log("Email is not available");
-                }
-            } else {
-                canMake += 1
-                console.log(err);
-            }
-        })*/
-
-    /*function addPlanning(e) {
-        if(e.target.textContent === 'Add to planning') {
-            e.target.textContent = 'Planning'
-            //add code to update planning count for user and add game id to list of games user is planning on playing
-        } else {
-            e.target.textContent = 'Add to planning'
-            //decrement planning count for user and remove game id from list of games user is planning to play
-        }
-    }*/
 
     function updateReviews(gameName, email, username, reviewText, reviewScore, gameImg, profPic) {
         setReviewOpened(false);
@@ -952,11 +820,39 @@ const GameDetails = (props) => {
             if(err) {
                 console.log(data, "ID is already being used generating a new ID");
                 let idNum = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
-                let idStr = idNum.toString();
+                var idStr = idNum.toString();
                 addUserFeed(yourEmail, yourUsername, idStr, gameID, gameName, gameImg, action, dateTimeEST);
             } else if (!err) {
                 if (data.Count === 0) {
-                    console.log(data);
+                    console.log(data, "trying to create");
+                    var params3 = {
+                        TableName: "GameGateAccounts",
+                        KeyConditionExpression: "#email = :Email3",
+                        ExpressionAttributeNames: {
+                            "#email": "Email"
+                        },
+                        ExpressionAttributeValues: {
+                            ":Email3": props.currUserInfo.Email
+                        }
+                    }
+    
+                    props.docClient.query(params3, function(err, data) {
+                        if (!err) {
+                            if (data.Count === 0) {
+                                console.log(data);
+                            } else {
+                                console.log(data);
+                                updateUserFeed(yourEmail, yourUsername, idNumber, gameID, gameName, gameImg, action, dateTimeEST, props.currUserInfo.Email);
+                                for (var item2 in data.Items[0].FollowersMap) {
+                                    console.log(item2, "each follower");
+                                    updateUserFeed(yourEmail, yourUsername, idNumber, gameID, gameName, gameImg, action, dateTimeEST, item2);
+                                }
+                            }
+
+                        } else {
+                            console.log(err);
+                        }
+                    })
                     var params2 = {
                         TableName:"UserFeed",
                         Item:{
@@ -982,6 +878,40 @@ const GameDetails = (props) => {
                 }
             }
         });
+    }
+
+    function updateUserFeed(yourEmail, yourUsername, idNumber, gameID, gameName, gameImg, action, dateTimeEST, item2) {
+        var params = {               
+            TableName:"GameGateAccounts",            
+            Key:{
+                "Email": item2
+            },
+            UpdateExpression: "SET #uf = list_append(#uf, :feed)",
+            ExpressionAttributeNames: {
+                "#uf": "UserFeedIDs",
+            },
+            ExpressionAttributeValues:{
+                ":feed": [{
+                    "Email": yourEmail,
+                    "ID": idNumber,
+                    "Username": yourUsername,
+                    "Action": action,
+                    "GameID": gameID,
+                    "GameImg": gameImg,
+                    "GameName": gameName,
+                    "DateOf": dateTimeEST
+                }]
+            },
+            ReturnValues:"UPDATED_NEW"
+        };
+
+        props.docClient.update(params, function(err, data) {
+            if (err) {
+                console.log(err);
+            }else {
+                console.log("Updated the userfeed of", item2);
+            }
+        })
     }
 
     return (

@@ -6,21 +6,21 @@ import useFetch from "./useFetch";
 const Home = (props) => {
     const [userFeedList, setUserFeed] = useState(false);
     const [found, setFound] = useState(false);
+    const [listFeed, setListFeed] = useState('');
 
     useEffect(() => {
         if(props.currUserInfo) {
-            setUserFeed(true);   
+            if (!found) {
+                entireUserFeed();
+            }
         }
     });
 
     function displayUserFeed() {
-        let listing =  userFeed();
-        console.log("list: ", listing);
-        console.log("size: ", listing.length);
-        return listing;
+        entireUserFeed();
     }
 
-    function userFeed() {
+    function onlyUserFeed() {
             let arr = [];
             console.log("I am here.");
             var params1 = {
@@ -52,13 +52,51 @@ const Home = (props) => {
             return arr;   
     }
 
+    function entireUserFeed() {
+       let arr = [];
+            console.log("EntireUserFeed");
+            var params1 = {
+                TableName: "GameGateAccounts",
+                KeyConditionExpression: "#email = :Email3",
+                ExpressionAttributeNames: {
+                    "#email": "Email"
+                },
+                ExpressionAttributeValues: {
+                    ":Email3": props.currUserInfo.Email
+                }
+            }
+            props.docClient.query(params1, function(err, data) {
+                if(err) {
+                    console.log(data, "55555")
+                } else if (!err) {
+                    console.log(data.Items[0].UserFeedIDs, "all feeds for user");
+                    arr = makeList(data.Items[0].UserFeedIDs);
+                    setListFeed(arr);
+                    setFound(true);
+                    console.log(arr, "List of actions", found);
+                }
+            });
+    }
+
     function makeList(items) {
-        let list = items.map( (item, index) => {
-            return (
-                <li key={index}>apple</li>
-            );
-        });
-        return list;
+        let list = [];
+        items.forEach((item, index) => {
+            console.log(index)
+            list.push(item.Action)
+        })
+        return list.reverse();
+    }
+
+
+    function testing2(theFeed) {
+        if (found) {
+            console.log(theFeed, "arr?");
+            return theFeed.map(text => {
+                return (<ul>
+                    <ul>{text}</ul>
+                </ul>)
+            })
+        }
     }
 
 
@@ -68,7 +106,7 @@ const Home = (props) => {
             <div className="posts_container">
                 <div>
                     <h1>GameGate Home</h1>
-                    {displayUserFeed()}
+                    {testing2(listFeed)}
                 </div>
             </div>
         </div>
