@@ -372,6 +372,35 @@ const Profile = (props) => {
             }else if (!err) {
                 if (data.Count === 0) {
                     console.log(data);
+                    var params3 = {
+                        TableName: "GameGateAccounts",
+                        KeyConditionExpression: "#email = :Email3",
+                        ExpressionAttributeNames: {
+                            "#email": "Email"
+                        },
+                        ExpressionAttributeValues: {
+                            ":Email3": props.currUserInfo.Email
+                        }
+                    }
+    
+                    docClient.query(params3, function(err, data) {
+                        if (!err) {
+                            if (data.Count === 0) {
+                                console.log(data);
+                            } else {
+                                console.log(data, "trying to create");
+                                updateUserFeed(yourEmail, yourUsername, idNumber, theirUsername, yourProfilePicture, theirProfilePicture, action, dateTimeEST, props.currUserInfo.Email);
+                                for (var item2 in data.Items[0].FollowersMap) {
+                                    console.log(item2, "each follower");
+                                    updateUserFeed(yourEmail, yourUsername, idNumber, theirUsername, yourProfilePicture, theirProfilePicture, action, dateTimeEST, item2);
+                                }
+                            }
+
+                        } else {
+                            console.log(err);
+                        }
+                    })
+
                     var params2 = {
                         TableName:"UserFeed",
                         Item:{
@@ -396,6 +425,39 @@ const Profile = (props) => {
             }
         });
     }
+
+    function updateUserFeed(yourEmail, yourUsername, idNumber, theirUsername, yourProfilePicture, theirProfilePicture, action, dateTimeEST, item2){
+        var params = {               
+            TableName:"GameGateAccounts",            
+            Key:{
+                "Email": item2
+            },
+            UpdateExpression: "SET #uf = list_append(#uf, :feed)",
+            ExpressionAttributeNames: {
+                "#uf": "UserFeedIDs",
+            },
+            ExpressionAttributeValues:{
+                ":feed": [{
+                    "Email": yourEmail,
+                    "ID": idNumber,
+                    "Username": yourUsername,
+                    "Action": action,
+                    "theirUsername": theirUsername,
+                    "DateOf": dateTimeEST
+                }]
+            },
+            ReturnValues:"UPDATED_NEW"
+        };
+
+        docClient.update(params, function(err, data) {
+            if (err) {
+                console.log(err);
+            }else {
+                console.log("Updated the userfeed of", item2);
+            }
+        })
+    }
+
 
     function addUpvote(yourUsername, theirUsername, gameID) { 
         var id = gameID.toString();

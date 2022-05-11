@@ -783,11 +783,39 @@ const GameDetails = (props) => {
             if(err) {
                 console.log(data, "ID is already being used generating a new ID");
                 let idNum = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
-                let idStr = idNum.toString();
+                var idStr = idNum.toString();
                 addUserFeed(yourEmail, yourUsername, idStr, gameID, gameName, gameImg, action, dateTimeEST);
             } else if (!err) {
                 if (data.Count === 0) {
-                    console.log(data);
+                    console.log(data, "trying to create");
+                    var params3 = {
+                        TableName: "GameGateAccounts",
+                        KeyConditionExpression: "#email = :Email3",
+                        ExpressionAttributeNames: {
+                            "#email": "Email"
+                        },
+                        ExpressionAttributeValues: {
+                            ":Email3": props.currUserInfo.Email
+                        }
+                    }
+    
+                    props.docClient.query(params3, function(err, data) {
+                        if (!err) {
+                            if (data.Count === 0) {
+                                console.log(data);
+                            } else {
+                                console.log(data);
+                                updateUserFeed(yourEmail, yourUsername, idNumber, gameID, gameName, gameImg, action, dateTimeEST, props.currUserInfo.Email);
+                                for (var item2 in data.Items[0].FollowersMap) {
+                                    console.log(item2, "each follower");
+                                    updateUserFeed(yourEmail, yourUsername, idNumber, gameID, gameName, gameImg, action, dateTimeEST, item2);
+                                }
+                            }
+
+                        } else {
+                            console.log(err);
+                        }
+                    })
                     var params2 = {
                         TableName:"UserFeed",
                         Item:{
@@ -813,6 +841,40 @@ const GameDetails = (props) => {
                 }
             }
         });
+    }
+
+    function updateUserFeed(yourEmail, yourUsername, idNumber, gameID, gameName, gameImg, action, dateTimeEST, item2) {
+        var params = {               
+            TableName:"GameGateAccounts",            
+            Key:{
+                "Email": item2
+            },
+            UpdateExpression: "SET #uf = list_append(#uf, :feed)",
+            ExpressionAttributeNames: {
+                "#uf": "UserFeedIDs",
+            },
+            ExpressionAttributeValues:{
+                ":feed": [{
+                    "Email": yourEmail,
+                    "ID": idNumber,
+                    "Username": yourUsername,
+                    "Action": action,
+                    "GameID": gameID,
+                    "GameImg": gameImg,
+                    "GameName": gameName,
+                    "DateOf": dateTimeEST
+                }]
+            },
+            ReturnValues:"UPDATED_NEW"
+        };
+
+        props.docClient.update(params, function(err, data) {
+            if (err) {
+                console.log(err);
+            }else {
+                console.log("Updated the userfeed of", item2);
+            }
+        })
     }
 
     return (
