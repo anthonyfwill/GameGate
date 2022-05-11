@@ -29,7 +29,7 @@ const GameDetails = (props) => {
         }
     }
 
-    const gameStatusMap = (gameName, gameStatus) => {
+    const gameStatusMap = async (gameName) => {
         var requestOptions = {
             method: 'GET',
             redirect: 'follow'
