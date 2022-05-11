@@ -17,13 +17,9 @@ const GameDetails = (props) => {
 
     useEffect(() => {
         if(props.currUserInfo) {
-            // console.log(props.currUserInfo);
-            checkPlanning();
-            checkCurrent();
-            checkCompleted();
-            checkDropped();
-            // console.log(props.currUserInfo);
-            // console.log(results);
+            if(results != undefined) {
+                gameStatusMap(results[0].name);
+            }
         }
     }, [props.completion, results]);
 
@@ -33,67 +29,35 @@ const GameDetails = (props) => {
         }
     }
 
-    const checkPlanning = async () => {
-        if (results != undefined) {
-            await gameStatusMap(results[0].name, "PlanningGames")
-        }
-    }
-
-    const checkCurrent = async () => {
-        if (results != undefined) {
-            await gameStatusMap(results[0].name, "CurrentGames")
-        }
-    }
-
-    const checkCompleted = async () => {
-        if (results != undefined) {
-            await gameStatusMap(results[0].name, "CompletedGames")
-        }
-    }
-
-    const checkDropped = async () => {
-        if (results != undefined) {
-            await gameStatusMap(results[0].name, "DroppedGames")
-        }
-    }
-
     const gameStatusMap = (gameName, gameStatus) => {
-        var params1 = {
-            TableName:"GameGateAccounts",
-            KeyConditionExpression: "#email = :email3",
-            FilterExpression: "attribute_exists(#gs.#gn.GameName)",
-            ExpressionAttributeNames: {
-                "#email": "Email",
-                "#gs": gameStatus,
-                "#gn": gameName
-            },
-            ExpressionAttributeValues: {
-                ":email3": props.currUserInfo.Email
-            }
+        var requestOptions = {
+            method: 'GET',
+            redirect: 'follow'
         };
-        props.docClient.query(params1, function(err, data) {
-            if (err) {
-                console.log(err);
-            } else {
-                if (data.Items.length !== 0) {
-                    console.log("game status:", gameStatus);
+          
+        fetch(`http://localhost:5000/api/user/${props.currUser}/gamestatuses/?gameName=${gameName}`, requestOptions)
+            .then(response => response.json())
+            .then(result => {
+                let pg = (result.status === "PlanningGames") ? true : false;
+                setPlanning(pg);
 
-                    let pg = (gameStatus === "PlanningGames") ? true : false;
-                    setPlanning(pg);
+                let complG = (result.status === "CompletedGames") ? true : false;
+                setCompleted(complG);
 
-                    let complG = (gameStatus === "CompletedGames") ? true : false;
-                    setCurrentG(complG);
+                let currG = (result.status === "CurrentGames") ? true : false;
+                setCurrentG(currG);
 
-                    let currG = (gameStatus === "CurrentGames") ? true : false;
-                    setCurrentG(currG);
+                let dg = (result.status === "DroppedGames") ? true : false;
+                setDropped(dg);
 
-                    let dg = (gameStatus === "DroppedGames") ? true : false;
-                    setDropped(dg);
-
-                    console.log(planning, "planning", completed, "completed", currentG, "currentG", dropped, "dropped");
+                if(!pg && !complG && !currG && !dg) {
+                    setPlanning(false);
+                    setCompleted(false);
+                    setCurrentG(false);
+                    setDropped(false);
                 }
-            }
-        });
+            })
+            .catch(error => console.log('error', error));
     }
 
     function combineAll(array) {
