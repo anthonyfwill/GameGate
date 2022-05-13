@@ -862,7 +862,7 @@ const GameDetails = (props) => {
                         
                        
                         <div className="dropdown">
-                        <button id="gameStatusText" className="gameStatusBox" onClick={() => gameStatusButton()}>Add to list</button>
+                        {props.loggedIn && <button id="gameStatusText" className="gameStatusBox" onClick={() => gameStatusButton()}>Add to list</button>}
                             <div id="gameStatuses" className="gamestatus-dropdown">
                                 {!planning && props.loggedIn && <h2 className="list_entry" onClick={() => planningGames(props.currUser, results[0].name, results[0].id, results[0].smallCover)}>Planning</h2>}
                                 {planning && props.loggedIn && <h2 className="list_entry" onClick={() => removePlanningGame(props.currUser, results[0].name, results[0].id, results[0].smallCover)}>Remove from Planning</h2>}
@@ -889,7 +889,7 @@ const GameDetails = (props) => {
                 </div> }
                 <div className="game-reviews">
                     <h1>Reviews</h1>
-                    {props.loggedIn && !reviewOpened && <button className="reviewBtn" onClick={() => setReviewOpened(true)}>Write a review</button>}
+                    {props.loggedIn && !reviewOpened && results && <button className="reviewBtn" onClick={() => setReviewOpened(true)}>Write a review</button>}
                     {reviewOpened &&
                     <div className="reviewBox">
                     <textarea id="gamereview" placeholder="Write a review" name="review" rows="8" cols="90" value={reviewText} onChange={(e) => setReviewText(e.target.value)}></textarea>
@@ -904,7 +904,7 @@ const GameDetails = (props) => {
                         reviewInfo.map(val => (
                             <div>
                             <Review yourUsername={props.currUser} username2={val.Username} username={val.Username} content={val.Review} score={val.Rating} profPic={val.ProfilePic} UpvotesCount={val.UpvotesCount} gameID={results[0].id} key={val.Username}/>
-                                {props.currUser !== val.Username &&
+                                {props.currUser !== val.Username && props.loggedIn &&
                                     <button type="button" style={{backgroundColor: (val.Upvotes[props.currUserInfo.Email] != undefined) ? 'red' : ''}} className="upvote" onClick={() =>addUpvote(props.currUser, val.Username, results[0].id)}></button>
                                 }
                             </div>

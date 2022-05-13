@@ -674,7 +674,7 @@ const Profile = (props) => {
                                 <Review email={props.currUserInfo.Email} yourUsername={props.currUser} username2={username} gameImage={val.GameImage} name={val.GameName} content={val.Review} score={val.Rating} id={val.GameID}  UpvotesCount={val.UpvotesCount} key={val.GameName}/>
                                 {console.log(props.currUser, val.Username)}
                                 {console.log(val.Upvotes, "upvotes", val.Upvotes[props.currUserInfo.Email])}
-                                {props.currUser !== username &&
+                                {props.currUser !== username && props.loggedIn &&
                                     <button type="button" style={{backgroundColor: (val.Upvotes[props.currUserInfo.Email] != undefined) ? 'red' : ''}} className="upvote" onClick={() =>addUpvote(props.currUser, username, val.GameID)}></button>
                                 }
                                 </div>
