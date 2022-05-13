@@ -92,7 +92,7 @@ function App() {
             <Settings currUser={currUser} setCurrUser={setCurrUser} docClient={docClient} setCurrUserInfo={setCurrUserInfo} currUserInfo={currUserInfo}/>
           </Route>
           <Route exact path="/game/:id">
-            <GameDetails completion={completion} setCurrUserInfo={setCurrUserInfo} loggedIn={loggedIn} docClient={docClient} currUser={currUser} currUserInfo={currUserInfo}/>
+            <GameDetails setIdToken={setIdToken} idToken={idToken} refreshToken={refreshToken} completion={completion} setCurrUserInfo={setCurrUserInfo} loggedIn={loggedIn} docClient={docClient} currUser={currUser} currUserInfo={currUserInfo}/>
           </Route>
           <Route exact path="/following/:username">
             <FollowList type={'following'} docClient={docClient}/>

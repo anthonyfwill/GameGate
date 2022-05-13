@@ -69,72 +69,46 @@ const GameDetails = (props) => {
     }
 
     function updateReviews(gameName, email, username, reviewText, reviewScore, gameImg, profPic) {
+        let reviews = JSON.stringify(reviewInfo);
         setReviewOpened(false);
-        var params = {
-            TableName: "Games",
-            Item: {
-                "GameID": id,
-                "GameName": gameName,
-                "Email": email,
-                "Username": username,
-                "Review": reviewText,
-                "Rating": reviewScore,
-                "GameImage": gameImg,
-                "ProfilePic": profPic,
-                "Upvotes": {},
-                "UpvotesCount": 0
-            }
-        }
-        //console.log(results[0].name, props.currUser, reviewText, reviewScore)
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
 
-        props.docClient.put(params, function(err, data) {
-            if (!err) {
-                console.log(reviewText, reviewScore);
-                const moreReviewInfo = [...reviewInfo];
-                let found = false;
-                for(let i = 0; i < moreReviewInfo.length; i++) {
-                    console.log(moreReviewInfo[i]);
-                    if(moreReviewInfo[i].Username === username) {
-                        console.log("found one!");
-                        moreReviewInfo[i] = {
-                            GameID: id,
-                            GameName: gameName,
-                            Email: email,
-                            Username: username,
-                            Review: reviewText,
-                            Rating: reviewScore,
-                            GameImage: gameImg,
-                            ProfilePic: profPic,
-                            Upvotes: {},
-                            UpvotesCount: 0
-                        }
-                        found = true;
-                    }
-                }
-                if(!found) {
-                    moreReviewInfo.push({
-                        GameID: id,
-                        GameName: gameName,
-                        Email: email,
-                        Username: username,
-                        Review: reviewText,
-                        Rating: reviewScore,
-                        GameImage: gameImg,
-                        ProfilePic: profPic,
-                        Upvotes: {},
-                        UpvotesCount: 0
-                    });
-                }
-                // console.log(moreReviewInfo);
-                updateScore(moreReviewInfo);
-                setReviewInfo(moreReviewInfo);
+        var urlencoded = new URLSearchParams();
+        urlencoded.append("idToken", props.idToken);
+        urlencoded.append("refreshToken", props.refreshToken);
+        urlencoded.append("id", id);
+        urlencoded.append("gameName", gameName);
+        urlencoded.append("email", email);
+        urlencoded.append("username", username);
+        urlencoded.append("reviewText", reviewText);
+        urlencoded.append("reviewScore", reviewScore);
+        urlencoded.append("gameImg", gameImg);
+        urlencoded.append("profPic", profPic);
+        urlencoded.append("reviewInfo", reviews);
+
+        var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: urlencoded,
+            redirect: 'follow'
+        };
+
+        fetch("http://localhost:5000/api/reviews", requestOptions)
+        .then(response => response.json())
+        .then(result => {
+            if(result.newId) {
+                localStorage.setItem('idToken', result.idToken);
+                props.setIdToken(result.idToken);
+            }
+            if(result.reviewInfo) {
+                updateScore(result.reviewInfo);
+                setReviewInfo(result.reviewInfo);
                 setReviewScore('');
                 setReviewText('');
-            } else {
-                console.log(err);
             }
         })
-        //update the list of reviews for game and user tables
+        .catch(error => console.log('error', error));
     }
 
     function updateScore(moreReviewInfo) {
