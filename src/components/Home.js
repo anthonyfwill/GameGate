@@ -92,7 +92,7 @@ const Home = (props) => {
         if (found || found2) {
             return theFeed.map(text => {
                 return (<ul>
-                    <ul>{text}</ul>
+                    <li>{text}</li>
                 </ul>)
             })
         }
