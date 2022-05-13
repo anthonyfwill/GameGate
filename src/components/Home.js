@@ -6,12 +6,17 @@ import useFetch from "./useFetch";
 const Home = (props) => {
     const [userFeedList, setUserFeed] = useState(false);
     const [found, setFound] = useState(false);
+    const [found2, setFound2] = useState(false);
     const [listFeed, setListFeed] = useState('');
 
     useEffect(() => {
         if(props.currUserInfo) {
             if (!found) {
+                //Userfeed of user and following
                 entireUserFeed();
+            }
+            if (!found2) {
+                //onlyUserFeed(); UserFeed for only user
             }
         }
     });
@@ -32,24 +37,21 @@ const Home = (props) => {
                     "#date": "DateOf"
                 },
                 ExpressionAttributeValues: {
-                    ":Email3": "anthonyfletcherw@gmail.com",
-                    ":Date3": "5/5/2022, 8:44:41 PM"
+                    ":Email3": props.currUserInfo.Email,
+                    ":Date3": "5/11/2022, 12:14:07 AM"
                 }
             }
             props.docClient.query(params1, function(err, data) {
                 if(err) {
                     console.log(data, "44444")
                 } else if (!err) {
-                    console.log(data.Items, "all feeds for user");
-                    console.log(typeof(data.Items), "type of ddata.items");
-                    data.Items.forEach((item) => {
-                        arr.push(
-                            item.Action
-                        );
-                    })
+                    console.log(data, "all feeds for user");
+                    arr = makeList(data.Items);
+                    console.log(arr, "arr contents");
+                    setListFeed(arr.reverse());
+                    setFound2(true);
                 }
             });
-            return arr;   
     }
 
     function entireUserFeed() {
@@ -69,11 +71,11 @@ const Home = (props) => {
                 if(err) {
                     console.log(data, "55555")
                 } else if (!err) {
-                    console.log(data.Items[0].UserFeedIDs, "all feeds for user");
+                    //console.log(data.Items[0].UserFeedIDs, "all feeds for user");
                     arr = makeList(data.Items[0].UserFeedIDs);
-                    setListFeed(arr);
+                    setListFeed(arr.reverse());
                     setFound(true);
-                    console.log(arr, "List of actions", found);
+                    //console.log(arr, "List of actions", found);
                 }
             });
     }
@@ -81,16 +83,13 @@ const Home = (props) => {
     function makeList(items) {
         let list = [];
         items.forEach((item, index) => {
-            console.log(index)
             list.push(item.Action)
         })
-        return list.reverse();
+        return list;
     }
 
-
     function testing2(theFeed) {
-        if (found) {
-            console.log(theFeed, "arr?");
+        if (found || found2) {
             return theFeed.map(text => {
                 return (<ul>
                     <ul>{text}</ul>
