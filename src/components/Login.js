@@ -31,11 +31,15 @@ const Login = (props) => {
         fetch("http://localhost:5000/api/users/login", requestOptions)
         .then(response => response.json())
         .then(result => {
-            props.setCurrUser(result.Username);
-            props.setCurrUserInfo(result);
-            localStorage.setItem('user', JSON.stringify(result));
+            props.setCurrUser(result.userInfo.Username);
+            props.setCurrUserInfo(result.userInfo);
+            localStorage.setItem('user', JSON.stringify(result.userInfo));
+            localStorage.setItem('idToken', result.idToken);
+            localStorage.setItem('refreshToken', result.refreshToken);
+            props.setRefreshToken(result.refreshToken);
+            props.setIdToken(result.idToken);
             props.setLoggedIn(true);
-            history.push(`/profile/${result.Username}`);
+            history.push(`/profile/${result.userInfo.Username}`);
         })
         .catch(error => {
             setError('Login Failed');

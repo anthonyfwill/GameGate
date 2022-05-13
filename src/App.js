@@ -30,31 +30,36 @@ function App() {
   const [userRetrieval, setUserRetrieval] = useState(false);
   const [currUserInfo, setCurrUserInfo] = useState(null);
   const [completion, setCompletion] = useState(false);
+  const [idToken, setIdToken] = useState(null);
+  const [refreshToken, setRefreshToken] = useState(null);
+
 
   useEffect(() => {
     if(!userRetrieval) {
       const user = localStorage.getItem("user");
+      const idToken = localStorage.getItem('idToken');
+      const refreshToken = localStorage.getItem('refreshToken');
       async function getLoginInfo() {
         if(user) {
           setUserRetrieval(true);
           let jsoned = await JSON.parse(user);
           setCurrUserInfo(jsoned);
-          // setCurrUserInfo(await JSON.parse(user));
           let parsed = await jsoned.Username;
           setCurrUser(parsed);
+          setIdToken(idToken);
+          setRefreshToken(refreshToken);
           setLoggedIn(true);
-          // setCurrUser(await JSON.parse(user).Username);
-          // console.log(jsoned);
         }
       }
       getLoginInfo();
     } else {
       setCompletion(true);
-      // console.log(currUserInfo);
     }
   }, [currUserInfo])
 
   function logOut() {
+    setIdToken(null);
+    setRefreshToken(null);
     setLoggedIn(false);
     setCurrUser(null);
     localStorage.clear();
@@ -69,13 +74,13 @@ function App() {
             <LandingPage />
           </Route>
           <Route exact path="/search">
-            <Search docClient={docClient}/>
+            <Search />
           </Route>
           <Route exact path="/register">
             <Register setLoggedIn={setLoggedIn} setCurrUser={setCurrUser} docClient={docClient} setCurrUserInfo={setCurrUserInfo}/>
           </Route>
           <Route exact path="/login">
-            <Login setLoggedIn={setLoggedIn} setCurrUser={setCurrUser} docClient={docClient} setCurrUserInfo={setCurrUserInfo}/>
+            <Login setRefreshToken={setRefreshToken} setIdToken={setIdToken} setLoggedIn={setLoggedIn} setCurrUser={setCurrUser} docClient={docClient} setCurrUserInfo={setCurrUserInfo}/>
           </Route>
           <Route exact path="/home">
             <Home currUser={currUser} setCurrUser={setCurrUser} docClient={docClient} setCurrUserInfo={setCurrUserInfo} currUserInfo={currUserInfo}/>
