@@ -19,6 +19,8 @@ const Profile = (props) => {
     const [requesting, setRequesting] = useState(false);
     const [error, setError] = useState(null);
     const [reviewInfo, setReviewInfo] = useState([]);
+    const [upvoteColor, setButtonColor] = useState([]);
+    const [finishReading, setReading] = useState(false);
     const [following, setFollowing] = useState(false);
     const [notFollowing, setNotFollowing] = useState(false);
 
@@ -54,7 +56,6 @@ const Profile = (props) => {
         if(props.currUserInfo) {
             // console.log(props.currUserInfo);
             checkFollowing();
-            console.log(props.currUserInfo);
         }
     }, [username, props.completion])
 
@@ -573,6 +574,36 @@ const Profile = (props) => {
         console.log("upvote removed");
     }
 
+    function buttonColor(yourUsername, theirUsername, gameID) { 
+        var id = gameID.toString();
+        console.log("upvote");
+        var params2 = {
+            TableName: "GameGateAccounts",
+            IndexName: "Username-index",
+            KeyConditionExpression: "#username = :User3",
+            ExpressionAttributeNames: {
+                "#username": "Username"
+            },
+            ExpressionAttributeValues: {
+                ":User3": theirUsername
+            }
+        }
+        docClient.query(params2, function(err, data) {
+            if (err) {
+                console.log(err);
+            }else if (!err) {
+                if (data.Count === 0) {
+                    //console.log(data);
+                } else {
+                    console.log(data);
+                    data.Items.forEach(item => {
+                        console.log(item, "itemmmmm");
+                        return true;
+                    })
+                }
+            }
+        })
+    }
 
     return (
         <div className='profile-topmost'>
@@ -642,8 +673,9 @@ const Profile = (props) => {
                                 {console.log(val, "val")}
                                 <Review email={props.currUserInfo.Email} yourUsername={props.currUser} username2={username} gameImage={val.GameImage} name={val.GameName} content={val.Review} score={val.Rating} id={val.GameID}  UpvotesCount={val.UpvotesCount} key={val.GameName}/>
                                 {console.log(props.currUser, val.Username)}
+                                {console.log(val.Upvotes, "upvotes", val.Upvotes[props.currUserInfo.Email])}
                                 {props.currUser !== username &&
-                                    <button type="button" className="upvote" onClick={() =>addUpvote(props.currUser, username, val.GameID)}></button>
+                                    <button type="button" style={{backgroundColor: (val.Upvotes[props.currUserInfo.Email] != undefined) ? 'red' : ''}} className="upvote" onClick={() =>addUpvote(props.currUser, username, val.GameID)}></button>
                                 }
                                 </div>
                             ))
