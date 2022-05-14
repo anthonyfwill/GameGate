@@ -54,7 +54,6 @@ const Profile = (props) => {
         }
         console.log(following);
         if(props.currUserInfo) {
-            // console.log(props.currUserInfo);
             checkFollowing();
         }
     }, [username, props.completion])
@@ -89,72 +88,48 @@ const Profile = (props) => {
         })
     }
 
-     const increaseFollowing = (yourUsername, theirUsername, yourProfilePicture, theirProfilePicture) => { 
-        var params2 = {
-            TableName: "GameGateAccounts",
-            IndexName: "Username-index",
-            KeyConditionExpression: "#username = :User3",
-            ExpressionAttributeNames: {
-                "#username": "Username"
-            },
-            ExpressionAttributeValues: {
-                ":User3": theirUsername
+     const increaseFollowing = (yourUsername, theirUsername, yourProfilePicture, theirProfilePicture) => {
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+
+        var urlencoded = new URLSearchParams();
+        urlencoded.append("idToken", props.idToken);
+        urlencoded.append("refreshToken", props.refreshToken);
+        urlencoded.append("email", props.currUserInfo.Email);
+        urlencoded.append("username", yourUsername);
+        urlencoded.append("theirEmail", results.Email);
+        urlencoded.append("theirProfilePicture", theirProfilePicture);
+        urlencoded.append("theirUsername", theirUsername);
+
+        var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: urlencoded,
+            redirect: 'follow'
+        };
+
+        fetch(`http://localhost:5000/api/user/${yourUsername}/following`, requestOptions)
+        .then(response => response.json())
+        .then(result => {
+            if(result.newId) {
+                localStorage.setItem('idToken', result.idToken);
+                props.setIdToken(result.idToken);
             }
-        }
-    
-        docClient.query(params2, function(err, data) {
-            if (!err) {
-                if (data.Count === 0) {
-                    console.log(data);
-                } else {
-                    console.log(data);
-                    data.Items.forEach(item => {
-                        var params1 = {
-                            TableName:"GameGateAccounts",
-                                Key:{
-                                "Email": props.currUserInfo.Email,
-                            },
-                            UpdateExpression: "SET #fl.#userN = :userViewedName, Following = Following + :val",
-                            ConditionExpression: "attribute_not_exists(#fl.#userN.Username)",
-                            ExpressionAttributeNames: {
-                                "#fl": "FollowingMap",
-                                "#userN": item.Email
-                            },
-                            ExpressionAttributeValues:{
-                                ":userViewedName":{
-                                    "Username": theirUsername,
-                                    "ProfilePicture": theirProfilePicture
-                                },
-                                ":val": 1
-                            },
-                            ReturnValues:"UPDATED_NEW"
-                        };
-                        console.log(item);
-                        docClient.update(params1, function(err, data) {
-                            if (err) {
-                                console.log(err);
-                            } else {
-                                let newInfo = Object.assign({}, props.currUserInfo);
-                                newInfo.Following = data.Attributes.Following;
-                                newInfo.FollowingMap = data.Attributes.FollowingMap;
-                                props.setCurrUserInfo(newInfo);
-                                localStorage.setItem('user', JSON.stringify(newInfo));
-                                console.log(newInfo);
-                                console.log("Increased the following count of", yourUsername);
-                                const action = yourUsername + " has followed " + theirUsername;
-                                console.log(action);
-                                var dateTime = new Date();
-                                var dateTimeEST = dateTime.toLocaleString('en-US', {timeZone: 'America/New_York'});
-                                console.log(dateTimeEST);
-                                let idNum = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
-                                let idStr = idNum.toString();
-                                addUserFeed(props.currUserInfo.Email, yourUsername, idStr, theirUsername, yourProfilePicture, theirProfilePicture, action, dateTimeEST);
-                            }
-                        });
-                    })
-                }
+            if(result.newFollowingsInfo) {
+                let newInfo = Object.assign({}, props.currUserInfo);
+                newInfo.Following = result.newFollowingsInfo.Attributes.Following;
+                newInfo.FollowingMap = result.newFollowingsInfo.Attributes.FollowingMap;
+                props.setCurrUserInfo(newInfo);
+                localStorage.setItem('user', JSON.stringify(newInfo));
+                const action = yourUsername + " has followed " + theirUsername;
+                var dateTime = new Date();
+                var dateTimeEST = dateTime.toLocaleString('en-US', {timeZone: 'America/New_York'});
+                let idNum = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
+                let idStr = idNum.toString();
+                addUserFeed(props.currUserInfo.Email, yourUsername, idStr, theirUsername, yourProfilePicture, theirProfilePicture, action, dateTimeEST);
             }
         })
+        .catch(error => console.log('error', error)); 
         setFollowing(true);
         increaseFollowers(yourUsername, theirUsername, yourProfilePicture, theirProfilePicture);
     }
@@ -229,69 +204,48 @@ const Profile = (props) => {
     }
 
     const increaseFollowers = (yourUsername, viewedUsername, yourProfilePicture, theirProfilePicture) => {  
-        var params2 = {
-            TableName: "GameGateAccounts",
-            IndexName: "Username-index",
-            KeyConditionExpression: "#username = :User3",
-            ExpressionAttributeNames: {
-                "#username": "Username"
-            },
-            ExpressionAttributeValues: {
-                ":User3": viewedUsername
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+
+        var urlencoded = new URLSearchParams();
+        urlencoded.append("idToken", props.idToken);
+        urlencoded.append("refreshToken", props.refreshToken);
+        urlencoded.append("email", props.currUserInfo.Email);
+        urlencoded.append("username", yourUsername);
+        urlencoded.append("theirEmail", results.Email);
+        urlencoded.append("profilePic", yourProfilePicture);
+        urlencoded.append("theirProfilePicture", theirProfilePicture);
+
+        var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: urlencoded,
+            redirect: 'follow'
+        };
+
+        fetch(`http://localhost:5000/api/user/${yourUsername}/followers`, requestOptions)
+        .then(response => response.json())
+        .then(result => {
+            if(result.newId) {
+                localStorage.setItem('idToken', result.idToken);
+                props.setIdToken(result.idToken);
             }
-        }
-    
-        docClient.query(params2, function(err, data) {
-            if (!err) {
-                if (data.Count === 0) {
-                    // console.log(data);
-                } else {
-                    // console.log(data);
-                    data.Items.forEach(item => {
-                        var params1 = {
-                            TableName:"GameGateAccounts",
-                                Key:{
-                                "Email": item.Email,
-                            },
-                            UpdateExpression: "SET #fl.#userN = :yourUsername, Followers = Followers + :val",
-                            ConditionExpression: "attribute_not_exists(#fl.#userN.Username)",
-                            ExpressionAttributeNames: {
-                                "#fl": "FollowersMap",
-                                "#userN": props.currUserInfo.Email
-                            },
-                            ExpressionAttributeValues:{
-                                ":yourUsername":{
-                                    "Username": yourUsername,
-                                    "ProfilePicture": yourProfilePicture
-                                },
-                                ":val": 1
-                            },
-                            ReturnValues:"UPDATED_NEW"
-                        };
-                        console.log(item);
-                        docClient.update(params1, function(err, data) {
-                            if (err) {
-                                console.log(err);
-                            } else {
-                                console.log(data);
-                                console.log("Increased the followers count of", username);
-                                const action = viewedUsername + " has gained the follower " + yourUsername;
-                                console.log(action);
-                                var dateTime = new Date();
-                                var dateTimeEST = dateTime.toLocaleString('en-US', {timeZone: 'America/New_York'});
-                                console.log(dateTimeEST);
-                                let idNum = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
-                                let idStr = idNum.toString();
-                                addUserFeed(item.Email, viewedUsername, idStr, yourUsername, theirProfilePicture, yourProfilePicture, action, dateTimeEST);
-                            }
-                        });
-                    })
-                }
+            if(result.newFollowersInfo) {
+                let newInfo = Object.assign({}, results);
+                newInfo.Followers = result.newFollowersInfo.Attributes.Followers;
+                newInfo.FollowingMap = result.newFollowersInfo.Attributes.FollowersMap;
+                setResults(newInfo);
+                const action = viewedUsername + " has gained the follower " + yourUsername;
+                var dateTime = new Date();
+                var dateTimeEST = dateTime.toLocaleString('en-US', {timeZone: 'America/New_York'});
+                let idNum = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
+                let idStr = idNum.toString();
+                addUserFeed(results.Email, viewedUsername, idStr, yourUsername, theirProfilePicture, yourProfilePicture, action, dateTimeEST);
             }
         })
+        .catch(error => console.log('error', error));
     }
 
-    
     const decreaseFollowers = (yourUsername, viewedUsername, yourProfilePicture, theirProfilePicture) => { 
         var params2 = {
             TableName: "GameGateAccounts",
