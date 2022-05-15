@@ -148,9 +148,9 @@ const GameDetails = (props) => {
                 props.setIdToken(result.idToken);
             }
             if(result.newPlanningInfo) {
-                let newInfo = Object.assign({}, results);
+                let newInfo = Object.assign({}, props.currUserInfo);
                 newInfo.Planning = result.newPlanningInfo.Attributes.Planning;
-                newInfo.PlanningGames[props.currUserInfo.Email] = result.newPlanningInfo.Attributes.PlanningGames[props.currUserInfo.Email];
+                newInfo.PlanningGames[gameName] = result.newPlanningInfo.Attributes.PlanningGames[gameName];
                 props.setCurrUserInfo(newInfo);
                 localStorage.setItem('user', JSON.stringify(newInfo));
                 const action = yourUsername + " is planning to play " + gameName;
@@ -192,10 +192,10 @@ const GameDetails = (props) => {
                 localStorage.setItem('idToken', result.idToken);
                 props.setIdToken(result.idToken);
             }
-            if(result.newFollowingsInfo) {
+            if(result.newPlanningInfo) {
                 let newInfo = Object.assign({}, props.currUserInfo);
                 newInfo.Planning = result.newPlanningInfo.Attributes.Planning;
-                delete newInfo.PlanningGames[results.Email];
+                delete newInfo.PlanningGames[gameName];
                 props.setCurrUserInfo(newInfo);
                 localStorage.setItem('user', JSON.stringify(newInfo));
             }
@@ -204,122 +204,86 @@ const GameDetails = (props) => {
         setPlanning(false);
     }
 
-    function completedGames(yourUsername, gameName, gameID, gameImg) { 
-        var params2 = {
-            TableName: "GameGateAccounts",
-            IndexName: "Username-index",
-            KeyConditionExpression: "#username = :User3",
-            ExpressionAttributeNames: {
-                "#username": "Username"
-            },
-            ExpressionAttributeValues: {
-                ":User3": yourUsername
+    function completedGames(yourUsername, gameName, gameID, gameImg) {
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+
+        var urlencoded = new URLSearchParams();
+        urlencoded.append("idToken", props.idToken);
+        urlencoded.append("refreshToken", props.refreshToken);
+        urlencoded.append("email", props.currUserInfo.Email);
+        urlencoded.append("gameName", gameName);
+        urlencoded.append("gameID", gameID);
+        urlencoded.append("gameImg", gameImg);
+
+        var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: urlencoded,
+            redirect: 'follow'
+        };
+
+        fetch(`http://localhost:5000/api/user/${yourUsername}/completed`, requestOptions)
+        .then(response => response.json())
+        .then(result => {
+            if(result.newId) {
+                localStorage.setItem('idToken', result.idToken);
+                props.setIdToken(result.idToken);
             }
-        }
-    
-        props.docClient.query(params2, function(err, data) {
-            if (!err) {
-                if (data.Count === 0) {
-                    console.log(data);
-                } else {
-                    console.log(data);
-                    data.Items.forEach(item => {
-                        var params1 = {
-                            TableName:"GameGateAccounts",
-                                Key:{
-                                "Email": item.Email,
-                            },
-                            UpdateExpression: "SET #cg.#gn = :gameMap, Completed = Completed + :val" ,
-                            ConditionExpression: "attribute_not_exists(#cg.#gn.GameName)",
-                            ExpressionAttributeNames: {
-                                "#cg": "CompletedGames",
-                                "#gn": gameName
-                            },
-                            ExpressionAttributeValues:{
-                                ":gameMap": {
-                                    "GameName": gameName,
-                                    "GameID": gameID,
-                                    "GameCover": gameImg
-                                },
-                                ":val": 1,
-                            },
-                            ReturnValues:"UPDATED_NEW"
-                        };
-                        props.docClient.update(params1, function(err, data) {
-                            if (err) {
-                                console.log(err);
-                            } else {
-                                console.log(data);
-                                console.log("The game added to CompletedGames is:", gameName);
-                                const action = yourUsername + " has completed " + gameName;
-                                console.log(action);
-                                var dateTime = new Date();
-                                var dateTimeEST = dateTime.toLocaleString('en-US', {timeZone: 'America/New_York'});
-                                console.log(dateTimeEST);
-                                let idNum = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
-                                let idStr = idNum.toString();
-                                addUserFeed(item.Email, yourUsername, idStr, gameID, gameName, gameImg, action, dateTimeEST);
-                            }
-                        });
-                    })
-                }
+            if(result.newCompletedInfo) {
+                let newInfo = Object.assign({}, props.currUserInfo);
+                newInfo.Completed = result.newCompletedInfo.Attributes.Completed;
+                newInfo.CompletedGames[gameName] = result.newCompletedInfo.Attributes.CompletedGames[gameName];
+                props.setCurrUserInfo(newInfo);
+                localStorage.setItem('user', JSON.stringify(newInfo));
+                const action = yourUsername + " has completed " + gameName;
+                var dateTime = new Date();
+                var dateTimeEST = dateTime.toLocaleString('en-US', {timeZone: 'America/New_York'});
+                let idNum = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
+                let idStr = idNum.toString();
+                addUserFeed(props.currUserInfo.Email, yourUsername, idStr, gameID, gameName, gameImg, action, dateTimeEST);
             }
         })
+        .catch(error => error);
         setCompleted(true);
         removePlanningGame(yourUsername, gameName);
         removeCurrentGame(yourUsername, gameName);
         removeDroppedGame(yourUsername, gameName);
     }
 
-    function removeCompletedGame(yourUsername, gameName, gameID, gameImg) { 
-        var params2 = {
-            TableName: "GameGateAccounts",
-            IndexName: "Username-index",
-            KeyConditionExpression: "#username = :User3",
-            ExpressionAttributeNames: {
-                "#username": "Username"
-            },
-            ExpressionAttributeValues: {
-                ":User3": yourUsername
+    function removeCompletedGame(yourUsername, gameName, gameID, gameImg) {
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+
+        var urlencoded = new URLSearchParams();
+        urlencoded.append("idToken", props.idToken);
+        urlencoded.append("refreshToken", props.refreshToken);
+        urlencoded.append("email", props.currUserInfo.Email);
+        urlencoded.append("gameName", gameName);
+
+        var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: urlencoded,
+            redirect: 'follow'
+        };
+
+        fetch(`http://localhost:5000/api/user/${yourUsername}/completed/delete`, requestOptions)
+        .then(response => response.json())
+        .then(result => {
+            if(result.newId) {
+                localStorage.setItem('idToken', result.idToken);
+                props.setIdToken(result.idToken);
             }
-        }
-    
-        props.docClient.query(params2, function(err, data) {
-            if (!err) {
-                if (data.Count === 0) {
-                    console.log(data);
-                } else {
-                    console.log(data);
-                    data.Items.forEach(item => {
-                        var params1 = {
-                            TableName:"GameGateAccounts",
-                                Key:{
-                                "Email": item.Email,
-                            },
-                            UpdateExpression: "REMOVE #cg.#gn SET Completed = Completed - :val" ,
-                            ConditionExpression: "attribute_exists(#cg.#gn.GameName)",
-                            ExpressionAttributeNames: {
-                                "#cg": "CompletedGames",
-                                "#gn": gameName
-                            },
-                            ExpressionAttributeValues:{
-                                ":val": 1,
-                            },
-                            ReturnValues:"UPDATED_NEW"
-                        };
-                        console.log(item);
-                        props.docClient.update(params1, function(err, data) {
-                            if (err) {
-                                console.log(err);
-                            } else {
-                                console.log(data);
-                                console.log("The game removed from CompletedGames is:", gameName);
-                            }
-                        });
-                    })
-                }
+            if(result.newCompletedInfo) {
+                let newInfo = Object.assign({}, props.currUserInfo);
+                newInfo.Completed = result.newCompletedInfo.Attributes.Completed;
+                delete newInfo.CompletedGames[gameName];
+                props.setCurrUserInfo(newInfo);
+                localStorage.setItem('user', JSON.stringify(newInfo));
             }
         })
+        .catch(error => error);
         setCompleted(false);
     }
 
