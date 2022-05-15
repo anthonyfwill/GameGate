@@ -1,11 +1,18 @@
 import { useParams } from "react-router-dom";
 import * as AWS from 'aws-sdk';
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const Settings = (props) => {
     const [pfpEdit, setPfpEdit] = useState(false);
+    const [currentPfp, setCurrentPfp] = useState(null);
     const [profileUrl, setProfileurl] = useState('');
     const [newUsername, setNewUsername] = useState('');
+
+    useEffect(() => {
+        if(props.completion) {
+            setCurrentPfp(props.currUserInfo.ProfilePicture);
+        }
+    }, [props.completion])
   
     function updateProfilePic() {
         var params = {
@@ -28,6 +35,7 @@ const Settings = (props) => {
                 const someVal = Object.assign(newResults, props.currUserInfo);
                 newResults.ProfilePicture = profileUrl;
                 props.setCurrUserInfo(newResults);
+                localStorage.setItem('user', JSON.stringify(newResults));
             }
         });
 
@@ -338,11 +346,11 @@ const Settings = (props) => {
         <div className = 'feed_container'>
         <div className = 'posts_container'>
         <div className='image-section'>
-                        <img id="pfp" src={props.currUserInfo.ProfilePicture}/>
-                        {!props.pfpEdit && <button className="profileBtn" onClick={() => setPfpEdit(true)}>Change Profile Picture</button> }
-                        {pfpEdit && <input type="text" value={profileUrl} onChange={(e) => setProfileurl(e.target.value)} placeholder="new profile image url"/>}
-                        {pfpEdit && <button className="profileBtn" onClick={updateProfilePic}>Submit</button>}
-                    </div>
+            {currentPfp && <img id="pfp" src={props.currUserInfo.ProfilePicture}/>}
+            {!props.pfpEdit && <button className="profileBtn" onClick={() => setPfpEdit(true)}>Change Profile Picture</button> }
+            {pfpEdit && <input type="text" value={profileUrl} onChange={(e) => setProfileurl(e.target.value)} placeholder="new profile image url"/>}
+            {pfpEdit && <button className="profileBtn" onClick={updateProfilePic}>Submit</button>}
+        </div>
         </div>
       </div>
     );

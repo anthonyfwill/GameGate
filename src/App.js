@@ -89,7 +89,7 @@ function App() {
             <Profile setIdToken={setIdToken} idToken={idToken} refreshToken={refreshToken} completion={completion} loggedIn={loggedIn} currUser={currUser} setCurrUserInfo={setCurrUserInfo} currUserInfo={currUserInfo}/>
           </Route>
           <Route exact path="/settings">
-            <Settings currUser={currUser} setCurrUser={setCurrUser} docClient={docClient} setCurrUserInfo={setCurrUserInfo} currUserInfo={currUserInfo}/>
+            <Settings completion={completion} currUser={currUser} setCurrUser={setCurrUser} docClient={docClient} setCurrUserInfo={setCurrUserInfo} currUserInfo={currUserInfo}/>
           </Route>
           <Route exact path="/game/:id">
             <GameDetails setIdToken={setIdToken} idToken={idToken} refreshToken={refreshToken} completion={completion} setCurrUserInfo={setCurrUserInfo} loggedIn={loggedIn} docClient={docClient} currUser={currUser} currUserInfo={currUserInfo}/>
