@@ -46,9 +46,9 @@ const Home = (props) => {
                     console.log(data, "44444")
                 } else if (!err) {
                     console.log(data, "all feeds for user");
-                    arr = makeList(data.Items);
+                    arr = makeList(data.Items.reverse());
                     console.log(arr, "arr contents");
-                    setListFeed(arr.reverse());
+                    setListFeed(arr);
                     setFound2(true);
                 }
             });
@@ -72,8 +72,8 @@ const Home = (props) => {
                     console.log(data, "55555")
                 } else if (!err) {
                     //console.log(data.Items[0].UserFeedIDs, "all feeds for user");
-                    arr = makeList(data.Items[0].UserFeedIDs);
-                    setListFeed(arr.reverse());
+                    arr = makeList(data.Items[0].UserFeedIDs.reverse());
+                    setListFeed(arr);
                     setFound(true);
                     //console.log(arr, "List of actions", found);
                 }
@@ -82,14 +82,19 @@ const Home = (props) => {
 
     function makeList(items) {
         let list = [];
-        items.forEach((item, index) => {
+        for (let i = 0; (i < items.length) && (i != 20); ++i) {
+            list.push(items[i].Action);
+        }
+        /*items.forEach((item, index) => {
+            if(index === )
             list.push(item.Action)
-        })
+        })*/
         return list;
     }
 
     function testing2(theFeed) {
         if (found || found2) {
+            //console.log(theFeed);
             return theFeed.map(text => {
                 return (<ul>
                     <li>{text}</li>
