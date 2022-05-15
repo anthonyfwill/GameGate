@@ -16,7 +16,6 @@ const useFetch = (id ,docClient) => {
         fetch('http://localhost:5000/api/game/' + id, requestOptions)
         .then(response => {
             if(!response.ok) {
-                console.log(response);
                 throw Error('Could not get info for that game');
             }
             return response.json()
@@ -27,10 +26,8 @@ const useFetch = (id ,docClient) => {
             setError(null);
             setReviewInfo(result.reviews.Items);
             setScore(result.averageScore);
-            // console.log(result.reviews.Items);
         })
         .catch(error => {
-            console.log(error);
             setError(error.message);
             setPending(false);
         });

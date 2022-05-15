@@ -288,66 +288,46 @@ const GameDetails = (props) => {
     }
 
     function currentGames(yourUsername, gameName, gameID, gameImg) { 
-        var params2 = {
-            TableName: "GameGateAccounts",
-            IndexName: "Username-index",
-            KeyConditionExpression: "#username = :User3",
-            ExpressionAttributeNames: {
-                "#username": "Username"
-            },
-            ExpressionAttributeValues: {
-                ":User3": yourUsername
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+
+        var urlencoded = new URLSearchParams();
+        urlencoded.append("idToken", props.idToken);
+        urlencoded.append("refreshToken", props.refreshToken);
+        urlencoded.append("email", props.currUserInfo.Email);
+        urlencoded.append("gameName", gameName);
+        urlencoded.append("gameID", gameID);
+        urlencoded.append("gameImg", gameImg);
+
+        var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: urlencoded,
+            redirect: 'follow'
+        };
+
+        fetch(`http://localhost:5000/api/user/${yourUsername}/current`, requestOptions)
+        .then(response => response.json())
+        .then(result => {
+            if(result.newId) {
+                localStorage.setItem('idToken', result.idToken);
+                props.setIdToken(result.idToken);
             }
-        }
-    
-        props.docClient.query(params2, function(err, data) {
-            if (!err) {
-                if (data.Count === 0) {
-                    console.log(data);
-                } else {
-                    console.log(data);
-                    data.Items.forEach(item => {
-                        var params1 = {
-                            TableName:"GameGateAccounts",
-                                Key:{
-                                "Email": item.Email,
-                            },
-                            UpdateExpression: "SET #cg.#gn = :gameMap, CurrentG = CurrentG + :val" ,
-                            ConditionExpression: "attribute_not_exists(#cg.#gn.GameName)",
-                            ExpressionAttributeNames: {
-                                "#cg": "CurrentGames",
-                                "#gn": gameName
-                            },
-                            ExpressionAttributeValues:{
-                                ":gameMap": {
-                                    "GameName": gameName,
-                                    "GameID": gameID,
-                                    "GameCover": gameImg
-                                },
-                                ":val": 1,
-                            },
-                        }
-                        console.log(item);
-                        props.docClient.update(params1, function(err, data) {
-                            if (err) {
-                                console.log(err);
-                            } else {
-                                console.log(data);
-                                console.log("The game added to CurrentGames is:", gameName);
-                                const action = yourUsername + " is currently playing " + gameName;
-                                console.log(action);
-                                var dateTime = new Date();
-                                var dateTimeEST = dateTime.toLocaleString('en-US', {timeZone: 'America/New_York'});
-                                console.log(dateTimeEST);
-                                let idNum = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
-                                let idStr = idNum.toString();
-                                addUserFeed(item.Email, yourUsername, idStr, gameID, gameName, gameImg, action, dateTimeEST);
-                            }
-                        });
-                    })
-                }
+            if(result.newCurrentInfo) {
+                let newInfo = Object.assign({}, props.currUserInfo);
+                newInfo.CurrentG = result.newCurrentInfo.Attributes.CurrentG;
+                newInfo.CurrentGames[gameName] = result.newCurrentInfo.Attributes.CurrentGames[gameName];
+                props.setCurrUserInfo(newInfo);
+                localStorage.setItem('user', JSON.stringify(newInfo));
+                const action = yourUsername + " is currently playing " + gameName;
+                var dateTime = new Date();
+                var dateTimeEST = dateTime.toLocaleString('en-US', {timeZone: 'America/New_York'});
+                let idNum = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
+                let idStr = idNum.toString();
+                addUserFeed(props.currUserInfo.Email, yourUsername, idStr, gameID, gameName, gameImg, action, dateTimeEST);
             }
         })
+        .catch(error => error);
         setCurrentG(true)
         removePlanningGame(yourUsername, gameName);
         removeCompletedGame(yourUsername, gameName);
@@ -355,54 +335,38 @@ const GameDetails = (props) => {
     }
 
     function removeCurrentGame(yourUsername, gameName, gameID, gameImg) { 
-        var params2 = {
-            TableName: "GameGateAccounts",
-            IndexName: "Username-index",
-            KeyConditionExpression: "#username = :User3",
-            ExpressionAttributeNames: {
-                "#username": "Username"
-            },
-            ExpressionAttributeValues: {
-                ":User3": yourUsername
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+
+        var urlencoded = new URLSearchParams();
+        urlencoded.append("idToken", props.idToken);
+        urlencoded.append("refreshToken", props.refreshToken);
+        urlencoded.append("email", props.currUserInfo.Email);
+        urlencoded.append("gameName", gameName);
+
+        var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: urlencoded,
+            redirect: 'follow'
+        };
+
+        fetch(`http://localhost:5000/api/user/${yourUsername}/current/delete`, requestOptions)
+        .then(response => response.json())
+        .then(result => {
+            if(result.newId) {
+                localStorage.setItem('idToken', result.idToken);
+                props.setIdToken(result.idToken);
             }
-        }
-    
-        props.docClient.query(params2, function(err, data) {
-            if (!err) {
-                if (data.Count === 0) {
-                    console.log(data);
-                } else {
-                    console.log(data);
-                    data.Items.forEach(item => {
-                        var params1 = {
-                            TableName:"GameGateAccounts",
-                                Key:{
-                                "Email": item.Email,
-                            },
-                            UpdateExpression: "REMOVE #cg.#gn SET CurrentG = CurrentG - :val" ,
-                            ConditionExpression: "attribute_exists(#cg.#gn.GameName)",
-                            ExpressionAttributeNames: {
-                                "#cg": "CurrentGames",
-                                "#gn": gameName
-                            },
-                            ExpressionAttributeValues:{
-                                ":val": 1,
-                            },
-                            ReturnValues:"UPDATED_NEW"
-                        };
-                        console.log(item);
-                        props.docClient.update(params1, function(err, data) {
-                            if (err) {
-                                console.log(err);
-                            } else {
-                                console.log(data);
-                                console.log("The game dropped from CurrentGames is:", gameName);
-                            }
-                        });
-                    })
-                }
+            if(result.newCurrentInfo) {
+                let newInfo = Object.assign({}, props.currUserInfo);
+                newInfo.CurrentG = result.newCurrentInfo.Attributes.CurrentG;
+                delete newInfo.CurrentGames[gameName];
+                props.setCurrUserInfo(newInfo);
+                localStorage.setItem('user', JSON.stringify(newInfo));
             }
         })
+        .catch(error => error);
         setCurrentG(false);
     }
 
@@ -765,6 +729,16 @@ const GameDetails = (props) => {
         })
     }
 
+    function changeScore(val) {
+        if(val > 10) {
+            setReviewScore(10);
+        } else if(val < 0) {
+            setReviewScore(0);
+        } else {
+            setReviewScore(val);
+        }
+    }
+
     return (
             <div className="new-parent">
                 {isPending && <div>Loading...</div>}
@@ -808,8 +782,8 @@ const GameDetails = (props) => {
                     <div className="reviewBox">
                     <textarea id="gamereview" placeholder="Write a review" name="review" rows="8" cols="90" value={reviewText} onChange={(e) => setReviewText(e.target.value)}></textarea>
                         <div className="scoreandtext"></div>
-                        {/* <input type="number" id="scorereview" name="quantity" min="1" max="10"></input> */}
-                        <textarea id="scorereview" maxLength="2" placeholder="Score / 10" pattern="\d$" value={reviewScore} onChange={(e) => setReviewScore(e.target.value)}></textarea>
+                        <input type="number" id="scorereview" name="quantity" min="1" max="10" value={reviewScore} onChange={(e) => changeScore(e.target.value)}></input>
+                        {/* <textarea id="scorereview" maxLength="2" placeholder="Score / 10" pattern="\d$" value={reviewScore} onChange={(e) => setReviewScore(e.target.value)}></textarea> */}
                         <div>
                             <input className="reviewBtn" type="submit" value="Publish" onClick={() => updateReviews(results[0].name, props.currUserInfo.Email, props.currUser, reviewText, reviewScore, results[0].smallCover, props.currUserInfo.ProfilePicture)}/>
                         </div>
