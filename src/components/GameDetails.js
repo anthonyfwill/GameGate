@@ -371,66 +371,46 @@ const GameDetails = (props) => {
     }
 
     function droppedGames(yourUsername, gameName, gameID, gameImg) { 
-        var params2 = {
-            TableName: "GameGateAccounts",
-            IndexName: "Username-index",
-            KeyConditionExpression: "#username = :User3",
-            ExpressionAttributeNames: {
-                "#username": "Username"
-            },
-            ExpressionAttributeValues: {
-                ":User3": yourUsername
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+
+        var urlencoded = new URLSearchParams();
+        urlencoded.append("idToken", props.idToken);
+        urlencoded.append("refreshToken", props.refreshToken);
+        urlencoded.append("email", props.currUserInfo.Email);
+        urlencoded.append("gameName", gameName);
+        urlencoded.append("gameID", gameID);
+        urlencoded.append("gameImg", gameImg);
+
+        var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: urlencoded,
+            redirect: 'follow'
+        };
+
+        fetch(`http://localhost:5000/api/user/${yourUsername}/dropped`, requestOptions)
+        .then(response => response.json())
+        .then(result => {
+            if(result.newId) {
+                localStorage.setItem('idToken', result.idToken);
+                props.setIdToken(result.idToken);
             }
-        }
-    
-        props.docClient.query(params2, function(err, data) {
-            if (!err) {
-                if (data.Count === 0) {
-                    console.log(data);
-                } else {
-                    console.log(data);
-                    data.Items.forEach(item => {
-                        var params1 = {
-                            TableName:"GameGateAccounts",
-                                Key:{
-                                "Email": item.Email,
-                            },
-                            UpdateExpression: "SET #dg.#gn = :gameMap, Dropped = Dropped + :val" ,
-                            ConditionExpression: "attribute_not_exists(#dg.#gn.GameName)",
-                            ExpressionAttributeNames: {
-                                "#dg": "DroppedGames",
-                                "#gn": gameName
-                            },
-                            ExpressionAttributeValues:{
-                                ":gameMap": {
-                                    "GameName": gameName,
-                                    "GameID": gameID,
-                                    "GameCover": gameImg
-                                },
-                                ":val": 1,
-                            },
-                        }
-                        console.log(item);
-                        props.docClient.update(params1, function(err, data) {
-                            if (err) {
-                                console.log(err);
-                            } else {
-                                console.log(data);
-                                console.log("The game added to DroppedGames is:", gameName);
-                                const action = yourUsername + " has dropped " + gameName;
-                                console.log(action);
-                                var dateTime = new Date();
-                                var dateTimeEST = dateTime.toLocaleString('en-US', {timeZone: 'America/New_York'});
-                                console.log(dateTimeEST);
-                                let idNum = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
-                                let idStr = idNum.toString();
-                                addUserFeed(item.Email, yourUsername, idStr, gameID, gameName, gameImg, action, dateTimeEST);
-                            }
-                        });
-                    })
-                }
+            if(result.newDroppedInfo) {
+                let newInfo = Object.assign({}, props.currUserInfo);
+                newInfo.Dropped = result.newDroppedInfo.Attributes.Dropped;
+                newInfo.DroppedGames[gameName] = result.newDroppedInfo.Attributes.DroppedGames[gameName];
+                props.setCurrUserInfo(newInfo);
+                localStorage.setItem('user', JSON.stringify(newInfo));
+                const action = yourUsername + " has dropped " + gameName;
+                var dateTime = new Date();
+                var dateTimeEST = dateTime.toLocaleString('en-US', {timeZone: 'America/New_York'});
+                let idNum = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
+                let idStr = idNum.toString();
+                addUserFeed(props.currUserInfo.Email, yourUsername, idStr, gameID, gameName, gameImg, action, dateTimeEST);
             }
         })
+        .catch(error => error);
         setDropped(true);
         removePlanningGame(yourUsername, gameName);
         removeCompletedGame(yourUsername, gameName);
@@ -438,54 +418,38 @@ const GameDetails = (props) => {
     }
 
     function removeDroppedGame(yourUsername, gameName, gameID, gameImg) { 
-        var params2 = {
-            TableName: "GameGateAccounts",
-            IndexName: "Username-index",
-            KeyConditionExpression: "#username = :User3",
-            ExpressionAttributeNames: {
-                "#username": "Username"
-            },
-            ExpressionAttributeValues: {
-                ":User3": yourUsername
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+
+        var urlencoded = new URLSearchParams();
+        urlencoded.append("idToken", props.idToken);
+        urlencoded.append("refreshToken", props.refreshToken);
+        urlencoded.append("email", props.currUserInfo.Email);
+        urlencoded.append("gameName", gameName);
+
+        var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: urlencoded,
+            redirect: 'follow'
+        };
+
+        fetch(`http://localhost:5000/api/user/${yourUsername}/dropped/delete`, requestOptions)
+        .then(response => response.json())
+        .then(result => {
+            if(result.newId) {
+                localStorage.setItem('idToken', result.idToken);
+                props.setIdToken(result.idToken);
             }
-        }
-    
-        props.docClient.query(params2, function(err, data) {
-            if (!err) {
-                if (data.Count === 0) {
-                    console.log(data);
-                } else {
-                    console.log(data);
-                    data.Items.forEach(item => {
-                        var params1 = {
-                            TableName:"GameGateAccounts",
-                                Key:{
-                                "Email": item.Email,
-                            },
-                            UpdateExpression: "REMOVE #dg.#gn SET Dropped = Dropped - :val" ,
-                            ConditionExpression: "attribute_exists(#dg.#gn.GameName)",
-                            ExpressionAttributeNames: {
-                                "#dg": "DroppedGames",
-                                "#gn": gameName
-                            },
-                            ExpressionAttributeValues:{
-                                ":val": 1,
-                            },
-                            ReturnValues:"UPDATED_NEW"
-                        };
-                        console.log(item);
-                        props.docClient.update(params1, function(err, data) {
-                            if (err) {
-                                console.log(err);
-                            } else {
-                                console.log(data);
-                                console.log("The game dropped from DroppedGames is:", gameName);
-                            }
-                        });
-                    })
-                }
+            if(result.newDroppedInfo) {
+                let newInfo = Object.assign({}, props.currUserInfo);
+                newInfo.Dropped = result.newDroppedInfo.Attributes.Dropped;
+                delete newInfo.DroppedGames[gameName];
+                props.setCurrUserInfo(newInfo);
+                localStorage.setItem('user', JSON.stringify(newInfo));
             }
         })
+        .catch(error => error);
         setDropped(false);
     }
     
