@@ -96,9 +96,9 @@ const Home = (props) => {
         if (found || found2) {
             //console.log(theFeed);
             return theFeed.map(text => {
-                return (<ul>
-                    <li>{text}</li>
-                </ul>)
+                return (
+                    <p>{text}</p>
+                )
             })
         }
     }
