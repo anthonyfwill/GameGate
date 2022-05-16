@@ -362,7 +362,7 @@ color: white;
   text-align: center;
   display: flex;
   width: 800px;
-  height: 630px;
+  height: max-content;
   background-color: rgb(42, 42, 78);
   border-radius: 10px;
   gap: 30px;
