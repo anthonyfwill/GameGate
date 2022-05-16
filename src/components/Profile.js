@@ -582,7 +582,7 @@ const Profile = (props) => {
                             reviewInfo.map(val => (
                                 <div>
                                 {console.log(val, "val")}
-                                <Review gameId={val.GameID} email={props.currUserInfo.Email} yourUsername={props.currUser} username2={username} gameImage={val.GameImage} name={val.GameName} content={val.Review} score={val.Rating} id={val.GameID}  UpvotesCount={val.UpvotesCount} key={val.GameName}/>
+                                <Review upvotes={val.Upvotes[props.currUserInfo.Email]} gameId={val.GameID} email={props.currUserInfo.Email} yourUsername={props.currUser} username2={username} gameImage={val.GameImage} name={val.GameName} content={val.Review} score={val.Rating} id={val.GameID}  UpvotesCount={val.UpvotesCount} key={val.GameName}/>
                                 {console.log(props.currUser, val.Username)}
                                 {console.log(val.Upvotes, "upvotes", val.Upvotes[props.currUserInfo.Email])}
                                 {props.currUser !== username && props.loggedIn &&
