@@ -9,7 +9,6 @@ const Review = (props) => {
     const [upvoteCount, setUpvoteCount] = useState(props.UpvotesCount);
 
     function addUpvote(yourUsername, theirUsername, gameID) { 
-        console.log(yourUsername, theirUsername, gameID);
         var params2 = {
             TableName: "GameGateAccounts",
             IndexName: "Username-index",
@@ -27,10 +26,6 @@ const Review = (props) => {
             } else {
                 if(data.Count !== 0) {
                     data.Items.forEach(item => {
-                        console.log(item);
-                        console.log(gameID);
-                        console.log(item.Email);
-                        console.log(yourUsername);
                         var params1 = {
                             TableName:"Games",
                                 Key:{
@@ -54,22 +49,18 @@ const Review = (props) => {
                         props.docClient.update(params1, function(err, data) {
                             if (err) {
                                 console.log(err);
-                                removeUpvote(yourUsername, theirUsername, gameID);
                             } else {
                                 setUpvoted(true);
                                 setUpvoteCount(upvoteCount + 1);
-                                console.log(data);
                             }
                         });
                     })
                 }
             }
         })
-        console.log("upvote added");
     }
 
     function removeUpvote(yourUsername, theirUsername, gameID) { 
-        console.log("remove upvote");
         var params2 = {
             TableName: "GameGateAccounts",
             IndexName: "Username-index",
@@ -85,11 +76,8 @@ const Review = (props) => {
         props.docClient.query(params2, function(err, data) {
             if (!err) {
                 if (data.Count === 0) {
-                    console.log(data);
                 } else {
-                    console.log(data);
                     data.Items.forEach(item => {
-                        console.log(item, "itemmmmm");
                         var params1 = {
                             TableName:"Games",
                                 Key:{
@@ -112,14 +100,13 @@ const Review = (props) => {
                                 console.log(err);
                             } else {
                                 setUpvoted(false);
-                                console.log(data)
+                                setUpvoteCount(upvoteCount - 1);
                             }
                         });
                     })
                 }
             }
         })
-        console.log("upvote removed");
     }
 
     return (
@@ -139,11 +126,11 @@ const Review = (props) => {
                 </div>
                 <p className="score-color">Score: {props.score}/10</p>
                 <p>{props.content}</p>
-                <p>Upvotes: {props.UpvotesCount}</p>
+                <p>Upvotes: {upvoteCount}</p>
                 {props.username && props.username !== props.yourUsername && !upvoted && <button type="button" className="upvote" onClick={() => addUpvote(props.yourUsername, props.username, props.gameID)}></button>}
-                {props.username && props.username !== props.yourUsername && upvoted && <button  style={{backgroundColor: 'red'}} className="upvote" type="button" onClick={() => removeUpvote(props.yourUsername, props.username, props.gameID)}></button>}
+                {props.username && props.username !== props.yourUsername && upvoted && <button className="downvote" type="button" onClick={() => removeUpvote(props.yourUsername, props.username, props.gameID)}></button>}
                 {props.username2 !== props.username && props.username2 !== props.yourUsername && !upvoted && <button type="button" className="upvote" onClick={() => addUpvote(props.yourUsername, props.username2, props.gameId)}></button>}
-                {props.username2 !== props.username && props.username2 !== props.yourUsername && upvoted && <button  style={{backgroundColor: 'red'}} className="upvote" type="button" onClick={() => removeUpvote(props.yourUsername, props.username2, props.gameId)}></button>}
+                {props.username2 !== props.username && props.username2 !== props.yourUsername && upvoted && <button className="downvote" type="button" onClick={() => removeUpvote(props.yourUsername, props.username2, props.gameId)}></button>}
             </div>
         </div>
     );
