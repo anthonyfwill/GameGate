@@ -493,7 +493,9 @@ const GameDetails = (props) => {
                 } else {
                     console.log(data);
                     data.Items.forEach(item => {
-                        console.log(item, "itemmmmm");
+                        // console.log(item, "itemmmmm");
+                        console.log(id);
+                        console.log(item.Email);
                         var params1 = {
                             TableName:"Games",
                                 Key:{
@@ -755,7 +757,7 @@ const GameDetails = (props) => {
                     {
                         reviewInfo.map(val => (
                             <div>
-                            <Review yourUsername={props.currUser} username2={val.Username} username={val.Username} content={val.Review} score={val.Rating} profPic={val.ProfilePic} UpvotesCount={val.UpvotesCount} gameID={results[0].id} key={val.Username}/>
+                            <Review upvotes={val.Upvotes[props.currUserInfo.Email]} currUserInfo={props.currUserInfo} docClient={props.docClient} yourUsername={props.currUser} username2={val.Username} username={val.Username} content={val.Review} score={val.Rating} profPic={val.ProfilePic} UpvotesCount={val.UpvotesCount} gameID={results[0].id} key={val.Username}/>
                                 {props.currUser !== val.Username && props.loggedIn &&
                                     <button type="button" style={{backgroundColor: (val.Upvotes[props.currUserInfo.Email] != undefined) ? 'red' : ''}} className="upvote" onClick={() =>addUpvote(props.currUser, val.Username, results[0].id)}></button>
                                 }
