@@ -470,120 +470,6 @@ const GameDetails = (props) => {
         }
       }
 
-    function addUpvote(yourUsername, theirUsername, gameID) { 
-        console.log("upvote");
-        var params2 = {
-            TableName: "GameGateAccounts",
-            IndexName: "Username-index",
-            KeyConditionExpression: "#username = :User3",
-            ExpressionAttributeNames: {
-                "#username": "Username"
-            },
-            ExpressionAttributeValues: {
-                ":User3": theirUsername
-            }
-        }
-        console.log(yourUsername, theirUsername, gameID);
-        props.docClient.query(params2, function(err, data) {
-            if (err) {
-                console.log(err);
-            }else if (!err) {
-                if (data.Count === 0) {
-                    //console.log(data);
-                } else {
-                    console.log(data);
-                    data.Items.forEach(item => {
-                        // console.log(item, "itemmmmm");
-                        console.log(id);
-                        console.log(item.Email);
-                        var params1 = {
-                            TableName:"Games",
-                                Key:{
-                                "GameID": id,
-                                "Email": item.Email
-                            },
-                            UpdateExpression: "SET #uv.#em = :upvote, UpvotesCount = UpvotesCount + :val" ,
-                            ConditionExpression: "attribute_not_exists(#uv.#em.Username)",
-                            ExpressionAttributeNames: {
-                                "#uv": "Upvotes",
-                                "#em": props.currUserInfo.Email
-                            },
-                            ExpressionAttributeValues:{
-                                ":upvote": {
-                                    "Username": yourUsername,
-                                },
-                                ":val": 1,
-                            },
-                            ReturnValues:"UPDATED_NEW"
-                        };
-                        props.docClient.update(params1, function(err, data) {
-                            if (err) {
-                                console.log(err);
-                                removeUpvote(yourUsername, theirUsername, gameID);
-                            } else {
-                                console.log(data);
-                            }
-                        });
-                    })
-                }
-            }
-        })
-        console.log("upvote added");
-    }
-
-    function removeUpvote(yourUsername, theirUsername, gameID) { 
-        console.log("remove upvote");
-        var params2 = {
-            TableName: "GameGateAccounts",
-            IndexName: "Username-index",
-            KeyConditionExpression: "#username = :User3",
-            ExpressionAttributeNames: {
-                "#username": "Username"
-            },
-            ExpressionAttributeValues: {
-                ":User3": theirUsername
-            }
-        }
-    
-        props.docClient.query(params2, function(err, data) {
-            if (!err) {
-                if (data.Count === 0) {
-                    console.log(data);
-                } else {
-                    console.log(data);
-                    data.Items.forEach(item => {
-                        console.log(item, "itemmmmm");
-                        var params1 = {
-                            TableName:"Games",
-                                Key:{
-                                "GameID": id,
-                                "Email": item.Email
-                            },
-                            UpdateExpression: "REMOVE #uv.#em SET UpvotesCount = UpvotesCount - :val" ,
-                            ConditionExpression: "attribute_exists(#uv.#em.Username)",
-                            ExpressionAttributeNames: {
-                                "#uv": "Upvotes",
-                                "#em": props.currUserInfo.Email
-                            },
-                            ExpressionAttributeValues:{
-                                ":val": 1,
-                            },
-                            ReturnValues:"UPDATED_NEW"
-                        };
-                        props.docClient.update(params1, function(err, data) {
-                            if (err) {
-                                console.log(err);
-                            } else {
-                                console.log(data)
-                            }
-                        });
-                    })
-                }
-            }
-        })
-        console.log("upvote removed");
-    }
-
     function addUserFeed(yourEmail, yourUsername, idNumber, gameID, gameName, gameImg, action, dateTimeEST) {
         var params1 = {
             TableName: "UserFeed",
@@ -749,19 +635,13 @@ const GameDetails = (props) => {
                     <textarea id="gamereview" placeholder="Write a review" name="review" rows="8" cols="90" value={reviewText} onChange={(e) => setReviewText(e.target.value)}></textarea>
                         <div className="scoreandtext"></div>
                         <input type="number" id="scorereview" name="quantity" min="1" max="10" value={reviewScore} onChange={(e) => changeScore(e.target.value)}></input>
-                        {/* <textarea id="scorereview" maxLength="2" placeholder="Score / 10" pattern="\d$" value={reviewScore} onChange={(e) => setReviewScore(e.target.value)}></textarea> */}
                         <div>
                             <input className="reviewBtn" type="submit" value="Publish" onClick={() => updateReviews(results[0].name, props.currUserInfo.Email, props.currUser, reviewText, reviewScore, results[0].smallCover, props.currUserInfo.ProfilePicture)}/>
                         </div>
                     </div> }
                     {
                         reviewInfo.map(val => (
-                            <div>
                             <Review upvotes={val.Upvotes[props.currUserInfo.Email]} currUserInfo={props.currUserInfo} docClient={props.docClient} yourUsername={props.currUser} username2={val.Username} username={val.Username} content={val.Review} score={val.Rating} profPic={val.ProfilePic} UpvotesCount={val.UpvotesCount} gameID={results[0].id} key={val.Username}/>
-                                {props.currUser !== val.Username && props.loggedIn &&
-                                    <button type="button" style={{backgroundColor: (val.Upvotes[props.currUserInfo.Email] != undefined) ? 'red' : ''}} className="upvote" onClick={() =>addUpvote(props.currUser, val.Username, results[0].id)}></button>
-                                }
-                            </div>
                         ))
                     }
                 </div>
