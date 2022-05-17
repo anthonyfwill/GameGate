@@ -201,7 +201,6 @@ const Settings = (props) => {
             } else {
                 const newResults = {};
                 const someVal = Object.assign(newResults, props.currUserInfo);
-                console.log(newResults);
                 newResults.Username = newUsername;
                 props.setCurrUserInfo(newResults);
                 props.setCurrUser(newResults.Username);
