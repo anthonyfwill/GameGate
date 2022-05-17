@@ -21,9 +21,9 @@ const Home = (props) => {
             if (!found2) {
                 //onlyUserFeed(); UserFeed for only user
             }
-            if (!found3) {
-                entireUserFeed2();
-            }
+        }
+        if (!found3 && !props.loggedIn) {
+            entireUserFeed2();
         }
     });
 
@@ -88,7 +88,7 @@ const Home = (props) => {
 
     function entireUserFeed2() {
        let arr = [];
-            // console.log("I am here.");
+            // console.log("EntireUserFeed");
             var params1 = {
                 TableName: "UserFeed",
                 FilterExpression: "#date >= :Date3",
@@ -99,15 +99,16 @@ const Home = (props) => {
                     ":Date3": "5/11/2022, 12:14:07 AM"
                 }
             }
+            console.log("checking");
             props.docClient.scan(params1, function(err, data) {
                 if(err) {
-                    console.log(data, "44444")
+                    //console.log(data, "55555")
                 } else if (!err) {
-                    console.log(data, "all feeds");
-                    arr = makeList(data.Items.reverse());
-                    // console.log(arr, "arr contents");
+                    //console.log(data.Items[0].UserFeedIDs, "all feeds for user");
+                    arr = makeList(data.Items);
                     setListFeed3(arr);
                     setFound3(true);
+                    //console.log(arr, "List of actions", found);
                 }
             });
     }
@@ -125,7 +126,18 @@ const Home = (props) => {
     }
 
     function testing2(theFeed) {
-        if (found || found2 || found3) {
+        if (found || found2) {
+            //console.log(theFeed);
+            return theFeed.map(text => {
+                return (
+                    <p>{text}</p>
+                )
+            })
+        }
+    }
+
+    function testing3(theFeed) {
+        if (found3) {
             //console.log(theFeed);
             return theFeed.map(text => {
                 return (
@@ -143,7 +155,7 @@ const Home = (props) => {
                 <div>
                     <h1>GameGate Home</h1>
                     {props.loggedIn && testing2(listFeed)}
-                    {!props.loggedIn && testing2(listFeed3)}
+                    {!props.loggedIn && testing3(listFeed3)}
                 </div>
             </div>
         </div>
