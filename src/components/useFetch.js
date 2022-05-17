@@ -13,7 +13,7 @@ const useFetch = (id ,docClient) => {
             redirect: 'follow'
         };
 
-        fetch('http://localhost:5000/api/game/' + id, requestOptions)
+        fetch('https://gamegate.herokuapp.com/api/game/' + id, requestOptions)
         .then(response => {
             if(!response.ok) {
                 throw Error('Could not get info for that game');

@@ -27,7 +27,7 @@ const Review = (props) => {
             redirect: 'follow'
         };
 
-        fetch(`http://localhost:5000/api/reviews/upvote`, requestOptions)
+        fetch(`https://gamegate.herokuapp.com/api/reviews/upvote`, requestOptions)
         .then(response => response.json())
         .then(result => {
             if(result.newId) {
@@ -59,7 +59,7 @@ const Review = (props) => {
             redirect: 'follow'
         };
 
-        fetch(`http://localhost:5000/api/reviews/downvote`, requestOptions)
+        fetch(`https://gamegate.herokuapp.com/api/reviews/downvote`, requestOptions)
         .then(response => response.json())
         .then(result => {
             if(result.newId) {

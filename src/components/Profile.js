@@ -33,7 +33,7 @@ const Profile = (props) => {
                 method: 'GET',
                 redirect: 'follow'
             };
-            fetch('http://localhost:5000/api/user/' + username, requestOptions)
+            fetch('https://gamegate.herokuapp.com/api/user/' + username, requestOptions)
             .then(response => {
                 if(!response.ok) {
                     throw Error('User does not exist');
@@ -67,7 +67,7 @@ const Profile = (props) => {
             method: 'GET',
             redirect: 'follow'
         };
-        fetch(`http://localhost:5000/api/user/${username}/followers`, requestOptions)
+        fetch(`https://gamegate.herokuapp.com/api/user/${username}/followers`, requestOptions)
         .then(response => {
             if(!response.ok) {
                 throw Error('Could not gather user info');
@@ -108,7 +108,7 @@ const Profile = (props) => {
             redirect: 'follow'
         };
 
-        fetch(`http://localhost:5000/api/user/${yourUsername}/following`, requestOptions)
+        fetch(`https://gamegate.herokuapp.com/api/user/${yourUsername}/following`, requestOptions)
         .then(response => response.json())
         .then(result => {
             if(result.newId) {
@@ -153,7 +153,7 @@ const Profile = (props) => {
             redirect: 'follow'
         };
 
-        fetch(`http://localhost:5000/api/user/${yourUsername}/following/delete`, requestOptions)
+        fetch(`https://gamegate.herokuapp.com/api/user/${yourUsername}/following/delete`, requestOptions)
         .then(response => response.json())
         .then(result => {
             if(result.newId) {
@@ -199,7 +199,7 @@ const Profile = (props) => {
             redirect: 'follow'
         };
 
-        fetch(`http://localhost:5000/api/user/${viewedUsername}/followers`, requestOptions)
+        fetch(`https://gamegate.herokuapp.com/api/user/${viewedUsername}/followers`, requestOptions)
         .then(response => response.json())
         .then(result => {
             if(result.newId) {
@@ -239,7 +239,7 @@ const Profile = (props) => {
             redirect: 'follow'
         };
 
-        fetch(`http://localhost:5000/api/user/${viewedUsername}/followers/delete`, requestOptions)
+        fetch(`https://gamegate.herokuapp.com/api/user/${viewedUsername}/followers/delete`, requestOptions)
         .then(response => response.json())
         .then(result => {
             if(result.newId) {

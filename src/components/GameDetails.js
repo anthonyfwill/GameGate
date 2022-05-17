@@ -35,7 +35,7 @@ const GameDetails = (props) => {
             redirect: 'follow'
         };
           
-        fetch(`http://localhost:5000/api/user/${props.currUser}/gamestatuses/?gameName=${gameName}`, requestOptions)
+        fetch(`https://gamegate.herokuapp.com/api/user/${props.currUser}/gamestatuses/?gameName=${gameName}`, requestOptions)
             .then(response => response.json())
             .then(result => {
                 let pg = (result.status === "PlanningGames") ? true : false;
@@ -94,7 +94,7 @@ const GameDetails = (props) => {
             redirect: 'follow'
         };
 
-        fetch("http://localhost:5000/api/reviews", requestOptions)
+        fetch("https://gamegate.herokuapp.com/api/reviews", requestOptions)
         .then(response => response.json())
         .then(result => {
             if(result.newId) {
@@ -140,7 +140,7 @@ const GameDetails = (props) => {
             redirect: 'follow'
         };
 
-        fetch(`http://localhost:5000/api/user/${yourUsername}/planning`, requestOptions)
+        fetch(`https://gamegate.herokuapp.com/api/user/${yourUsername}/planning`, requestOptions)
         .then(response => response.json())
         .then(result => {
             if(result.newId) {
@@ -185,7 +185,7 @@ const GameDetails = (props) => {
             redirect: 'follow'
         };
 
-        fetch(`http://localhost:5000/api/user/${yourUsername}/planning/delete`, requestOptions)
+        fetch(`https://gamegate.herokuapp.com/api/user/${yourUsername}/planning/delete`, requestOptions)
         .then(response => response.json())
         .then(result => {
             if(result.newId) {
@@ -223,7 +223,7 @@ const GameDetails = (props) => {
             redirect: 'follow'
         };
 
-        fetch(`http://localhost:5000/api/user/${yourUsername}/completed`, requestOptions)
+        fetch(`https://gamegate.herokuapp.com/api/user/${yourUsername}/completed`, requestOptions)
         .then(response => response.json())
         .then(result => {
             if(result.newId) {
@@ -268,7 +268,7 @@ const GameDetails = (props) => {
             redirect: 'follow'
         };
 
-        fetch(`http://localhost:5000/api/user/${yourUsername}/completed/delete`, requestOptions)
+        fetch(`https://gamegate.herokuapp.com/api/user/${yourUsername}/completed/delete`, requestOptions)
         .then(response => response.json())
         .then(result => {
             if(result.newId) {
@@ -306,7 +306,7 @@ const GameDetails = (props) => {
             redirect: 'follow'
         };
 
-        fetch(`http://localhost:5000/api/user/${yourUsername}/current`, requestOptions)
+        fetch(`https://gamegate.herokuapp.com/api/user/${yourUsername}/current`, requestOptions)
         .then(response => response.json())
         .then(result => {
             if(result.newId) {
@@ -351,7 +351,7 @@ const GameDetails = (props) => {
             redirect: 'follow'
         };
 
-        fetch(`http://localhost:5000/api/user/${yourUsername}/current/delete`, requestOptions)
+        fetch(`https://gamegate.herokuapp.com/api/user/${yourUsername}/current/delete`, requestOptions)
         .then(response => response.json())
         .then(result => {
             if(result.newId) {
@@ -389,7 +389,7 @@ const GameDetails = (props) => {
             redirect: 'follow'
         };
 
-        fetch(`http://localhost:5000/api/user/${yourUsername}/dropped`, requestOptions)
+        fetch(`https://gamegate.herokuapp.com/api/user/${yourUsername}/dropped`, requestOptions)
         .then(response => response.json())
         .then(result => {
             if(result.newId) {
@@ -434,7 +434,7 @@ const GameDetails = (props) => {
             redirect: 'follow'
         };
 
-        fetch(`http://localhost:5000/api/user/${yourUsername}/dropped/delete`, requestOptions)
+        fetch(`https://gamegate.herokuapp.com/api/user/${yourUsername}/dropped/delete`, requestOptions)
         .then(response => response.json())
         .then(result => {
             if(result.newId) {
