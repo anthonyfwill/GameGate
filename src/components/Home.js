@@ -110,7 +110,7 @@ const Home = (props) => {
             <div className="posts_container">
                 <div>
                     <h1>GameGate Home</h1>
-                    {testing2(listFeed)}
+                    {props.loggedIn && testing2(listFeed)}
                 </div>
             </div>
         </div>

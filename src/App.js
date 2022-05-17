@@ -84,7 +84,7 @@ function App() {
             <Login setRefreshToken={setRefreshToken} setIdToken={setIdToken} setLoggedIn={setLoggedIn} setCurrUser={setCurrUser} docClient={docClient} setCurrUserInfo={setCurrUserInfo}/>
           </Route>
           <Route exact path="/home">
-            <Home currUser={currUser} setCurrUser={setCurrUser} docClient={docClient} setCurrUserInfo={setCurrUserInfo} currUserInfo={currUserInfo}/>
+            <Home loggedIn={loggedIn} currUser={currUser} setCurrUser={setCurrUser} docClient={docClient} setCurrUserInfo={setCurrUserInfo} currUserInfo={currUserInfo}/>
           </Route>
           <Route exact path="/profile/:username">
             <Profile setIdToken={setIdToken} idToken={idToken} refreshToken={refreshToken} completion={completion} loggedIn={loggedIn} currUser={currUser} setCurrUserInfo={setCurrUserInfo} currUserInfo={currUserInfo}/>

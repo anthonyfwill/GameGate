@@ -90,10 +90,10 @@ const Review = (props) => {
                 <p className="score-color">Score: {props.score}/10</p>
                 <p>{props.content}</p>
                 <p>Upvotes: {upvoteCount}</p>
-                {props.username && props.username !== props.yourUsername && !upvoted && <button type="button" className="upvote" onClick={() => addUpvote(props.yourUsername, props.username, props.gameID)}></button>}
-                {props.username && props.username !== props.yourUsername && upvoted && <button className="downvote" type="button" onClick={() => removeUpvote(props.yourUsername, props.username, props.gameID)}></button>}
-                {props.username2 !== props.username && props.username2 !== props.yourUsername && !upvoted && <button type="button" className="upvote" onClick={() => addUpvote(props.yourUsername, props.username2, props.gameId)}></button>}
-                {props.username2 !== props.username && props.username2 !== props.yourUsername && upvoted && <button className="downvote" type="button" onClick={() => removeUpvote(props.yourUsername, props.username2, props.gameId)}></button>}
+                {props.loggedIn && props.username && props.username !== props.yourUsername && !upvoted && <button type="button" className="upvote" onClick={() => addUpvote(props.yourUsername, props.username, props.gameID)}></button>}
+                {props.loggedIn && props.username && props.username !== props.yourUsername && upvoted && <button className="downvote" type="button" onClick={() => removeUpvote(props.yourUsername, props.username, props.gameID)}></button>}
+                {props.loggedIn && props.username2 !== props.username && props.username2 !== props.yourUsername && !upvoted && <button type="button" className="upvote" onClick={() => addUpvote(props.yourUsername, props.username2, props.gameId)}></button>}
+                {props.loggedIn && props.username2 !== props.username && props.username2 !== props.yourUsername && upvoted && <button className="downvote" type="button" onClick={() => removeUpvote(props.yourUsername, props.username2, props.gameId)}></button>}
             </div>
         </div>
     );
