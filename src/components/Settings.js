@@ -216,10 +216,11 @@ function updateUsername() {
                         if (err) {
                             // console.log(err);
                         } else {
+                            setError(null);
                             const newResults = {};
                             const someVal = Object.assign(newResults, props.currUserInfo);
-                            console.log(newResults);
                             newResults.Username = newUsername;
+                            props.setCurrUser(newUsername);
                             props.setCurrUserInfo(newResults);
                             localStorage.setItem('user', JSON.stringify(newResults));
                         }
@@ -261,10 +262,8 @@ function updateUsername() {
                                     // console.log(item);
                                     props.docClient.update(params1, function(err, data) {
                                         if (err) {
-                                            console.log(err);
                                             // console.log(err);
                                         } else {
-                                            console.log(data);
                                             // console.log("Updated the username of all reviews by", props.currUser);
                                         }
                                     });
