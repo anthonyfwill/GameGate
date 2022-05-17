@@ -21,7 +21,7 @@ export default function FollowList(props) {
             method: 'GET',
             redirect: 'follow'
         };
-        fetch(`https://gamegate.herokuapp.com/api/user/${username}/follows`, requestOptions)
+        fetch(`${process.env.REACT_APP_SERVER_LINK}/api/user/${username}/follows`, requestOptions)
         .then(response => {
             if(!response.ok) {
                 throw Error('Could not find user information');

@@ -26,7 +26,7 @@ function Search(props) {
             method: 'GET',
             redirect: 'follow'
         }
-        fetch(`https://gamegate.herokuapp.com/api/games/?searchTerm=${searchTerm}`, requestOptions)
+        fetch(`${process.env.REACT_APP_SERVER_LINK}/api/games/?searchTerm=${searchTerm}`, requestOptions)
         .then(response => {
             if(!response.ok) {
                 throw Error('Could not get info for that game');
@@ -62,7 +62,7 @@ function Search(props) {
             method: 'GET',
             redirect: 'follow'
         }
-        fetch(`https://gamegate.herokuapp.com/api/users/?Username=${searchTerm}`, requestOptions)
+        fetch(`${process.env.REACT_APP_SERVER_LINK}/api/users/?Username=${searchTerm}`, requestOptions)
         .then(response => {
             if(!response.ok) {
                 throw Error('Could not get info for that user');

@@ -22,7 +22,7 @@ export default function GameStatusMap(props) {
             method: 'GET',
             redirect: 'follow'
         };
-        fetch(`https://gamegate.herokuapp.com/api/user/${username}/gamestatuses`, requestOptions)
+        fetch(`${process.env.REACT_APP_SERVER_LINK}/api/user/${username}/gamestatuses`, requestOptions)
         .then(response => {
             if(!response.ok) {
                 throw Error('Could not retrieve user');

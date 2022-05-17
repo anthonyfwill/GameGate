@@ -28,7 +28,7 @@ const Login = (props) => {
         redirect: 'follow'
         };
 
-        fetch("https://gamegate.herokuapp.com/api/users/login", requestOptions)
+        fetch(`${process.env.REACT_APP_SERVER_LINK}/api/users/login`, requestOptions)
         .then(response => response.json())
         .then(result => {
             props.setCurrUser(result.userInfo.Username);
