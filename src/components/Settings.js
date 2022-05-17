@@ -309,6 +309,8 @@ const Settings = (props) => {
                             // console.log(err);
                         }
                     })
+                    setUsernameEdit(false);
+                    setNewUsername('');
                 }
             }
         })        
