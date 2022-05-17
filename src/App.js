@@ -35,6 +35,7 @@ function App() {
 
 
   useEffect(() => {
+    console.log(process.env.REACT_APP_SERVER_LINK);
     if(!userRetrieval) {
       const user = localStorage.getItem("user");
       const idToken = localStorage.getItem('idToken');
