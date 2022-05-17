@@ -744,7 +744,7 @@ const GameDetails = (props) => {
                     {props.loggedIn && !reviewOpened && results && <button className="reviewBtn" onClick={() => setReviewOpened(true)}>Write a review</button>}
                     {reviewOpened &&
                     <div className="reviewBox">
-                    <textarea id="gamereview" placeholder="Write a review" name="review" rows="8" cols="90" value={reviewText} onChange={(e) => setReviewText(e.target.value)}></textarea>
+                    <textarea id="gamereview" placeholder="Write a review" name="review" rows="8" cols="90" maxlength="3000" value={reviewText} onChange={(e) => setReviewText(e.target.value)}></textarea>
                         <div className="scoreandtext"></div>
                         <input type="number" id="scorereview" name="quantity" min="1" max="10" value={reviewScore} onChange={(e) => changeScore(e.target.value)}></input>
                         {/* <textarea id="scorereview" maxLength="2" placeholder="Score / 10" pattern="\d$" value={reviewScore} onChange={(e) => setReviewScore(e.target.value)}></textarea> */}
