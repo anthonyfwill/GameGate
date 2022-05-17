@@ -9,6 +9,7 @@ const Settings = (props) => {
     const [currentUsername, setCurrentUsername] = useState(null);
     const [profileUrl, setProfileurl] = useState('');
     const [newUsername, setNewUsername] = useState('');
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         if(props.completion) {
@@ -196,10 +197,8 @@ function updateUsername() {
         }
         props.docClient.query(params5, function(err, data){
             if(!err) {
-                console.log(data);
                 if (data.Count > 0) {
-                    //Display Username taken
-                    console.log("Username taken");
+                    setError("Username taken, pick a different username");
                 } else if (data.Count === 0) {
                     var params = {
                         TableName:"GameGateAccounts",
@@ -385,6 +384,7 @@ function updateUsername() {
             {currentUsername && <p>{props.currUserInfo.Username}</p>}
             {!usernameEdit && <button className="profileBtn" onClick={() => setUsernameEdit(true)}>Change Username</button> }
             {usernameEdit && <input type="text" value={newUsername} onChange={(e) => setNewUsername(e.target.value)} placeholder="new username"/>}
+            {error && <p>{error}</p>}
             {usernameEdit && <button className="profileBtn" onClick={updateUsername}>Submit</button>}
         </div>
         </div>
