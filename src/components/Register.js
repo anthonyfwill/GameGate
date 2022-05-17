@@ -32,7 +32,7 @@ const Register = (props) => {
             redirect: 'follow'
             };
 
-            fetch("https://gamegate.herokuapp.com/api/users", requestOptions)
+            fetch(`${process.env.REACT_APP_SERVER_LINK}/api/users`, requestOptions)
             .then(response => response.json())
             .then(result => {
                 if(result.success)  {
