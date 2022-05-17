@@ -4,13 +4,16 @@ import { useState, useEffect } from "react";
 
 const Settings = (props) => {
     const [pfpEdit, setPfpEdit] = useState(false);
+    const [usernameEdit, setUsernameEdit] = useState(false);
     const [currentPfp, setCurrentPfp] = useState(null);
+    const [currentUsername, setCurrentUsername] = useState(null);
     const [profileUrl, setProfileurl] = useState('');
     const [newUsername, setNewUsername] = useState('');
 
     useEffect(() => {
         if(props.completion) {
             setCurrentPfp(props.currUserInfo.ProfilePicture);
+            setCurrentUsername(props.currUserInfo.Username);
         }
     }, [props.completion])
   
@@ -198,8 +201,10 @@ const Settings = (props) => {
             } else {
                 const newResults = {};
                 const someVal = Object.assign(newResults, props.currUserInfo);
-                newResults.Useername = newUsername;
+                console.log(newResults);
+                newResults.Username = newUsername;
                 props.setCurrUserInfo(newResults);
+                localStorage.setItem('user', JSON.stringify(newResults));
             }
         });
 
@@ -222,6 +227,8 @@ const Settings = (props) => {
                 } else {
                     // console.log(data);
                     data.Items.forEach(item => {
+                        console.log(item.GameID);
+                        console.log(props.currUserInfo.Email);
                         var params1 = {
                             TableName:"Games",
                                 Key:{
@@ -237,9 +244,10 @@ const Settings = (props) => {
                         // console.log(item);
                         props.docClient.update(params1, function(err, data) {
                             if (err) {
+                                console.log(err);
                                 // console.log(err);
                             } else {
-                                // console.log(data);
+                                console.log(data);
                                 // console.log("Updated the username of all reviews by", props.currUser);
                             }
                         });
@@ -347,9 +355,15 @@ const Settings = (props) => {
         <div className = 'posts_container'>
         <div className='image-section'>
             {currentPfp && <img id="pfp" src={props.currUserInfo.ProfilePicture}/>}
-            {!props.pfpEdit && <button className="profileBtn" onClick={() => setPfpEdit(true)}>Change Profile Picture</button> }
+            {!pfpEdit && <button className="profileBtn" onClick={() => setPfpEdit(true)}>Change Profile Picture</button> }
             {pfpEdit && <input type="text" value={profileUrl} onChange={(e) => setProfileurl(e.target.value)} placeholder="new profile image url"/>}
             {pfpEdit && <button className="profileBtn" onClick={updateProfilePic}>Submit</button>}
+        </div>
+        <div className='image-section'>
+            {currentUsername && <p>{currentUsername}</p>}
+            {!usernameEdit && <button className="profileBtn" onClick={() => setUsernameEdit(true)}>Change Username</button> }
+            {usernameEdit && <input type="text" value={newUsername} onChange={(e) => setNewUsername(e.target.value)} placeholder="new username"/>}
+            {usernameEdit && <button className="profileBtn" onClick={updateUsername}>Submit</button>}
         </div>
         </div>
       </div>
