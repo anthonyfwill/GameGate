@@ -52,6 +52,7 @@ const Register = (props) => {
             <div className="textbox_container">
                 <div>
                     <h1>GameGate Sign Up</h1>
+                    <p>After registering, check your email for a verification link</p>
                 </div>
                 <div><input className="textbox" name="email" type="text" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)}/></div>
                 <div><input className="textbox" name="username" type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)}/></div>
@@ -61,7 +62,7 @@ const Register = (props) => {
                 <div><button className="button" type="submit" onClick={() => signUp(email, password, username)}>Sign
             up</button></div>
                 <div>
-                    <p>Already have an account? Log in <a href="/login">here</a></p>
+                    <p id='register_msg'>Already have an account? Log in <a href="/login">here</a></p>
                 </div>
             </div>
         </div>
