@@ -204,6 +204,7 @@ const Settings = (props) => {
                 console.log(newResults);
                 newResults.Username = newUsername;
                 props.setCurrUserInfo(newResults);
+                props.setCurrUser(newResults.Username);
                 localStorage.setItem('user', JSON.stringify(newResults));
             }
         });
@@ -227,15 +228,13 @@ const Settings = (props) => {
                 } else {
                     // console.log(data);
                     data.Items.forEach(item => {
-                        console.log(item.GameID);
-                        console.log(props.currUserInfo.Email);
                         var params1 = {
                             TableName:"Games",
                                 Key:{
                                 "GameID": item.GameID,
                                 "Email": props.currUserInfo.Email
                             },
-                            UpdateExpression: "set Username = :Username",
+                            UpdateExpression: "set Username = :username",
                             ExpressionAttributeValues:{
                                 ":username":newUsername
                             },
@@ -244,10 +243,10 @@ const Settings = (props) => {
                         // console.log(item);
                         props.docClient.update(params1, function(err, data) {
                             if (err) {
-                                console.log(err);
+                                // console.log(err);
                                 // console.log(err);
                             } else {
-                                console.log(data);
+                                // console.log(data);
                                 // console.log("Updated the username of all reviews by", props.currUser);
                             }
                         });
@@ -291,7 +290,8 @@ const Settings = (props) => {
                 // console.log(err);
             }
         })
-        
+        setUsernameEdit(false);
+        setNewUsername('');
     }
 
     function usernameFollowersMap(item2){
@@ -360,7 +360,7 @@ const Settings = (props) => {
             {pfpEdit && <button className="profileBtn" onClick={updateProfilePic}>Submit</button>}
         </div>
         <div className='image-section'>
-            {currentUsername && <p>{currentUsername}</p>}
+            {currentUsername && <p>{props.currUserInfo.Username}</p>}
             {!usernameEdit && <button className="profileBtn" onClick={() => setUsernameEdit(true)}>Change Username</button> }
             {usernameEdit && <input type="text" value={newUsername} onChange={(e) => setNewUsername(e.target.value)} placeholder="new username"/>}
             {usernameEdit && <button className="profileBtn" onClick={updateUsername}>Submit</button>}
