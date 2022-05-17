@@ -8,105 +8,68 @@ const Review = (props) => {
     const [upvoted, setUpvoted] = useState(props.upvotes);
     const [upvoteCount, setUpvoteCount] = useState(props.UpvotesCount);
 
-    function addUpvote(yourUsername, theirUsername, gameID) { 
-        var params2 = {
-            TableName: "GameGateAccounts",
-            IndexName: "Username-index",
-            KeyConditionExpression: "#username = :User3",
-            ExpressionAttributeNames: {
-                "#username": "Username"
-            },
-            ExpressionAttributeValues: {
-                ":User3": theirUsername
+    function addUpvote(yourUsername, theirUsername, gameID) {
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+
+        var urlencoded = new URLSearchParams();
+        urlencoded.append("idToken", props.idToken);
+        urlencoded.append("refreshToken", props.refreshToken);
+        urlencoded.append("email", props.currUserInfo.Email);
+        urlencoded.append("username", yourUsername);
+        urlencoded.append("theirEmail", props.reviewEmail);
+        urlencoded.append("gameID", gameID);
+
+        var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: urlencoded,
+            redirect: 'follow'
+        };
+
+        fetch(`http://localhost:5000/api/reviews/upvote`, requestOptions)
+        .then(response => response.json())
+        .then(result => {
+            if(result.newId) {
+                localStorage.setItem('idToken', result.idToken);
+                props.setIdToken(result.idToken);
             }
-        }
-        props.docClient.query(params2, function(err, data) {
-            if(err) {
-                console.log(err);
-            } else {
-                if(data.Count !== 0) {
-                    data.Items.forEach(item => {
-                        var params1 = {
-                            TableName:"Games",
-                                Key:{
-                                "GameID": gameID.toString(),
-                                "Email": item.Email
-                            },
-                            UpdateExpression: "SET #uv.#em = :upvote, UpvotesCount = UpvotesCount + :val" ,
-                            ConditionExpression: "attribute_not_exists(#uv.#em.Username)",
-                            ExpressionAttributeNames: {
-                                "#uv": "Upvotes",
-                                "#em": props.currUserInfo.Email
-                            },
-                            ExpressionAttributeValues:{
-                                ":upvote": {
-                                    "Username": yourUsername,
-                                },
-                                ":val": 1,
-                            },
-                            ReturnValues:"UPDATED_NEW"
-                        };
-                        props.docClient.update(params1, function(err, data) {
-                            if (err) {
-                                console.log(err);
-                            } else {
-                                setUpvoted(true);
-                                setUpvoteCount(upvoteCount + 1);
-                            }
-                        });
-                    })
-                }
-            }
+            setUpvoted(true);
+            setUpvoteCount(upvoteCount + 1);
         })
+        .catch(error => error);
     }
 
     function removeUpvote(yourUsername, theirUsername, gameID) { 
-        var params2 = {
-            TableName: "GameGateAccounts",
-            IndexName: "Username-index",
-            KeyConditionExpression: "#username = :User3",
-            ExpressionAttributeNames: {
-                "#username": "Username"
-            },
-            ExpressionAttributeValues: {
-                ":User3": theirUsername
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+
+        var urlencoded = new URLSearchParams();
+        urlencoded.append("idToken", props.idToken);
+        urlencoded.append("refreshToken", props.refreshToken);
+        urlencoded.append("email", props.currUserInfo.Email);
+        urlencoded.append("username", yourUsername);
+        urlencoded.append("theirEmail", props.reviewEmail);
+        urlencoded.append("gameID", gameID);
+
+        var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: urlencoded,
+            redirect: 'follow'
+        };
+
+        fetch(`http://localhost:5000/api/reviews/downvote`, requestOptions)
+        .then(response => response.json())
+        .then(result => {
+            if(result.newId) {
+                localStorage.setItem('idToken', result.idToken);
+                props.setIdToken(result.idToken);
             }
-        }
-    
-        props.docClient.query(params2, function(err, data) {
-            if (!err) {
-                if (data.Count === 0) {
-                } else {
-                    data.Items.forEach(item => {
-                        var params1 = {
-                            TableName:"Games",
-                                Key:{
-                                "GameID": gameID.toString(),
-                                "Email": item.Email
-                            },
-                            UpdateExpression: "REMOVE #uv.#em SET UpvotesCount = UpvotesCount - :val" ,
-                            ConditionExpression: "attribute_exists(#uv.#em.Username)",
-                            ExpressionAttributeNames: {
-                                "#uv": "Upvotes",
-                                "#em": props.currUserInfo.Email
-                            },
-                            ExpressionAttributeValues:{
-                                ":val": 1,
-                            },
-                            ReturnValues:"UPDATED_NEW"
-                        };
-                        props.docClient.update(params1, function(err, data) {
-                            if (err) {
-                                console.log(err);
-                            } else {
-                                setUpvoted(false);
-                                setUpvoteCount(upvoteCount - 1);
-                            }
-                        });
-                    })
-                }
-            }
+            setUpvoted(false);
+            setUpvoteCount(upvoteCount - 1);
         })
+        .catch(error => error);
     }
 
     return (

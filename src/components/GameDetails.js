@@ -641,7 +641,7 @@ const GameDetails = (props) => {
                     </div> }
                     {
                         reviewInfo.map(val => (
-                            <Review upvotes={val.Upvotes[props.currUserInfo.Email]} currUserInfo={props.currUserInfo} docClient={props.docClient} yourUsername={props.currUser} username2={val.Username} username={val.Username} content={val.Review} score={val.Rating} profPic={val.ProfilePic} UpvotesCount={val.UpvotesCount} gameID={results[0].id} key={val.Username}/>
+                            <Review idToken={props.idToken} refreshToken={props.refreshToken} setIdToken={props.setIdToken} reviewEmail={val.Email} upvotes={val.Upvotes[props.currUserInfo.Email]} currUserInfo={props.currUserInfo} docClient={props.docClient} yourUsername={props.currUser} username2={val.Username} username={val.Username} content={val.Review} score={val.Rating} profPic={val.ProfilePic} UpvotesCount={val.UpvotesCount} gameID={results[0].id} key={val.Username}/>
                         ))
                     }
                 </div>
