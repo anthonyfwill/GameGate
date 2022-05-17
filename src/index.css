@@ -159,6 +159,7 @@ body {
   padding-left: 30px;
   padding-right: 30px;
   border-radius: 10px;
+  
 }
 
 .search-type {
@@ -213,7 +214,7 @@ a:visited {
   text-align: center;
   display: flex;
   width: 500px;
-  height: 630px;
+  height: max-content;
   background-color: rgb(42, 42, 78);
   border-radius: 10px;
   gap: 30px;
@@ -264,6 +265,11 @@ a:visited {
 
 .new-child p {
   line-height: 25px;
+}
+
+#register_msg {
+  margin: 0;
+  padding-bottom: 15px;
 }
 
 .game-reviews {
