@@ -29,7 +29,7 @@ const Settings = (props) => {
 
         props.docClient.update(params, function(err, data) {
             if (err) {
-                console.log(err);
+                return err;
             } else {
                 const newResults = {};
                 const someVal = Object.assign(newResults, props.currUserInfo);
@@ -54,9 +54,9 @@ const Settings = (props) => {
         props.docClient.query(params2, function(err, data) {
             if (!err) {
                 if (data.Count === 0) {
-                    console.log(data);
+                    // console.log(data);
                 } else {
-                    console.log(data);
+                    // console.log(data);
                     data.Items.forEach(item => {
                         var params1 = {
                             TableName:"Games",
@@ -70,20 +70,20 @@ const Settings = (props) => {
                             },
                             ReturnValues:"UPDATED_NEW"
                         };
-                        console.log(item);
+                        // console.log(item);
                         props.docClient.update(params1, function(err, data) {
                             if (err) {
-                                console.log(err);
+                                // console.log(err);
                             } else {
-                                console.log(data);
-                                console.log("Updated the profile pic of all reviews by", props.currUser);
+                                // console.log(data);
+                                // console.log("Updated the profile pic of all reviews by", props.currUser);
                             }
                         });
                     })
                 }
 
             } else {
-                console.log(err);
+                // console.log(err);
             }
         })
 
@@ -101,22 +101,22 @@ const Settings = (props) => {
         props.docClient.query(params3, function(err, data) {
             if (!err) {
                 if (data.Count === 0) {
-                    console.log(data);
+                    // console.log(data);
                 } else {
-                    console.log(data);
-                    console.log(data.Items[0].FollowingMap, "FollowingMap");
+                    // console.log(data);
+                    // console.log(data.Items[0].FollowingMap, "FollowingMap");
                     for (var item2 in data.Items[0].FollowingMap) {
-                        console.log(item2, "each following");
+                        // console.log(item2, "each following");
                         profilePicFollowersMap(item2);
                     }
                     for (var item2 in data.Items[0].FollowersMap) {
-                        console.log(item2, "each following");
+                        // console.log(item2, "each following");
                         profilePicFollowingMap(item2);
                     }
                 }
 
             } else {
-                console.log(err);
+                // console.log(err);
             }
         })
         
@@ -144,9 +144,9 @@ const Settings = (props) => {
 
         props.docClient.update(params, function(err, data) {
             if (err) {
-                console.log(err);
+                // console.log(err);
             }else {
-                console.log("Updated your profile picture for the followers map of", item2);
+                // console.log("Updated your profile picture for the followers map of", item2);
             }
         })
 
@@ -172,9 +172,9 @@ const Settings = (props) => {
 
         props.docClient.update(params, function(err, data) {
             if (err) {
-                console.log(err);
+                // console.log(err);
             }else {
-                console.log("Updated your profile picture for the following map of", item2);
+                // console.log("Updated your profile picture for the following map of", item2);
             }
         })
     }
@@ -194,7 +194,7 @@ const Settings = (props) => {
 
         props.docClient.update(params, function(err, data) {
             if (err) {
-                console.log(err);
+                // console.log(err);
             } else {
                 const newResults = {};
                 const someVal = Object.assign(newResults, props.currUserInfo);
@@ -218,9 +218,9 @@ const Settings = (props) => {
         props.docClient.query(params2, function(err, data) {
             if (!err) {
                 if (data.Count === 0) {
-                    console.log(data);
+                    // console.log(data);
                 } else {
-                    console.log(data);
+                    // console.log(data);
                     data.Items.forEach(item => {
                         var params1 = {
                             TableName:"Games",
@@ -234,20 +234,20 @@ const Settings = (props) => {
                             },
                             ReturnValues:"UPDATED_NEW"
                         };
-                        console.log(item);
+                        // console.log(item);
                         props.docClient.update(params1, function(err, data) {
                             if (err) {
-                                console.log(err);
+                                // console.log(err);
                             } else {
-                                console.log(data);
-                                console.log("Updated the username of all reviews by", props.currUser);
+                                // console.log(data);
+                                // console.log("Updated the username of all reviews by", props.currUser);
                             }
                         });
                     })
                 }
 
             } else {
-                console.log(err);
+                // console.log(err);
             }
         })
 
@@ -265,22 +265,22 @@ const Settings = (props) => {
         props.docClient.query(params3, function(err, data) {
             if (!err) {
                 if (data.Count === 0) {
-                    console.log(data);
+                    // console.log(data);
                 } else {
-                    console.log(data);
-                    console.log(data.Items[0].FollowingMap, "FollowingMap");
+                    // console.log(data);
+                    // console.log(data.Items[0].FollowingMap, "FollowingMap");
                     for (var item2 in data.Items[0].FollowingMap) {
-                        console.log(item2, "each following");
+                        // console.log(item2, "each following");
                         usernameFollowersMap(item2);
                     }
                     for (var item2 in data.Items[0].FollowersMap) {
-                        console.log(item2, "each following");
+                        // console.log(item2, "each following");
                         usernameFollowingMap(item2);
                     }
                 }
 
             } else {
-                console.log(err);
+                // console.log(err);
             }
         })
         
@@ -306,9 +306,9 @@ const Settings = (props) => {
 
         props.docClient.update(params, function(err, data) {
             if (err) {
-                console.log(err);
+                // console.log(err);
             }else {
-                console.log("Updated your username for the followers map of", item2);
+                // console.log("Updated your username for the followers map of", item2);
             }
         })
 
@@ -334,9 +334,9 @@ const Settings = (props) => {
 
         props.docClient.update(params, function(err, data) {
             if (err) {
-                console.log(err);
+                // console.log(err);
             }else {
-                console.log("Updated your username for the following map of", item2);
+                // console.log("Updated your username for the following map of", item2);
             }
         })
     }
