@@ -94,7 +94,7 @@ const GameDetails = (props) => {
             redirect: 'follow'
         };
 
-        fetch("${process.env.REACT_APP_SERVER_LINK}/api/reviews", requestOptions)
+        fetch(`${process.env.REACT_APP_SERVER_LINK}/api/reviews`, requestOptions)
         .then(response => response.json())
         .then(result => {
             if(result.newId) {
