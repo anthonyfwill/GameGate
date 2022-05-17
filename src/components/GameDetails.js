@@ -641,12 +641,12 @@ const GameDetails = (props) => {
                     </div> }
                     {props.loggedIn &&
                         reviewInfo.map(val => (
-                            <Review idToken={props.idToken} refreshToken={props.refreshToken} setIdToken={props.setIdToken} reviewEmail={val.Email} upvotes={val.Upvotes[props.currUserInfo.Email]} currUserInfo={props.currUserInfo} docClient={props.docClient} yourUsername={props.currUser} username2={val.Username} username={val.Username} content={val.Review} score={val.Rating} profPic={val.ProfilePic} UpvotesCount={val.UpvotesCount} gameID={results[0].id} key={val.Username}/>
+                            <Review loggedIn={props.loggedIn} idToken={props.idToken} refreshToken={props.refreshToken} setIdToken={props.setIdToken} reviewEmail={val.Email} upvotes={val.Upvotes[props.currUserInfo.Email]} currUserInfo={props.currUserInfo} docClient={props.docClient} yourUsername={props.currUser} username2={val.Username} username={val.Username} content={val.Review} score={val.Rating} profPic={val.ProfilePic} UpvotesCount={val.UpvotesCount} gameID={results[0].id} key={val.Username}/>
                         ))
                     }
                     {!props.loggedIn &&
                         reviewInfo.map(val => (
-                            <Review reviewEmail={val.Email} docClient={props.docClient} yourUsername={props.currUser} username2={val.Username} username={val.Username} content={val.Review} score={val.Rating} profPic={val.ProfilePic} UpvotesCount={val.UpvotesCount} gameID={results[0].id} key={val.Username}/>
+                            <Review loggedIn={props.loggedIn} reviewEmail={val.Email} docClient={props.docClient} yourUsername={props.currUser} username2={val.Username} username={val.Username} content={val.Review} score={val.Rating} profPic={val.ProfilePic} UpvotesCount={val.UpvotesCount} gameID={results[0].id} key={val.Username}/>
                         ))
                     }
                 </div>
