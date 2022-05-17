@@ -182,7 +182,7 @@ const Settings = (props) => {
         })
     }
 
-    function updateUsername() {
+function updateUsername() {
         var params5 = {
             TableName: "GameGateAccounts",
             IndexName: "Username-index",
@@ -382,7 +382,7 @@ const Settings = (props) => {
             {pfpEdit && <button className="profileBtn" onClick={updateProfilePic}>Submit</button>}
         </div>
         <div className='image-section'>
-            {currentUsername && <p>{currentUsername}</p>}
+            {currentUsername && <p>{props.currUserInfo.Username}</p>}
             {!usernameEdit && <button className="profileBtn" onClick={() => setUsernameEdit(true)}>Change Username</button> }
             {usernameEdit && <input type="text" value={newUsername} onChange={(e) => setNewUsername(e.target.value)} placeholder="new username"/>}
             {usernameEdit && <button className="profileBtn" onClick={updateUsername}>Submit</button>}
