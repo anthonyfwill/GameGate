@@ -27,7 +27,7 @@ const Home = (props) => {
 
     function onlyUserFeed() {
             let arr = [];
-            console.log("I am here.");
+            // console.log("I am here.");
             var params1 = {
                 TableName: "UserFeed",
                 KeyConditionExpression: "#email = :Email3",
@@ -43,11 +43,11 @@ const Home = (props) => {
             }
             props.docClient.query(params1, function(err, data) {
                 if(err) {
-                    console.log(data, "44444")
+                    // console.log(data, "44444")
                 } else if (!err) {
-                    console.log(data, "all feeds for user");
+                    // console.log(data, "all feeds for user");
                     arr = makeList(data.Items.reverse());
-                    console.log(arr, "arr contents");
+                    // console.log(arr, "arr contents");
                     setListFeed(arr);
                     setFound2(true);
                 }
@@ -56,7 +56,7 @@ const Home = (props) => {
 
     function entireUserFeed() {
        let arr = [];
-            console.log("EntireUserFeed");
+            // console.log("EntireUserFeed");
             var params1 = {
                 TableName: "GameGateAccounts",
                 KeyConditionExpression: "#email = :Email3",
@@ -69,7 +69,7 @@ const Home = (props) => {
             }
             props.docClient.query(params1, function(err, data) {
                 if(err) {
-                    console.log(data, "55555")
+                    // console.log(data, "55555")
                 } else if (!err) {
                     //console.log(data.Items[0].UserFeedIDs, "all feeds for user");
                     arr = makeList(data.Items[0].UserFeedIDs.reverse());

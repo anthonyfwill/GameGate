@@ -52,7 +52,6 @@ const Profile = (props) => {
                 setPending(false);
             });
         }
-        console.log(following);
         if(props.currUserInfo) {
             checkFollowing();
         }
@@ -84,7 +83,7 @@ const Profile = (props) => {
             }
         })
         .catch(err => {
-            console.log(err);
+            return err;
         })
     }
 
@@ -129,7 +128,7 @@ const Profile = (props) => {
                 addUserFeed(props.currUserInfo.Email, yourUsername, idStr, theirUsername, yourProfilePicture, theirProfilePicture, action, dateTimeEST);
             }
         })
-        .catch(error => console.log('error', error)); 
+        .catch(error => error); 
         setFollowing(true);
         increaseFollowers(yourUsername, theirUsername, yourProfilePicture, theirProfilePicture);
     }
@@ -174,7 +173,7 @@ const Profile = (props) => {
                 addUserFeed(props.currUserInfo.Email, yourUsername, idStr, theirUsername, yourProfilePicture, theirProfilePicture, action, dateTimeEST);
             }
         })
-        .catch(error => console.log('error', error)); 
+        .catch(error => error); 
         setFollowing(false);
         decreaseFollowers(yourUsername, theirUsername, yourProfilePicture, theirProfilePicture);
     }
@@ -219,7 +218,7 @@ const Profile = (props) => {
                 addUserFeed(results.Email, viewedUsername, idStr, yourUsername, theirProfilePicture, yourProfilePicture, action, dateTimeEST);
             }
         })
-        .catch(error => console.log('error', error));
+        .catch(error => error);
     }
 
     const decreaseFollowers = (yourUsername, viewedUsername, yourProfilePicture, theirProfilePicture) => {
@@ -259,7 +258,7 @@ const Profile = (props) => {
                 addUserFeed(results.Email, viewedUsername, idStr, yourUsername, theirProfilePicture, yourProfilePicture, action, dateTimeEST);
             }
         })
-        .catch(error => console.log('error', error));
+        .catch(error => error);
     }
 
     function addUserFeed(yourEmail, yourUsername, idNumber, theirUsername, yourProfilePicture, theirProfilePicture, action, dateTimeEST) {
@@ -277,13 +276,13 @@ const Profile = (props) => {
     
         docClient.query(params1, function(err, data) {
             if (err) {
-                console.log(err, "ID is already being used generating a new ID");
+                // console.log(err, "ID is already being used generating a new ID");
                 let idNum = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
                 let idStr = idNum.toString();
                 addUserFeed(yourEmail, yourUsername, idStr, theirUsername, yourProfilePicture, theirProfilePicture, action, dateTimeEST)
             }else if (!err) {
                 if (data.Count === 0) {
-                    console.log(data);
+                    // console.log(data);
                     var params3 = {
                         TableName: "GameGateAccounts",
                         KeyConditionExpression: "#email = :Email3",
@@ -298,18 +297,18 @@ const Profile = (props) => {
                     docClient.query(params3, function(err, data) {
                         if (!err) {
                             if (data.Count === 0) {
-                                console.log(data);
+                                // console.log(data);
                             } else {
-                                console.log(data, "trying to create");
+                                // console.log(data, "trying to create");
                                 updateUserFeed(yourEmail, yourUsername, idNumber, theirUsername, yourProfilePicture, theirProfilePicture, action, dateTimeEST, props.currUserInfo.Email);
                                 for (var item2 in data.Items[0].FollowersMap) {
-                                    console.log(item2, "each follower");
+                                    // console.log(item2, "each follower");
                                     updateUserFeed(yourEmail, yourUsername, idNumber, theirUsername, yourProfilePicture, theirProfilePicture, action, dateTimeEST, item2);
                                 }
                             }
 
                         } else {
-                            console.log(err);
+                            // console.log(err);
                         }
                     })
 
@@ -326,13 +325,13 @@ const Profile = (props) => {
                     };
                     docClient.put(params2, function(err, data) {
                         if (err) {
-                            console.log(err);
+                            // console.log(err);
                         } else {
-                            console.log(data)
+                            // console.log(data)
                         }
                     });
                 } else {
-                    console.log(data);
+                    // console.log(data);
                 }
             }
         });
@@ -363,9 +362,9 @@ const Profile = (props) => {
 
         docClient.update(params, function(err, data) {
             if (err) {
-                console.log(err);
+                // console.log(err);
             }else {
-                console.log("Updated the userfeed of", item2);
+                // console.log("Updated the userfeed of", item2);
             }
         })
     }
@@ -382,7 +381,6 @@ const Profile = (props) => {
                     </div>
                     <div>
                         <h2>{username}</h2>
-                        {console.log(following, following)}
                         {!following && props.loggedIn && username != props.currUser && <div><button className="list_entry" type="submit" onClick={() => increaseFollowing(props.currUser, username, props.currUserInfo.ProfilePicture, results.ProfilePicture)}>Follow</button></div> }
                         {following && props.loggedIn && username != props.currUser && <div><button className="list_entry" type="submit" onClick={() => decreaseFollowing(props.currUser, username, props.currUserInfo.ProfilePicture, results.ProfilePicture)}>Unfollow</button></div> }
                     </div>

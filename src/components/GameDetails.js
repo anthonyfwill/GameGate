@@ -57,7 +57,7 @@ const GameDetails = (props) => {
                     setDropped(false);
                 }
             })
-            .catch(error => console.log('error', error));
+            .catch(error => error);
     }
 
     function combineAll(array) {
@@ -108,7 +108,7 @@ const GameDetails = (props) => {
                 setReviewText('');
             }
         })
-        .catch(error => console.log('error', error));
+        .catch(error => error);
     }
 
     function updateScore(moreReviewInfo) {
@@ -161,7 +161,7 @@ const GameDetails = (props) => {
                 addUserFeed(props.currUserInfo.Email, yourUsername, idStr, gameID, gameName, gameImg, action, dateTimeEST);
             }
         })
-        .catch(error => console.log('error', error));
+        .catch(error => error);
         setPlanning(true);
         removeCompletedGame(yourUsername, gameName);
         removeCurrentGame(yourUsername, gameName);
@@ -485,13 +485,13 @@ const GameDetails = (props) => {
     
         props.docClient.query(params1, function(err, data) {
             if(err) {
-                console.log(data, "ID is already being used generating a new ID");
+                // console.log(data, "ID is already being used generating a new ID");
                 let idNum = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
                 var idStr = idNum.toString();
                 addUserFeed(yourEmail, yourUsername, idStr, gameID, gameName, gameImg, action, dateTimeEST);
             } else if (!err) {
                 if (data.Count === 0) {
-                    console.log(data, "trying to create");
+                    // console.log(data, "trying to create");
                     var params3 = {
                         TableName: "GameGateAccounts",
                         KeyConditionExpression: "#email = :Email3",
@@ -506,12 +506,12 @@ const GameDetails = (props) => {
                     props.docClient.query(params3, function(err, data) {
                         if (!err) {
                             if (data.Count === 0) {
-                                console.log(data);
+                                // console.log(data);
                             } else {
-                                console.log(data);
+                                // console.log(data);
                                 updateUserFeed(yourEmail, yourUsername, idNumber, gameID, gameName, gameImg, action, dateTimeEST, props.currUserInfo.Email);
                                 for (var item2 in data.Items[0].FollowersMap) {
-                                    console.log(item2, "each follower");
+                                    // console.log(item2, "each follower");
                                     updateUserFeed(yourEmail, yourUsername, idNumber, gameID, gameName, gameImg, action, dateTimeEST, item2);
                                 }
                             }
@@ -535,13 +535,13 @@ const GameDetails = (props) => {
                     };
                     props.docClient.put(params2, function(err, data) {
                         if (err) {
-                            console.log(err);
+                            // console.log(err);
                         } else {
-                            console.log(data, "created")
+                            // console.log(data, "created")
                         }
                     });
                 } else {
-                    console.log(data);
+                    // console.log(data);
                 }
             }
         });
@@ -574,9 +574,9 @@ const GameDetails = (props) => {
 
         props.docClient.update(params, function(err, data) {
             if (err) {
-                console.log(err);
+                // console.log(err);
             }else {
-                console.log("Updated the userfeed of", item2);
+                // console.log("Updated the userfeed of", item2);
             }
         })
     }
