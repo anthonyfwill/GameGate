@@ -434,7 +434,7 @@ const Profile = (props) => {
                     <div className="reviews">
                         {
                             reviewInfo.map(val => (
-                                <Review docClient={docClient} currUserInfo={props.currUserInfo} upvotes={val.Upvotes[props.currUserInfo.Email]} gameId={val.GameID} email={props.currUserInfo.Email} yourUsername={props.currUser} username2={username} gameImage={val.GameImage} name={val.GameName} content={val.Review} score={val.Rating} id={val.GameID}  UpvotesCount={val.UpvotesCount} key={val.GameName}/>
+                                <Review idToken={props.idToken} refreshToken={props.refreshToken} setIdToken={props.setIdToken} reviewEmail={val.Email} docClient={docClient} currUserInfo={props.currUserInfo} upvotes={val.Upvotes[props.currUserInfo.Email]} gameId={val.GameID} email={props.currUserInfo.Email} yourUsername={props.currUser} username2={username} gameImage={val.GameImage} name={val.GameName} content={val.Review} score={val.Rating} id={val.GameID}  UpvotesCount={val.UpvotesCount} key={val.GameName}/>
                             ))
                         }
                     </div>
