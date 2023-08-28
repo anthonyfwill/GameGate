@@ -1,10 +1,15 @@
 # GameGate
+![GameGate Logo](GameGate Logo.png)
+
 [Website Link](https://gamegate.netlify.app)
 
 ## Overview
 GameGate is a social media app designed to enhance the gaming experience by providing features for tracking and reviewing games, as well as connecting with fellow gamers. The platform enables users to not only share their gaming activity but also connect with friends to witness each other's gaming history.
 
 **Project Duration:** 4 months
+
+## Notice
+Due to costs for hosting the backend and data storage, the website is currently not functioning as intended. We are actively working on finding alternative storage and hosting options to restore the full functionality of the platform.
 
 ## User Stories and Team Roles
 
@@ -46,9 +51,19 @@ GameGate is a social media app designed to enhance the gaming experience by prov
 
 Our team worked collaboratively on various aspects of the project, leveraging our individual skills to create a comprehensive gaming-focused social platform.
 
+## Screenshots
+![Profile and Reviews](Reviews.png)
+*Profile and Reviews*
+
+![Game and Categories](reviewCategory.png)
+*Game and Categories*
+
+![Review Box and Upvotes](scoreUpvotes.png)
+*Review Box and Upvotes*
+
 ## Acknowledgments
 
-We want to express our gratitude to the Internet Game Database for their API, which allowed us to integrate game information seamlessly into our platform.
+We want to express our gratitude to the Internet Game Database for its API, which allowed us to integrate game information seamlessly into our platform.
 
 ---
 
