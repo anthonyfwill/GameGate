@@ -56,9 +56,11 @@ Our team worked collaboratively on various aspects of the project, leveraging ou
 *Profile and Reviews*
 
 ![Game and Categories](reviewCategory.png)
+
 *Game and Categories*
 
 ![Review Box and Upvotes](scoreUpvotes.png)
+
 *Review Box and Upvotes*
 
 ## Acknowledgments
