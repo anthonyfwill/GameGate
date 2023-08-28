@@ -1,39 +1,55 @@
 # GameGate
-https://gamegate.netlify.app
+[Website Link](https://gamegate.netlify.app)
 
-GameGate is a social media app for not only tracking and reviewing games, but adding other fellow gamers, which provides the opportunity to witness their gaming activity/history.
+## Overview
+GameGate is a social media app designed to enhance the gaming experience by providing features for tracking and reviewing games, as well as connecting with fellow gamers. The platform enables users to not only share their gaming activity but also connect with friends to witness each other's gaming history.
 
-Time spent: 4 months
+**Project Duration:** 4 months
 
-User Stories
-Team Roles
-Anthony: User Profiles, Upvotes, AWS Database, Storing account info, Following/Follower Systems, Reviews, Login/Logout, User Categorization of Games, global/following feed
+## User Stories and Team Roles
 
-Robert: Internet Game Database API for search functionality of games, to display images, and descriptions, persistence for review upvoting, password hashing, and JWT/Refresh tokens
+- **Anthony:** User Profiles, Upvotes, AWS Database, Account Management, Following/Follower Systems, Reviews, Login/Logout, User Categorization of Games, Global/Following Feed.
+- **Robert:** Internet Game Database API Integration for game search, Persistence for review upvoting, Password hashing, JWT/Refresh tokens.
+- **Hollys:** Upvote design, Game status interface, Navigation bar.
+- **Mohammed:** Front-end hosting on Netlify, Character limit on reviews, Landing page format, Review display.
 
-Hollys: Upvote design, game status interface, navbar
+## Completed Functionality
 
-Mohammed: Hosted our front-end on Netlify and set up redirect paths for subpages, implemented character limit on reviews, landing page format, and review display
+- [x] User can sign up and login.
+- [x] User passwords are encrypted for security.
+- [x] Users can set up profiles.
+- [x] Users can search for and connect with other users.
+- [x] Users can categorize games as Completed, Current, Dropped, or Planning.
+- [x] Users can leave game reviews.
+- [x] Users can upvote reviews.
+- [x] Users receive push notifications.
+- [x] Global feed displaying the site's activity.
+- [x] Personal feed showing following activity upon user login.
 
+## Technologies and Services Used
 
-The following required functionality is completed:
+**AWS Services:**
+- DynamoDB
+- Amazon Cognito
 
- [x] User can login/signup
- [x] User password is encrypted 
- [x] User can set a profile
- [x] User can search for other users
- [x] User can friend other users
- [x] User can categorize games by: Completed, Current, Dropped, Planning
- [x] User can leave reviews
- [x] User can upvote reviews
- [x] User receives push notifications
- [x] A global feed of the entire site’s activity, a personal feed of following activity when a user logs in
+**Hosting Services:**
+- Netlify
+- Heroku
 
- **AWS Services:**
- DynamoDB
- Cognito 
+## Usage
 
- **Hosting Services:**
- Netlify
- Heroku
- 
+1. Visit the [GameGate website](https://gamegate.netlify.app).
+2. Sign up or log in to your account.
+3. Explore games, leave reviews, and connect with other gamers.
+
+## Team Collaboration
+
+Our team worked collaboratively on various aspects of the project, leveraging our individual skills to create a comprehensive gaming-focused social platform.
+
+## Acknowledgments
+
+We want to express our gratitude to the Internet Game Database for their API, which allowed us to integrate game information seamlessly into our platform.
+
+---
+
+For more details, check out the [server-side code](https://github.com/RobertBangiyev/GameGate-Server).
