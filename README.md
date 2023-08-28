@@ -1,5 +1,5 @@
 # GameGate
-![GameGate Logo](GameGateLogo.png)
+![GameGate Logo](GameGate Logo.png)
 
 [Website Link](https://gamegate.netlify.app)
 
