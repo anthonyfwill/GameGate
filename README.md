@@ -1,7 +1,6 @@
 # GameGate
 https://gamegate.netlify.app
 
-[Link to server-side code](https://github.com/RobertBangiyev/GameGate-Server)
 GameGate is a social media app for not only tracking and reviewing games, but adding other fellow gamers, which provides the opportunity to witness their gaming activity/history.
 
 Time spent: 4 months
